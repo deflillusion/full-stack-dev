@@ -1,0 +1,5 @@
+Здравоохранение: damumed, emis
+Финансы: 1С, SAP
+Транспорт: Avtobys, YandexGo
+Развлечение: Netflix, Youtube
+Торговля: OLX, Satu
