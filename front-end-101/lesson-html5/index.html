@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Моя первая страница</title>
+</head>
+
+<body>
+    <header><!-- Шапка-меню -->
+        <nav>
+            <p><a href="index.html">Главная</a></p>
+        </nav>
+    </header>
+    <main> <!-- Это основная секция сайта -->
+        <section>
+            <h1>Ерик</h1>
+            <p>Мне <span style="color: brown;">32</span> года. Работаю консультантом по <strong>1С</strong>. Хочу
+                сменить
+                профессию и
+                <strong><em>поэтому я
+                        тут.</em></strong>
+            </p>
+        </section>
+        <br>
+        <hr>
+        <section>
+            <div id="hobbies-section">
+                <h2>Хобби</h2>
+                <ul>
+                    <li>Dota2</li>
+                    <li>Рыбалка</li>
+                    <li>Просмотр <span>аниме</span></li>
+                    <ol><!--Список аниме-->
+                        <li> <a href="https://v2.vost.pw/tags/Клинок+рассекающий+демонов/"><span>"Клинок рассекающий
+                                    демонов"</span></a></li>
+                        <a href="https://v2.vost.pw/tags/Клинок+рассекающий+демонов/">
+                            <img src="images/КРД.jpg" alt="Клинок рассекающий демонов"
+                                title="Клинок рассекающий демонов" width="250">
+                        </a>
+                        <li><a href="https://v2.vost.pw/tip/tv/1541-sora-no-otoshimono.html"> <span>"Утраченное
+                                    небесами"</span></a></li>
+                        <a href="https://v2.vost.pw/tip/tv/1541-sora-no-otoshimono.html">
+                            <img src="images/sora no otoshimono.webp" alt="Утраченное небесами"
+                                title="Утраченное небесами" width="250">
+                        </a>
+                        <li><a
+                                href="https://v2.vost.pw/tip/tv/1581-kono-subarashii-sekai-ni-shukufuku-wo.html"><span>"Коносуба"</span></a>
+                        </li>
+                        <a href="https://v2.vost.pw/tip/tv/1581-kono-subarashii-sekai-ni-shukufuku-wo.html">
+                            <img src="images/konosuba.jpg" alt="Коносуба" title="Коносуба" width="250">
+                        </a>
+                        <li><a href="https://v2.vost.pw/tip/tv/855-akame-ga-kill-ubiyca-akame.html"><span>"Убийца
+                                    Акамэ"</span></a></li>
+                        <a href="https://v2.vost.pw/tip/tv/855-akame-ga-kill-ubiyca-akame.html">
+                            <img src="images/akame ga kill.jpg" alt="Убийца Акамэ" title="Убийца Акамэ" width="250">
+                        </a>
+                    </ol>
+                </ul>
+                <h2>Таблица любимых аниме</h2>
+                <table><!--Талица списка аниме с авторами-->
+                    <tr>
+                        <th>Наименование</th>
+                        <th>Автор</th>
+                        <th>Год</th>
+                    </tr>
+                    <tr>
+                        <td>"Клинок рассекающий демонов"</td>
+                        <td>Коёхару Готогэ</td>
+                        <td>2016</td>
+                    </tr>
+                    <tr>
+                        <td>"Утраченное небесами"</td>
+                        <td>Су Минадзуки</td>
+                        <td>2009</td>
+                    </tr>
+                    <tr>
+                        <td>"Коносуба"</td>
+                        <td>Нацумэ Акацуки, Мисима, Куронэ</td>
+                        <td>2019</td>
+                    </tr>
+                    <tr>
+                        <td>"Убийца Акамэ"</td>
+                        <td>Токо Матида</td>
+                        <td>2014</td>
+                    </tr>
+                </table>
+                <p>Аудио</p><!--Место для аудио-->
+                <p>Ai Otsuka - Cherish</p>
+                <audio controls>
+                    <source src="audio/Ai Otsuka - Cherish.m4a" type="audio/mpeg">
+                    Ваш браузер не поддерживает элемент <code>audio</code>
+                </audio>
+
+                <p>Видео</p><!--Место для видео-->
+                <p>Видео Mike Inel "Draw With Me", музыка Ai Otsuka - "Cherish"
+                </p>
+                <video controls width="600">
+                    <source src="video/Original Draw With Me by Mike Inel.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает элемент <code>video</code>.
+                </video>
+
+                <figure><!--Место для картинки-->
+                    <img src="images/cat.jpg" alt="Плачущий кот" style="position: relative; left: 40;" width="250">
+                    <figcaption>"Когда учишь программирование"</figcaption>
+                </figure>
+
+                <p>Чёрный супрематический квадрат — картина Казимира Малевича. Копия</p>
+                <canvas id="myCanvas" width="400" height="300">
+
+                    <script>
+                        var canvas = document.getElementById('myCanvas');
+                        var context = canvas.getContext('2d');
+                        context.fillStyle = '000000';
+                        context.fillRect(0, 0, 300, 300);
+                    </script><!--canvas-->
+                </canvas>
+
+
+
+            </div>
+        </section>
+    </main>
+    <aside>
+        <section>
+            <h2>Контактная форма</h2><!--Контактная форма-->
+            <form action=" /submit" method="POST">
+                <label for="name">Имя:</label>
+                <input type="text" id="name" name="name">
+                <label for="email">Электронная почта:</label>
+                <input type="email" id="email" name="email">
+                <label for="message">Сообщение:</label>
+                <textarea id="message" name="message" rows="4" cols="50"></textarea>
+                <button type="submit">Отправить</button>
+            </form>
+        </section>
+    </aside>
+    <footer><!--Нижнаяя часть сайта-->
+        <p>by Defl illusion 2024</p>
+    </footer>
+</body>
+
+</html>
