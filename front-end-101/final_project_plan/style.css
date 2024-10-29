@@ -131,3 +131,21 @@ A:active .contacts {
     color: #ffff00;
     /* Цвет активных ссылок */
 }
+
+form {
+    margin-right: 40px;
+}
+
+.about {
+    display: flex;
+}
+
+#block1,
+#block2,
+#block3 {
+    flex: 1;
+    margin: 2px;
+    border: 1px solid #485fd2;
+    padding: 10px;
+    /*background: lightgray;*/
+}
