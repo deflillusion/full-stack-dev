@@ -140,6 +140,12 @@ form {
     display: flex;
 }
 
+.entertainment {
+    display: flex;
+    color: white;
+}
+
+
 #block1,
 #block2,
 #block3 {
@@ -148,4 +154,25 @@ form {
     border: 1px solid #485fd2;
     padding: 10px;
     /*background: lightgray;*/
+}
+
+
+
+:visited .entertainment {
+    color: #fca1ff;
+    /* Цвет посещенных ссылок */
+}
+
+:active .entertainment {
+    color: #ffff00;
+    /* Цвет активных ссылок */
+}
+
+#ent_block1,
+#ent_block2,
+#ent_block3,
+#ent_block4 {
+    flex: 1;
+    margin: 2px;
+    padding: 10px;
 }
