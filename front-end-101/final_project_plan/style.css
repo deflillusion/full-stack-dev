@@ -20,6 +20,15 @@ html {
 
 }
 
+body {
+    min-height: 100vh;
+    /* Страница всегда имеет необходимый размер */
+    position: relative;
+    /* Определяет позиционирование элементов внутри */
+
+
+}
+
 nav {
     position: absolute;
     top: 15px;
@@ -107,7 +116,7 @@ main {
     left: 50%;
     transform: translateX(-50%);
     display: inline-block;
-
+    flex: 1;
     border-radius: 30px;
 
 }
@@ -118,6 +127,11 @@ ul .contacts {
 }
 
 A .contacts {
+    color: white;
+    /* Цвет ссылок */
+}
+
+A .projects {
     color: white;
     /* Цвет ссылок */
 }
@@ -175,4 +189,41 @@ form {
     flex: 1;
     margin: 2px;
     padding: 10px;
+}
+
+
+
+#wb_block1,
+#wb_block2,
+#wb_block3 {
+    flex: 1;
+    margin: 2px;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    /*background: lightgray;*/
+}
+
+.footer {
+    position: absolute;
+    /* Фиксируем подвал */
+    bottom: 0;
+    /* Всегда внизу, на виду */
+    width: 100%;
+    /* Занимает всю ширину экрана */
+    text-align: center;
+}
+
+a .projects {
+    color: white;
+    /* Цвет ссылок */
+}
+
+a:visited .projects {
+    color: #fca1ff;
+    /* Цвет посещенных ссылок */
+}
+
+a:active .projects {
+    color: #ffff00;
+    /* Цвет активных ссылок */
 }
