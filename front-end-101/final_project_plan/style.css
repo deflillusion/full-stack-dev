@@ -1,31 +1,29 @@
 html {
 
     background-image: url(images/background.jpg);
-
     background-repeat: no-repeat;
-
     background-position: center center;
-
     background-attachment: fixed;
-
     -webkit-background-size: cover;
-
     -moz-background-size: cover;
-
     -o-background-size: cover;
-
     background-size: cover;
-
     color: white;
-
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 body {
-    min-height: 100vh;
-    /* Страница всегда имеет необходимый размер */
+
     position: relative;
     /* Определяет позиционирование элементов внутри */
-
+    padding: 50px;
+    height: 100%;
+    /*min-height: 100vh;
+    /* Страница всегда имеет необходимый размер */
+    display: flex;
+    flex-direction: column;
 
 }
 
@@ -111,15 +109,19 @@ nav ul li:hover ul li a {
 }
 
 main {
-    position: absolute;
-    top: 105px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: inline-block;
+    text-align: center;
     flex: 1;
     border-radius: 30px;
 
 }
+
+
+div .contacts {
+    display: block;
+    text-align: left;
+
+}
+
 
 ul .contacts {
     color: white;
@@ -136,15 +138,12 @@ A .projects {
     /* Цвет ссылок */
 }
 
-A:visited .contacts {
+.contacts:visited {
     color: #fca1ff;
     /* Цвет посещенных ссылок */
 }
 
-A:active .contacts {
-    color: #ffff00;
-    /* Цвет активных ссылок */
-}
+
 
 form {
     margin-right: 40px;
@@ -172,15 +171,12 @@ form {
 
 
 
-:visited .entertainment {
+.entertainment:visited {
     color: #fca1ff;
     /* Цвет посещенных ссылок */
 }
 
-:active .entertainment {
-    color: #ffff00;
-    /* Цвет активных ссылок */
-}
+
 
 #ent_block1,
 #ent_block2,
@@ -196,21 +192,24 @@ form {
 #wb_block1,
 #wb_block2,
 #wb_block3 {
+
     flex: 1;
-    margin: 2px;
-    border: 1px solid #ffffff;
+    text-align: center;
+    /*margin: 2px;
+    /*border: 1px solid #ffffff;
     padding: 10px;
     /*background: lightgray;*/
 }
 
 .footer {
-    position: absolute;
+    /*position: absolute;
     /* Фиксируем подвал */
-    bottom: 0;
+    /*bottom: 0;
     /* Всегда внизу, на виду */
-    width: 100%;
+    /*width: 100%;
     /* Занимает всю ширину экрана */
     text-align: center;
+    padding: 10px;
 }
 
 a .projects {
@@ -218,12 +217,7 @@ a .projects {
     /* Цвет ссылок */
 }
 
-a:visited .projects {
+.projects:visited {
     color: #fca1ff;
     /* Цвет посещенных ссылок */
-}
-
-a:active .projects {
-    color: #ffff00;
-    /* Цвет активных ссылок */
 }

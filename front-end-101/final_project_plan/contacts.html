@@ -2,9 +2,11 @@
 <html>
 
 <head>
+
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Контактная информация</title>
+    <title>Главная Финальный проект</title>
 </head>
 
 <body>
@@ -21,25 +23,27 @@
         </nav>
     </header>
     <main>
-        <h1>Контактная информация</h1>
-        <ul class="contacts">
-            <li><a class="contacts" href="tel:+77777777777">Телефон: +77777777777</a></li>
-            <li><a class="contacts" href="mailto:defl_illusion@mail.ru">Электронная почта: defl_illusion@mail.ru</a>
-            </li>
-            <li><a class="contacts" href="https://t.me/defl_illusion">Telegram: @defl_illusion</a></li>
-            <li>Я интроверт, поэтому пишите. Не звоните пожалуйста</li>
-        </ul>
-        <div>
-            <h2>Контактная форма</h2>
-            <form action="/submit" method="POST">
-                <label for="name">Имя:</label><br>
-                <input type="text" id="name" name="name"><br><br>
-                <label for="email">Электронная почта:</label><br>
-                <input type="email" id="email" name="email"><br><br>
-                <label for="message">Сообщение:</label><br>
-                <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
-                <button type="submit">Отправить</button>
-            </form>
+        <div class="contacts" style="height: 10vh; display: grid; place-items: center;">
+            <h1>Контактная информация</h1>
+            <ul class="contacts">
+                <li><a class="contacts" href="tel:+77777777777">Телефон: +77777777777</a></li>
+                <li><a class="contacts" href="mailto:defl_illusion@mail.ru">Электронная почта: defl_illusion@mail.ru</a>
+                </li>
+                <li><a class="contacts" href="https://t.me/defl_illusion">Telegram: @defl_illusion</a></li>
+                <li>Я интроверт, поэтому пишите. Не звоните пожалуйста</li>
+            </ul>
+            <div class="contacts">
+                <h2>Контактная форма</h2>
+                <form action="/submit" method="POST">
+                    <label for="name">Имя:</label><br>
+                    <input type="text" id="name" name="name"><br><br>
+                    <label for="email">Электронная почта:</label><br>
+                    <input type="email" id="email" name="email"><br><br>
+                    <label for="message">Сообщение:</label><br>
+                    <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
         </div>
     </main>
     <footer class="footer"><!--Нижнаяя часть сайта-->
