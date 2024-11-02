@@ -1,0 +1,120 @@
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ ~
+-bash: /home/erik: Is a directory
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ cd ~
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev
+erik@DESKTOP-GC41VCD:~$ cd full-stack-dev
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ ls
+dev-core-101  dev-core-104  front-end-101
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ cd ..
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev
+erik@DESKTOP-GC41VCD:~$ touch cat file.txt
+erik@DESKTOP-GC41VCD:~$ ls
+cat  file.txt  full-stack-dev
+erik@DESKTOP-GC41VCD:~$ rm cat
+erik@DESKTOP-GC41VCD:~$ ls
+file.txt  full-stack-dev
+erik@DESKTOP-GC41VCD:~$ cat file.txt
+erik@DESKTOP-GC41VCD:~$ echo "This is a line of text" > file.txt
+erik@DESKTOP-GC41VCD:~$ cat file.txt
+This is a line of text
+erik@DESKTOP-GC41VCD:~$ echo "Adding another line to the file" >> file.txt
+erik@DESKTOP-GC41VCD:~$ cat file.txt
+This is a line of text
+Adding another line to the file
+erik@DESKTOP-GC41VCD:~$ less file.txt
+erik@DESKTOP-GC41VCD:~$ echo "123" > file.txt
+erik@DESKTOP-GC41VCD:~$ less file.txt
+erik@DESKTOP-GC41VCD:~$  echo "This is a line of text" > file.txt
+erik@DESKTOP-GC41VCD:~$ echo "Adding another line to the file" >> file.txt
+erik@DESKTOP-GC41VCD:~$ cat file.txt
+This is a line of text
+Adding another line to the file
+erik@DESKTOP-GC41VCD:~$ head file.txt
+This is a line of text
+Adding another line to the file
+erik@DESKTOP-GC41VCD:~$ tail file.txt
+This is a line of text
+Adding another line to the file
+erik@DESKTOP-GC41VCD:~$ touch another-file.txt
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  file.txt  full-stack-dev
+erik@DESKTOP-GC41VCD:~$ mkdir new-folder
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ mv file.txt new-folder
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ cp another-file.txt new-folder
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ cd new-folder
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+another-file.txt  file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ mv another-file.txt second-file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+file.txt  second-file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ rm second-file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ rm file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+erik@DESKTOP-GC41VCD:~/new-folder$ cd
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ mkdir new folder 2
+erik@DESKTOP-GC41VCD:~$ ls
+2  another-file.txt  folder  full-stack-dev  new  new-folder
+erik@DESKTOP-GC41VCD:~$ rm 2 folder new
+rm: cannot remove '2': Is a directory
+rm: cannot remove 'folder': Is a directory
+rm: cannot remove 'new': Is a directory
+erik@DESKTOP-GC41VCD:~$ rm -r 2 folder new
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ mkdir new-folder-2
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder  new-folder-2
+erik@DESKTOP-GC41VCD:~$ mv new-folder-2 new-folder
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ cd new-folder
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+new-folder-2
+erik@DESKTOP-GC41VCD:~/new-folder$ touch file.txt
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+file.txt  new-folder-2
+erik@DESKTOP-GC41VCD:~/new-folder$ cp touch.txt ~
+cp: cannot stat 'touch.txt': No such file or directory
+erik@DESKTOP-GC41VCD:~/new-folder$ cp touch.txt ../~
+cp: cannot stat 'touch.txt': No such file or directory
+erik@DESKTOP-GC41VCD:~/new-folder$ cp touch.txt ~
+cp: cannot stat 'touch.txt': No such file or directory
+erik@DESKTOP-GC41VCD:~/new-folder$ cp file.txt ~
+erik@DESKTOP-GC41VCD:~/new-folder$ ls
+file.txt  new-folder-2
+erik@DESKTOP-GC41VCD:~/new-folder$ cd ~
+erik@DESKTOP-GC41VCD:~$ ls
+another-file.txt  file.txt  full-stack-dev  new-folder
+erik@DESKTOP-GC41VCD:~$ rm -r another-file.txt file.txt new-folder
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev
+erik@DESKTOP-GC41VCD:~$ touch my/ file.txt
+touch: setting times of 'my/': No such file or directory
+erik@DESKTOP-GC41VCD:~$ touch "my file.txt"
+erik@DESKTOP-GC41VCD:~$ ls
+ file.txt   full-stack-dev  'my file.txt'
+erik@DESKTOP-GC41VCD:~$ rm 'my file.txt'
+erik@DESKTOP-GC41VCD:~$ ls
+file.txt  full-stack-dev
+erik@DESKTOP-GC41VCD:~$ touch my\ file.txt
+erik@DESKTOP-GC41VCD:~$ ls
+ file.txt   full-stack-dev  'my file.txt'
+erik@DESKTOP-GC41VCD:~$ mkdir my\ folder
+erik@DESKTOP-GC41VCD:~$ ls
+ file.txt   full-stack-dev  'my file.txt'  'my folder'
+erik@DESKTOP-GC41VCD:~$ rm -r file.txt "my file.txt" "my folder"
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev
+erik@DESKTOP-GC41VCD:~$
