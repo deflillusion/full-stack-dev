@@ -1,0 +1,162 @@
+erik@DESKTOP-GC41VCD:~$ cd full-stack-dev
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ ls
+dev-core-101  dev-core-104  front-end-101
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ cd dev-core-104
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ ls
+commands_used.txt  commands_used_7.txt  commands_used_8.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ mkdir project
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ ls
+commands_used.txt  commands_used_7.txt  commands_used_8.txt  project
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ cd project
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ mkdir docs src tests
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ ls
+docs  src  tests
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ cd docs
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ touch readme.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ ls
+readme.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ echo "Project Documentation" > readme.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ cat readme.txt
+Project Documentation
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ cd ../src
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ touch main.py
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ ls
+main.py
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ cd ../doc
+-bash: cd: ../doc: No such file or directory
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ cd ../docs
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ mv readme.txt ../src
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ ls
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/docs$ cd ../src
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ ls
+main.py  readme.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ ls -r project
+ls: cannot access 'project': No such file or directory
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project/src$ cd ..
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ ls -r project
+ls: cannot access 'project': No such file or directory
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ cd
+erik@DESKTOP-GC41VCD:~$ cd -
+/home/erik/full-stack-dev/dev-core-104/project
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104/project$ cd ..
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ ls -r project
+tests  src  docs
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ touch project_structure.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ echo "tests  src  docs" >> project_structure.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ ls
+commands_used.txt  commands_used_7.txt  commands_used_8.txt  project  project_structure.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ cat project_structure.txt
+tests  src  docs
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-core-104$ cd ~
+erik@DESKTOP-GC41VCD:~$ touch log.txt
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev  log.txt
+erik@DESKTOP-GC41VCD:~$ echo "Сценарии работы с командной строкой
+\nВ этом задании вам предстоит решить сценария, \nкоторые помогут \nвам закрепить навыки работы с командной строкой. \nКаждый сценарий \nвключает в себя задачи, связанные с навигацией, \nуправлением файлами и работой \nс переменными окружения. \nВажно внимательно следовать инструкциям, записывать \nиспользованные команды и объяснять свои действия." > log.txterik@DESKTOP-GC41VCD:~$ cat log.txt
+Сценарии работы с командной строкой
+\nВ этом задании вам предстоит решить сценария, \nкоторые помогут \nвам закрепить навыки работы с командной строкой. \nКаждый сценарий \nвключает в себя задачи, связанные с навигацией, \nуправлением файлами и работой \nс переменными окружения. \nВажно внимательно следовать инструкциям, записывать \nиспользованные команды и объяснять свои действия.
+erik@DESKTOP-GC41VCD:~$ greep error log.txt
+Command 'greep' not found, did you mean:
+  command 'greed' from deb greed (4.2-1)
+  command 'grep' from deb grep (3.7-1build1)
+Try: sudo apt install <deb name>
+erik@DESKTOP-GC41VCD:~$ grep error log.txt
+erik@DESKTOP-GC41VCD:~$ grep которые log.txt
+\nВ этом задании вам предстоит решить сценария, \nкоторые помогут \nвам закрепить навыки работы с командной строкой. \nКаждый сценарий \nвключает в себя задачи, связанные с навигацией, \nуправлением файлами и работой \nс переменными окружения. \nВажно внимательно следовать инструкциям, записывать \nиспользованные команды и объяснять свои действия.
+erik@DESKTOP-GC41VCD:~$ ws -l log.txt
+ws: command not found
+erik@DESKTOP-GC41VCD:~$ wc -l log.txt
+2 log.txt
+
+erik@DESKTOP-GC41VCD:~$ find ~ -name "*.txt" > ~/txt_files_list.txt
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev  log.txt  txt_files_list.txt
+erik@DESKTOP-GC41VCD:~$ cat txt_files_list.txt
+/home/erik/log.txt
+/home/erik/full-stack-dev/dev-core-104/project/src/readme.txt
+/home/erik/full-stack-dev/dev-core-104/commands_used.txt
+/home/erik/full-stack-dev/dev-core-104/project_structure.txt
+/home/erik/full-stack-dev/dev-core-104/commands_used_9.txt
+/home/erik/full-stack-dev/dev-core-104/commands_used_8.txt
+/home/erik/full-stack-dev/dev-core-104/commands_used_7.txt
+/home/erik/full-stack-dev/dev-core-101/dev-core-101-programming-languages-timeline.txt
+/home/erik/full-stack-dev/dev-core-101/dev-core-101-industries-research.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/requirements.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/dist/extension.browser.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/jedilsp_requirements/requirements.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/python/importlib_metadata-8.5.0.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/python/zipp-3.20.1.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/pygls-1.3.1.dist-info/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso-0.8.4.dist-info/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso-0.8.4.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso-0.8.4.dist-info/AUTHORS.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/jedi-0.19.1.dist-info/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/jedi-0.19.1.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/jedi-0.19.1.dist-info/AUTHORS.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar37.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar310.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar39.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar311.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar38.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar36.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar313.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/parso/python/grammar312.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/jedi_language_server-0.41.4.dist-info/entry_points.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/jedi/third_party/django-stubs/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python_files/lib/jedilsp/docstring_to_markdown-0.15.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/ThirdPartyNotices-Repository.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/python-env-tools/bin/ThirdPartyNotices.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/ThirdPartyNotices.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/out/client/extension.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/out/client/node_modules/node-stream-zip.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.python-2024.18.0-linux-x64/out/client/node_modules/xml2js.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-ceintl.vscode-language-pack-ru-1.95.2024103009/ThirdPartyNotices.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy-1.8.7.dist-info/top_level.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy-1.8.7.dist-info/entry_points.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/pydev_sitecustomize/__not_in_default_pythonpath.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/pydevd_attach_to_process/README.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_frame_eval/vendored/README.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy/ThirdPartyNotices.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/dist/extension.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/ThirdPartyNotices.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/typeshed-fallback/stubs/vobject/@tests/stubtest_allowlist.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/typeshed-fallback/commit.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/browser.async.bundle.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/vendor.bundle.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/browser.sync.bundle.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/dist/browser.extension.bundle.js.LICENSE.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/ThirdPartyNotices-Repository.txt
+/home/erik/.vscode-server/extensions/ms-python.vscode-pylance-2024.10.1/NOTICE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/ms-vscode.vscode-js-profile-table/ThirdPartyNotices.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/npm/dist/npmMain.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/ms-vscode.js-debug-companion/LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/ms-vscode.js-debug-companion/ThirdPartyNotices.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/ms-vscode.js-debug/LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/ms-vscode.js-debug/ThirdPartyNotices.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/git/dist/main.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/github/testWorkspace/docs/PULL_REQUEST_TEMPLATE/x.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/github/testWorkspace/.github/PULL_REQUEST_TEMPLATE/x.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/github/testWorkspace/PULL_REQUEST_TEMPLATE/x.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/github/testWorkspace/x.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/github/dist/extension.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/microsoft-authentication/dist/extension.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/configuration-editing/dist/configurationEditingMain.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/extensions/markdown-language-features/dist/serverWorkerMain.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/@xterm/addon-image/lib/addon-image.js.LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/vscode-oniguruma/LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/vscode-oniguruma/NOTICES.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/@vscode/deviceid/LICENSE.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/@vscode/deviceid/owners.txt
+/home/erik/.vscode-server/bin/65edc4939843c90c34d61f4ce11704f09d3e5cb6/node_modules/@vscode/vscode-languagedetection/dist/lib/index.js.LICENSE.txt
+/home/erik/.vscode-server/data/User/History/-7ee48d96/fRNn.txt
+/home/erik/.vscode-server/data/User/History/-7c9205d/yg5j.txt
+/home/erik/.vscode-server/data/User/History/-7c9205d/Rh7Z.txt
+/home/erik/.vscode-server/data/User/History/-7d737de/vv4Z.txt
+/home/erik/.vscode-server/data/User/History/-7d737de/hakj.txt
+/home/erik/.vscode-server/data/User/History/-7d737de/F8Pa.txt
+/home/erik/.vscode-server/data/User/History/-7bb08dc/Gf08.txt
+/home/erik/.vscode-server/data/User/History/-7bb08dc/mgvK.txt
+/home/erik/txt_files_list.txt
