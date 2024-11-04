@@ -41,4 +41,4 @@ def washing_clothes(): #Стирка одежды
     washing_programm()
     run_programm()
     print("Ждем пока постирается")
-washing_clothes()
+
