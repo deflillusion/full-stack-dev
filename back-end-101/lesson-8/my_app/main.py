@@ -28,7 +28,7 @@ def save_tasks(tasks):
 # Добавление новой задачи
 def add_task(title):
     tasks = load_tasks()
-    task_id = len(tasks) + 1
+    task_id = max(task["id"] for task in tasks) + 1 if tasks else 1
     task = {"id": task_id, "title": title, "completed": False}
     tasks.append(task)
     save_tasks(tasks)
