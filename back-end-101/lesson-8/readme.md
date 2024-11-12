@@ -9,4 +9,4 @@ options:
   -h, --help            show this help message and exit
 
 
-При первом запуске создастся база на sqlite.
+При первом запуске создастся база на *.json
