@@ -2,13 +2,15 @@ import json
 import argparse
 import os
 
-DB_DIR = "data"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_DIR = os.path.join(BASE_DIR, "..", "data")
 DB_NAME = os.path.join(DB_DIR, "tasks.json")
 
 
 # Инициализация файла данных
 def init_db():
     if not os.path.exists(DB_NAME):
+        os.makedirs(DB_DIR)
         with open(DB_NAME, 'w', encoding='utf-8') as f:
             json.dump([], f)  # Инициализация пустого списка задач
 
