@@ -3,6 +3,7 @@ import sqlite3
 import os
 from pydantic import BaseModel
 from typing import List
+from typing import Optional
 
 app = FastAPI()
 
@@ -13,7 +14,7 @@ DB_NAME = os.path.join(DB_DIR, "todo_list.db")
 
 
 class Task(BaseModel):
-    id: int = None
+    id: int = Optional[int]
     title: str
     completed: bool = False
 
@@ -39,6 +40,11 @@ def init_db():
             conn.commit()
 
 
+@app.on_event("startup")
+def startup_event():
+    init_db()
+
+
 # Добавление новой задачи
 def add_task(title):
     try:
@@ -52,7 +58,7 @@ def add_task(title):
     except sqlite3.Error as e:
         print(f"Ошибка при добавлении задачи: {e}")
         raise HTTPException(
-            status_code=500, detail="Ошибка при добавлении задачи")
+            status_code=500, detail=f"Ошибка при добавлении задачи {e}")
 
 
 # Просмотр всех задач
@@ -67,19 +73,19 @@ def list_tasks():
             task_list = []
             for task in tasks:
                 task_list.append(
-                    Task(id=task[0], title=task[1], completed=task[2]))
+                    Task(id=int(task[0]), title=task[1], completed=bool(task[2])))
             return task_list
     except sqlite3.Error as e:
         print(f"Ошибка при извлечении задач: {e}")
         raise HTTPException(
-            status_code=500, detail="Ошибка при извлечении задач")
+            status_code=500, detail=f"Ошибка при извлечении задач")
 
 
 # Функция для обновления задачи в базе данных
 def update_task(task_id: int, new_title: str = None, new_status: bool = None):
     if new_title is None and new_status is None:
         raise HTTPException(
-            status_code=400, detail="Не переданы данные для обновления")
+            status_code=400, detail=f"Не переданы данные для обновления")
 
     try:
         with sqlite3.connect(DB_NAME) as conn:
@@ -104,7 +110,7 @@ def update_task(task_id: int, new_title: str = None, new_status: bool = None):
                 return {"message": f"Задача с ID {task_id} успешно обновлена."}
             else:
                 raise HTTPException(
-                    status_code=404, detail="Задача с таким ID не найдена или изменений не требуется")
+                    status_code=404, detail=f"Задача с таким ID не найдена или изменений не требуется")
     except sqlite3.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Ошибка при обновлении задачи: {e}")
@@ -128,26 +134,56 @@ def delete_task(task_id: int):
             status_code=500, detail=f"Ошибка при удалении задачи: {e}")
 
 
+def get_task_by_id(task_id):
+    try:
+        with sqlite3.connect(DB_NAME) as conn:
+            cursor = conn.cursor()
+
+            # Параметризированный запрос
+            cursor.execute(
+                "SELECT id, title, completed FROM tasks WHERE id = ?", (task_id,))
+            task = cursor.fetchone()
+
+            if task:
+                # Если задача найдена, возвращаем объект Task
+                return Task(id=task[0], title=task[1], completed=bool(task[2]))
+            else:
+                # Если задача не найдена, выбрасываем ошибку 404
+                raise HTTPException(
+                    status_code=404, detail=f"Задача не найдена")
+
+    except sqlite3.Error as e:
+        print(f"Ошибка при извлечении задачи: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при извлечении задачи")
+
+
 @app.post("/tasks", response_model=Task)
-def create_task(task: Task):
+async def create_task(task: Task):
     new_task_id = add_task(task.title)
-    return Task(id=new_task_id, title=task.title, completed=False)
+    return Task(id=new_task_id, title=task.title, completed=bool(False))
 
 
 @app.get("/tasks", response_model=List[Task])
-def get_tasks():
+async def get_tasks():
     tasks = list_tasks()
     return tasks
 
 
 @app.put("/tasks/{task_id}")
-def update_task_route(task_id: int, task_update: TaskUpdate):
+async def update_task_route(task_id: int, task_update: TaskUpdate):
     if not task_update.new_title and task_update.new_status is None:
         raise HTTPException(
-            status_code=400, detail="Не переданы данные для обновления")
+            status_code=400, detail=f"Не переданы данные для обновления")
     return update_task(task_id, task_update.new_title, task_update.new_status)
 
 
 @app.delete("/tasks/{task_id}")
-def delete_task_route(task_id: int):
+async def delete_task_route(task_id: int):
     return delete_task(task_id)
+
+
+@app.get("/tasks/{task_id}")
+async def read_task(task_id: int):
+    task = get_task_by_id(task_id)
+    return task
