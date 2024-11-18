@@ -58,7 +58,7 @@ def add_task(title):
     except sqlite3.Error as e:
         print(f"Ошибка при добавлении задачи: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Ошибка при добавлении задачи {e}")
+            status_code=500, detail=f"Ошибка при добавлении задачи: {e}")
 
 
 # Просмотр всех задач
@@ -69,7 +69,6 @@ def list_tasks():
             cursor.execute("SELECT id, title, completed FROM tasks")
             tasks = cursor.fetchall()
 
-            # Преобразуем результат в список объектов Task
             task_list = []
             for task in tasks:
                 task_list.append(
@@ -92,19 +91,16 @@ def update_task(task_id: int, new_title: str = None, new_status: bool = None):
             cursor = conn.cursor()
             updates_made = False
 
-            # Обновляем заголовок, если передан новый title
             if new_title:
                 cursor.execute(
                     "UPDATE tasks SET title = ? WHERE id = ?", (new_title, task_id))
                 updates_made = True
 
-            # Обновляем статус, если передан новый статус
             if new_status is not None:
                 cursor.execute(
                     "UPDATE tasks SET completed = ? WHERE id = ?", (new_status, task_id))
                 updates_made = True
 
-            # Если были сделаны изменения, коммитим транзакцию
             if updates_made and cursor.rowcount > 0:
                 conn.commit()
                 return {"message": f"Задача с ID {task_id} успешно обновлена."}
@@ -139,16 +135,15 @@ def get_task_by_id(task_id):
         with sqlite3.connect(DB_NAME) as conn:
             cursor = conn.cursor()
 
-            # Параметризированный запрос
             cursor.execute(
                 "SELECT id, title, completed FROM tasks WHERE id = ?", (task_id,))
             task = cursor.fetchone()
 
             if task:
-                # Если задача найдена, возвращаем объект Task
+
                 return Task(id=task[0], title=task[1], completed=bool(task[2]))
             else:
-                # Если задача не найдена, выбрасываем ошибку 404
+
                 raise HTTPException(
                     status_code=404, detail=f"Задача не найдена")
 
@@ -159,19 +154,19 @@ def get_task_by_id(task_id):
 
 
 @app.post("/tasks", response_model=Task)
-async def create_task(task: Task):
+def create_task(task: Task):
     new_task_id = add_task(task.title)
     return Task(id=new_task_id, title=task.title, completed=bool(False))
 
 
 @app.get("/tasks", response_model=List[Task])
-async def get_tasks():
+def get_tasks():
     tasks = list_tasks()
     return tasks
 
 
 @app.put("/tasks/{task_id}")
-async def update_task_route(task_id: int, task_update: TaskUpdate):
+def update_task_route(task_id: int, task_update: TaskUpdate):
     if not task_update.new_title and task_update.new_status is None:
         raise HTTPException(
             status_code=400, detail=f"Не переданы данные для обновления")
@@ -179,11 +174,11 @@ async def update_task_route(task_id: int, task_update: TaskUpdate):
 
 
 @app.delete("/tasks/{task_id}")
-async def delete_task_route(task_id: int):
+def delete_task_route(task_id: int):
     return delete_task(task_id)
 
 
 @app.get("/tasks/{task_id}")
-async def read_task(task_id: int):
+def read_task(task_id: int):
     task = get_task_by_id(task_id)
     return task
