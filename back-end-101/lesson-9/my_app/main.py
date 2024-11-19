@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 import sqlite3
 import os
 from pydantic import BaseModel
@@ -154,7 +154,7 @@ def get_task_by_id(task_id):
 
 
 @app.post("/tasks", response_model=Task)
-def create_task(task: Task):
+def create_task(task: Task = Depends()):
     new_task_id = add_task(task.title)
     return Task(id=new_task_id, title=task.title, completed=bool(False))
 
@@ -166,7 +166,7 @@ def get_tasks():
 
 
 @app.put("/tasks/{task_id}")
-def update_task_route(task_id: int, task_update: TaskUpdate):
+def update_task_route(task_id: int, task_update: TaskUpdate = Depends()):
     if not task_update.new_title and task_update.new_status is None:
         raise HTTPException(
             status_code=400, detail=f"Не переданы данные для обновления")
