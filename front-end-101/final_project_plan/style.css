@@ -27,68 +27,107 @@ body {
 
 }
 
-nav {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: inline-block;
-    border: 2px solid #485fd2;
-    border-radius: 30px;
-    animation: slide-in 1s ease-out;
-    white-space: nowrap;
-}
-
+/* Базовые стили */
 nav ul {
-    position: relative;
     display: flex;
-    flex: 1 1 auto;
+    /* Горизонтальное расположение */
+    list-style: none;
+    /* Убираем маркеры списка */
     margin: 0;
-    padding: 0 30px;
-    list-style-type: none;
+    padding: 0;
+    background-color: #373754;
 }
 
-nav ul li:not(:last-child) {
-    margin-right: 40px;
+nav li {
+    margin: 0 10px;
+    /* Отступы между пунктами */
 }
 
-nav ul li {
-    border: 2px solid transparent;
-    border-radius: 5px;
-    padding: 10px;
-    transition: background 0.2s;
-}
-
-nav ul li a {
-    color: #84bbff;
+nav a {
     text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.2s;
+    /* Убираем подчеркивание */
+    color: white;
+    /* Цвет текста */
+    padding: 10px 15px;
+    display: block;
+}
+
+nav a:hover {
+    background-color: #373754;
+    /* Изменение фона при наведении */
+}
+
+/* Прячем чекбокс */
+.menu-toggle {
+    display: none;
+}
+
+/* Иконка меню */
+.menu-icon {
+    display: none;
+    /* Прячем иконку на десктопе */
+    font-size: 24px;
+    color: white;
+    background: #373754;
+    padding: 10px 15px;
+    cursor: pointer;
 }
 
 
+@media (max-width: 1024px) {
+
+    /* Вертикальное меню */
+    nav ul {
+        display: none;
+        /* Прячем меню по умолчанию */
+        flex-direction: column;
+        /* Вертикальное расположение */
+        background-color: #373754;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        /* Занимает всю ширину экрана */
+        padding: 0;
+
+    }
+
+    /* Показываем меню, если чекбокс активен */
+    .menu-toggle:checked+.menu-icon+ul {
+        display: flex;
+    }
+
+    /* Иконка меню */
+    .menu-icon {
+        display: block;
+        /* Показываем на мобильных */
+    }
+
+    nav li {
+        margin: 0;
+        /* Убираем отступы между пунктами */
+        text-align: center;
+        /* Центрируем текст */
+    }
+
+    video {
+        max-width: 90%;
+        /* Сужаем видео на мобильных, если требуется */
+    }
+
+    audio {
+        max-width: 90%;
+        /* Сужаем видео на мобильных, если требуется */
+    }
 
 
-nav ul li:hover {
-    background: #70c6ff;
-    border: 2px solid 70c6ff;
-    border-right: 2px solid 70c6ff;
-    border-bottom: 2px solid 70c6ff;
+    img {
+        max-width: 90%;
+        /* Сужаем видео на мобильных, если требуется */
+    }
 }
 
-nav ul li:hover a {
-    color: #F9F8FD;
-}
 
-nav ul li:hover ul {
-    visibility: visible;
-    opacity: 0;
-
-}
-
-nav ul li:hover ul li a {
-    color: #F9F8FD;
-}
 
 @keyframes slide-in {
     0% {
