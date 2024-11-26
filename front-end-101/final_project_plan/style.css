@@ -12,6 +12,7 @@ html {
     height: 100%;
     display: flex;
     flex-direction: column;
+    /*max-width: 800px;*/
 }
 
 body {
@@ -36,6 +37,8 @@ nav ul {
     margin: 0;
     padding: 0;
     background-color: #373754;
+    justify-content: center;
+    align-items: center;
 }
 
 nav li {
@@ -158,6 +161,7 @@ main {
 .contacts {
     display: block;
     text-align: left;
+    max-width: 100%;
 
 }
 
@@ -211,6 +215,24 @@ form {
 }
 
 
+@media (max-width: 768px) {
+
+    /* Для экранов шириной <= 768px */
+    #block1,
+    #block2,
+    #block3 {
+        flex: none;
+        width: 100%;
+
+    }
+
+    #about {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 
 .entertainment:visited {
     color: #fca1ff;
@@ -228,6 +250,25 @@ form {
     padding: 10px;
 }
 
+
+@media (max-width: 768px) {
+
+    /* Для экранов шириной <= 768px */
+    #ent_block1,
+    #ent_block2,
+    #ent_block3,
+    #ent_block4 {
+        flex: none;
+        width: 100%;
+
+    }
+
+    #entertainment {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
 
 
 #wb_block1,
@@ -247,8 +288,9 @@ form {
     /* Фиксируем подвал */
     /*bottom: 0;
     /* Всегда внизу, на виду */
-    /*width: 100%;
+    /*width: 200px;
     /* Занимает всю ширину экрана */
+    /*position: absolute;*/
     text-align: center;
     padding: 10px;
 }
