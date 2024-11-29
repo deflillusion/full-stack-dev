@@ -40,7 +40,7 @@ SQLite таблицы
 Таблица Category:
     id:
     name:
-    type:
+    transaction_type_id:
     description:
 
 Таблица Transactions:
@@ -48,8 +48,13 @@ SQLite таблицы
     user_id:
     category_id:
     amount:
-    transaction_type:
+    transaction_type_id:
     description:
-    date:
-    time:
+    datetime:
+
+
+Таблица transaction_type:
+    id:
+    name: (Доход, Расход, Перевод)
+
 
