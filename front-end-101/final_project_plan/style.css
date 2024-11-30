@@ -12,60 +12,62 @@ html {
     height: 100%;
     display: flex;
     flex-direction: column;
+
 }
 
 body {
 
     position: relative;
-    /* Определяет позиционирование элементов внутри */
+
     padding: 50px;
     height: 100%;
-    /*min-height: 100vh;
-    /* Страница всегда имеет необходимый размер */
+
     display: flex;
     flex-direction: column;
 
 }
 
-/* Базовые стили */
+
 nav ul {
     display: flex;
-    /* Горизонтальное расположение */
+
     list-style: none;
-    /* Убираем маркеры списка */
+
     margin: 0;
     padding: 0;
     background-color: #373754;
+    justify-content: center;
+    align-items: center;
 }
 
 nav li {
     margin: 0 10px;
-    /* Отступы между пунктами */
+
 }
 
 nav a {
     text-decoration: none;
-    /* Убираем подчеркивание */
+
     color: white;
-    /* Цвет текста */
+
     padding: 10px 15px;
     display: block;
 }
 
 nav a:hover {
     background-color: #373754;
-    /* Изменение фона при наведении */
+
 }
 
-/* Прячем чекбокс */
+
 .menu-toggle {
     display: none;
 }
 
-/* Иконка меню */
+
 .menu-icon {
     display: none;
-    /* Прячем иконку на десктопе */
+
     font-size: 24px;
     color: white;
     background: #373754;
@@ -76,54 +78,54 @@ nav a:hover {
 
 @media (max-width: 1024px) {
 
-    /* Вертикальное меню */
+
     nav ul {
         display: none;
-        /* Прячем меню по умолчанию */
+
         flex-direction: column;
-        /* Вертикальное расположение */
+
         background-color: #373754;
         position: absolute;
         top: 50px;
         left: 0;
         width: 100%;
-        /* Занимает всю ширину экрана */
+
         padding: 0;
 
     }
 
-    /* Показываем меню, если чекбокс активен */
+
     .menu-toggle:checked+.menu-icon+ul {
         display: flex;
     }
 
-    /* Иконка меню */
+
     .menu-icon {
         display: block;
-        /* Показываем на мобильных */
+
     }
 
     nav li {
         margin: 0;
-        /* Убираем отступы между пунктами */
+
         text-align: center;
-        /* Центрируем текст */
+
     }
 
     video {
         max-width: 90%;
-        /* Сужаем видео на мобильных, если требуется */
+
     }
 
     audio {
         max-width: 90%;
-        /* Сужаем видео на мобильных, если требуется */
+
     }
 
 
     img {
         max-width: 90%;
-        /* Сужаем видео на мобильных, если требуется */
+
     }
 }
 
@@ -158,6 +160,7 @@ main {
 .contacts {
     display: block;
     text-align: left;
+    max-width: 100%;
 
 }
 
@@ -169,17 +172,17 @@ ul .contacts {
 
 a .contacts {
     color: white;
-    /* Цвет ссылок */
+
 }
 
 a .projects {
     color: white;
-    /* Цвет ссылок */
+
 }
 
 .contacts:visited {
     color: #fca1ff;
-    /* Цвет посещенных ссылок */
+
 }
 
 
@@ -188,11 +191,11 @@ form {
     margin-right: 40px;
 }
 
-.about {
+#about {
     display: flex;
 }
 
-.entertainment {
+#entertainment {
     display: flex;
     color: white;
 
@@ -207,14 +210,48 @@ form {
     margin: 2px;
     border: 1px solid #ffffff;
     padding: 10px;
-    /*background: lightgray;*/
+
 }
 
 
+@media (max-width: 768px) {
 
-.entertainment:visited {
+
+    #block1,
+    #block2,
+    #block3 {
+        flex: none;
+        width: 100%;
+
+    }
+
+    #about {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #ent_block1,
+    #ent_block2,
+    #ent_block3,
+    #ent_block4 {
+        flex: none;
+        width: 100%;
+
+    }
+
+    #entertainment {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+    }
+}
+
+
+#entertainment:visited {
     color: #fca1ff;
-    /* Цвет посещенных ссылок */
+
 }
 
 
@@ -230,35 +267,29 @@ form {
 
 
 
+
+
 #wb_block1,
 #wb_block2,
 #wb_block3 {
 
     flex: 1;
     text-align: center;
-    /*margin: 2px;
-    /*border: 1px solid #ffffff;
-    padding: 10px;
-    /*background: lightgray;*/
+
 }
 
 .footer {
-    /*position: absolute;
-    /* Фиксируем подвал */
-    /*bottom: 0;
-    /* Всегда внизу, на виду */
-    /*width: 100%;
-    /* Занимает всю ширину экрана */
+
     text-align: center;
     padding: 10px;
 }
 
 a .projects {
     color: white;
-    /* Цвет ссылок */
+
 }
 
 .projects:visited {
     color: #fca1ff;
-    /* Цвет посещенных ссылок */
+
 }
