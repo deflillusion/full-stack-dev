@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<script>
+    //console.log("Hello");
+    const submitButton = document.getElementById("submitButton");
+    const nameInput = document.getElementById("nameInput");
+    const emailInput = document.getElementById("emailInput");
+    const commentInput = document.getElementById("commentInput");
+    if (submitButton !== null) {
+        // Attach a click event listener to the button
+        submitButton.addEventListener("click", () => {
+            // Get the values from the inputs
+            const email = emailInput.value.trim();
+            const name = nameInput.value.trim();
+            const comment = commentInput.value.trim();
+
+            // Log the input values to the console
+            console.log("Form Data:");
+            console.log("Email:", email);
+            console.log("Name:", name);
+            console.log("Comment:", comment);
+
+            // Optionally, you can display an alert (remove this if not needed)
+            alert("Check the console for the submitted data!");
+        });
+    }
+</script>
+
+<Layout>
+    <div class="flex justify-center items-center">
+        <div class="overflow-hidden rounded-lg bg-white shadow">
+            <div class="flex flex-col gap-8 px-4 py-5 sm:p-6 w-96">
+                <h1 class="text-3xl font-bold underline">Contact Form</h1>
+
+                <div>
+                    <label
+                        for="email"
+                        class="block text-sm/6 font-medium text-gray-900"
+                        >Email</label
+                    >
+                    <div class="mt-2">
+                        <input
+                            type="email"
+                            name="email"
+                            id="emailInput"
+                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                </div>
+
+                <div
+                    class="rounded-md bg-white px-3 pb-1.5 pt-2.5 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600"
+                >
+                    <label
+                        for="name"
+                        class="block text-xs font-medium text-gray-900"
+                        >Name</label
+                    >
+                    <input
+                        type="text"
+                        name="name"
+                        id="nameInput"
+                        class="block w-full text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                        placeholder="Jane Smith"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="comment"
+                        class="block text-sm/6 font-medium text-gray-900"
+                        >Add your comment</label
+                    >
+                    <div class="mt-2">
+                        <textarea
+                            rows="4"
+                            name="comment"
+                            id="commentInput"
+                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        ></textarea>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    id="submitButton"
+                    class="rounded-md bg-green-800 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                    >Button text</button
+                >
+            </div>
+        </div>
+    </div>
+</Layout>
