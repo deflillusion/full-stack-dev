@@ -3,11 +3,7 @@ import os
 
 
 def save_recipes_to_file(recipes, filename):
-    """
-    Сохраняет рецепты в файл в формате JSON.
-    :param recipes: Словарь с рецептами.
-    :param filename: Имя файла для сохранения.
-    """
+
     try:
         file_path = os.path.join(os.path.dirname(__file__), filename)
         with open(file_path, 'w', encoding='utf-8') as file:
@@ -18,11 +14,7 @@ def save_recipes_to_file(recipes, filename):
 
 
 def load_recipes_from_file(filename):
-    """
-    Загружает рецепты из файла в формате JSON.
-    :param filename: Имя файла для загрузки.
-    :return: Словарь с рецептами.
-    """
+
     file_path = os.path.join(os.path.dirname(__file__), filename)
     if not os.path.exists(file_path):
         print(f"Файл '{file_path}' не существует.")
@@ -39,10 +31,7 @@ def load_recipes_from_file(filename):
 
 
 def display_recipes(recipes):
-    """
-    Выводит список рецептов и их ингредиентов.
-    :param recipes: Словарь с рецептами.
-    """
+
     if not recipes:
         print("Список рецептов пуст.")
     else:
