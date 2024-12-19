@@ -146,6 +146,38 @@ def get_task_by_id(task_id):
             status_code=500, detail=f"Ошибка при извлечении задачи")
 
 
+def handle_choice_1():
+    title = input("Введите название задачи: ").strip()
+    if title:
+        task_id = add_task(title)
+        print(f"Задача с ID {task_id} добавлена.")
+    else:
+        print("Название задачи не может быть пустым.")
+
+
+def handle_choice_2():
+    try:
+        task_id = int(
+            input("Введите ID задачи для удаления: ").strip())
+        result = delete_task(task_id)
+        print(result["message"])
+    except ValueError:
+        print("Ошибка: ID задачи должен быть числом.")
+    except HTTPException as e:
+        print(e.detail)
+
+
+def handle_choice_3():
+    tasks = list_tasks()
+    if tasks:
+        print("\nСписок задач:")
+        for task in tasks:
+            status = "Выполнена" if task.completed else "Не выполнена"
+            print(f"{task.id}. {task.title} — {status}")
+    else:
+        print("Список задач пуст.")
+
+
 def handle_choice_4():
     try:
         task_id = int(
@@ -184,33 +216,13 @@ def main():
         choice = input("Выберите действие: ").strip()
 
         if choice == "1":
-            title = input("Введите название задачи: ").strip()
-            if title:
-                task_id = add_task(title)
-                print(f"Задача с ID {task_id} добавлена.")
-            else:
-                print("Название задачи не может быть пустым.")
+            handle_choice_1()
 
         elif choice == "2":
-            try:
-                task_id = int(
-                    input("Введите ID задачи для удаления: ").strip())
-                result = delete_task(task_id)
-                print(result["message"])
-            except ValueError:
-                print("Ошибка: ID задачи должен быть числом.")
-            except HTTPException as e:
-                print(e.detail)
+            handle_choice_2()
 
         elif choice == "3":
-            tasks = list_tasks()
-            if tasks:
-                print("\nСписок задач:")
-                for task in tasks:
-                    status = "Выполнена" if task.completed else "Не выполнена"
-                    print(f"{task.id}. {task.title} — {status}")
-            else:
-                print("Список задач пуст.")
+            handle_choice_3()
 
         elif choice == "4":
             handle_choice_4()
