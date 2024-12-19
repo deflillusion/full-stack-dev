@@ -146,6 +146,29 @@ def get_task_by_id(task_id):
             status_code=500, detail=f"Ошибка при извлечении задачи")
 
 
+def handle_choice_4():
+    try:
+        task_id = int(
+            input("Введите ID задачи для обновления: ").strip())
+        new_title = input(
+            "Введите новое название задачи (или оставьте пустым): ").strip()
+        new_status_input = input(
+            "Изменить статус? (введите 'да' или 'нет'): ").strip().lower()
+
+        new_status = None
+        if new_status_input == "да":
+            status_input = input(
+                "Введите новый статус (0 — не выполнена, 1 — выполнена): ").strip()
+            new_status = status_input == "1"
+
+        result = update_task(task_id, new_title or None, new_status)
+        print(result["message"])
+    except ValueError:
+        print("Ошибка: ID задачи или статус должны быть числом.")
+    except HTTPException as e:
+        print(e.detail)
+
+
 def main():
     init_db()
     print("Добро пожаловать в систему управления списком дел!")
@@ -190,26 +213,7 @@ def main():
                 print("Список задач пуст.")
 
         elif choice == "4":
-            try:
-                task_id = int(
-                    input("Введите ID задачи для обновления: ").strip())
-                new_title = input(
-                    "Введите новое название задачи (или оставьте пустым): ").strip()
-                new_status_input = input(
-                    "Изменить статус? (введите 'да' или 'нет'): ").strip().lower()
-
-                new_status = None
-                if new_status_input == "да":
-                    status_input = input(
-                        "Введите новый статус (0 — не выполнена, 1 — выполнена): ").strip()
-                    new_status = status_input == "1"
-
-                result = update_task(task_id, new_title or None, new_status)
-                print(result["message"])
-            except ValueError:
-                print("Ошибка: ID задачи или статус должны быть числом.")
-            except HTTPException as e:
-                print(e.detail)
+            handle_choice_4()
 
         elif choice == "5":
             print("Выход из программы. До свидания!")
