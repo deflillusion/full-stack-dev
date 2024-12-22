@@ -70,14 +70,14 @@ def list_tasks():
     except sqlite3.Error as e:
         print(f"Ошибка при извлечении задач: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Ошибка при извлечении задач")
+            status_code=500, detail="Ошибка при извлечении задач")
 
 
 # Функция для обновления задачи в базе данных
 def update_task(task_id: int, new_title: str = None, new_status: bool = None):
     if new_title is None and new_status is None:
         raise HTTPException(
-            status_code=400, detail=f"Не переданы данные для обновления")
+            status_code=400, detail="Не переданы данные для обновления")
 
     try:
         with sqlite3.connect(DB_NAME) as conn:
@@ -99,7 +99,7 @@ def update_task(task_id: int, new_title: str = None, new_status: bool = None):
                 return {"message": f"Задача с ID {task_id} успешно обновлена."}
             else:
                 raise HTTPException(
-                    status_code=404, detail=f"Задача с таким ID не найдена или изменений не требуется")
+                    status_code=404, detail="Задача с таким ID не найдена или изменений не требуется")
     except sqlite3.Error as e:
         raise HTTPException(
             status_code=500, detail=f"Ошибка при обновлении задачи: {e}")
@@ -138,12 +138,44 @@ def get_task_by_id(task_id):
             else:
 
                 raise HTTPException(
-                    status_code=404, detail=f"Задача не найдена")
+                    status_code=404, detail="Задача не найдена")
 
     except sqlite3.Error as e:
         print(f"Ошибка при извлечении задачи: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Ошибка при извлечении задачи")
+            status_code=500, detail="Ошибка при извлечении задачи")
+
+
+def handle_choice_1():
+    title = input("Введите название задачи: ").strip()
+    if title:
+        task_id = add_task(title)
+        print(f"Задача с ID {task_id} добавлена.")
+    else:
+        print("Название задачи не может быть пустым.")
+
+
+def handle_choice_2():
+    try:
+        task_id = int(
+            input("Введите ID задачи для удаления: ").strip())
+        result = delete_task(task_id)
+        print(result["message"])
+    except ValueError:
+        print("Ошибка: ID задачи должен быть числом.")
+    except HTTPException as e:
+        print(e.detail)
+
+
+def handle_choice_3():
+    tasks = list_tasks()
+    if tasks:
+        print("\nСписок задач:")
+        for task in tasks:
+            status = "Выполнена" if task.completed else "Не выполнена"
+            print(f"{task.id}. {task.title} — {status}")
+    else:
+        print("Список задач пуст.")
 
 
 def handle_choice_4():
@@ -184,33 +216,13 @@ def main():
         choice = input("Выберите действие: ").strip()
 
         if choice == "1":
-            title = input("Введите название задачи: ").strip()
-            if title:
-                task_id = add_task(title)
-                print(f"Задача с ID {task_id} добавлена.")
-            else:
-                print("Название задачи не может быть пустым.")
+            handle_choice_1()
 
         elif choice == "2":
-            try:
-                task_id = int(
-                    input("Введите ID задачи для удаления: ").strip())
-                result = delete_task(task_id)
-                print(result["message"])
-            except ValueError:
-                print("Ошибка: ID задачи должен быть числом.")
-            except HTTPException as e:
-                print(e.detail)
+            handle_choice_2()
 
         elif choice == "3":
-            tasks = list_tasks()
-            if tasks:
-                print("\nСписок задач:")
-                for task in tasks:
-                    status = "Выполнена" if task.completed else "Не выполнена"
-                    print(f"{task.id}. {task.title} — {status}")
-            else:
-                print("Список задач пуст.")
+            handle_choice_3()
 
         elif choice == "4":
             handle_choice_4()
