@@ -1,0 +1,65 @@
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ ssh root@209.38.247.142
+Welcome to Ubuntu 24.10 (GNU/Linux 6.11.0-13-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun Dec 22 09:56:41 UTC 2024
+
+  System load:  0.0                Processes:             102
+  Usage of /:   18.4% of 23.10GB   Users logged in:       0
+  Memory usage: 18%                IPv4 address for eth0: 209.38.247.142
+  Swap usage:   0%                 IPv4 address for eth0: 10.19.0.8
+
+24 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+Last login: Sun Dec 22 09:50:41 2024 from 147.30.125.73
+root@erik-server:~# sudo reboot
+
+Broadcast message from root@erik-server on pts/1 (Sun 2024-12-22 09:56:51 UTC):
+
+The system will reboot now!
+
+root@erik-server:~# Connection to 209.38.247.142 closed by remote host.
+Connection to 209.38.247.142 closed.
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ ping 209.38.247.142
+PING 209.38.247.142 (209.38.247.142) 56(84) bytes of data.
+64 bytes from 209.38.247.142: icmp_seq=1 ttl=48 time=94.9 ms
+64 bytes from 209.38.247.142: icmp_seq=2 ttl=48 time=92.3 ms
+64 bytes from 209.38.247.142: icmp_seq=3 ttl=48 time=105 ms
+64 bytes from 209.38.247.142: icmp_seq=4 ttl=48 time=99.7 ms
+64 bytes from 209.38.247.142: icmp_seq=5 ttl=48 time=99.3 ms
+64 bytes from 209.38.247.142: icmp_seq=6 ttl=48 time=97.9 ms
+64 bytes from 209.38.247.142: icmp_seq=7 ttl=48 time=99.9 ms
+64 bytes from 209.38.247.142: icmp_seq=8 ttl=48 time=99.2 ms
+64 bytes from 209.38.247.142: icmp_seq=9 ttl=48 time=98.7 ms
+64 bytes from 209.38.247.142: icmp_seq=10 ttl=48 time=96.2 ms
+64 bytes from 209.38.247.142: icmp_seq=11 ttl=48 time=91.8 ms
+64 bytes from 209.38.247.142: icmp_seq=12 ttl=48 time=92.2 ms
+^C
+--- 209.38.247.142 ping statistics ---
+13 packets transmitted, 12 received, 7.69231% packet loss, time 12151ms
+rtt min/avg/max/mdev = 91.770/97.271/105.279/3.819 ms
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ ssh root@209.38.247.142
+Welcome to Ubuntu 24.10 (GNU/Linux 6.11.0-13-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun Dec 22 09:56:41 UTC 2024
+
+  System load:  0.0                Processes:             102
+  Usage of /:   18.4% of 23.10GB   Users logged in:       0
+  Memory usage: 18%                IPv4 address for eth0: 209.38.247.142
+  Swap usage:   0%                 IPv4 address for eth0: 10.19.0.8
+
+24 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+Last login: Sun Dec 22 09:56:42 2024 from 147.30.125.73
+root@erik-server:~# exit
