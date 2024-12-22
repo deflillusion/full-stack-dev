@@ -1,0 +1,110 @@
+erik@DESKTOP-GC41VCD:/mnt/c/Users/Smile$ cd ~
+erik@DESKTOP-GC41VCD:~$ ls
+full-stack-dev  snap
+erik@DESKTOP-GC41VCD:~$ cd full-stack-ev
+-bash: cd: full-stack-ev: No such file or directory
+erik@DESKTOP-GC41VCD:~$ cd full-stack-dev
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ cd dev-ops-101
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101$ chmod +x system_info.sh
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101$ ./system_info.sh > result.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101$ cat result.txt
+Текущая дата и время: Sun Dec 22 14:03:56 +05 2024
+Текущий пользователь: erik
+Количество файлов в текущей директории: 4
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101$ mkdir lesson-6
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101$ cd lesson-6
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ touch activity{1..5}.log
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ls
+activity1.log  activity2.log  activity3.log  activity4.log  activity5.log
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ sleep 120 &
+sleep 120 &
+sleep 120 &
+[1] 5855
+[2] 5856
+[3] 5857
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]   Running                 sleep 120 &
+[2]-  Running                 sleep 120 &
+[3]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ fg 5856
+-bash: fg: 5856: no such job
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]   Running                 sleep 120 &
+[2]-  Running                 sleep 120 &
+[3]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ fg
+sleep 120
+
+sleep 120
+^C
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ kill
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ kill 5856
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]-  Running                 sleep 120 &
+[2]+  Terminated              sleep 120
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ps
+    PID TTY          TIME CMD
+    175 pts/0    00:00:00 bash
+   5855 pts/0    00:00:00 sleep
+   6182 pts/0    00:00:00 ps
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]+  Running                 sleep 120 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs ps
+-bash: jobs: ps: no such job
+[1]+  Done                    sleep 120
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ps
+    PID TTY          TIME CMD
+    175 pts/0    00:00:00 bash
+   6249 pts/0    00:00:00 ps
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$  sleep 1200 &
+[1] 6352
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ sleep 1200 &
+[2] 6365
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ sleep 1200 &
+[3] 6366
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]   Running                 sleep 1200 &
+[2]-  Running                 sleep 1200 &
+[3]+  Running                 sleep 1200 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ fg
+sleep 1200
+^Z
+[3]+  Stopped                 sleep 1200
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ bg
+[3]+ sleep 1200 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]   Running                 sleep 1200 &
+[2]-  Running                 sleep 1200 &
+[3]+  Running                 sleep 1200 &
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ kill 6366
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ jobs
+[1]   Running                 sleep 1200 &
+[2]-  Running                 sleep 1200 &
+[3]+  Terminated              sleep 1200
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ps > dev-ops-101/lesson-6/process_status.txt
+-bash: dev-ops-101/lesson-6/process_status.txt: No such file or directory
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ps > process_status.txt
+erik@DESKTOP-GC41VCD:~/full-stack-dev/dev-ops-101/lesson-6$ ls
+activity1.log  activity2.log  activity3.log  activity4.log  activity5.log  process_status.txt
