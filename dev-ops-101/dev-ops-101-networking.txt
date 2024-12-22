@@ -1,0 +1,51 @@
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ ping 209.38.247.142
+PING 209.38.247.142 (209.38.247.142) 56(84) bytes of data.
+64 bytes from 209.38.247.142: icmp_seq=1 ttl=48 time=97.0 ms
+64 bytes from 209.38.247.142: icmp_seq=2 ttl=48 time=83.8 ms
+64 bytes from 209.38.247.142: icmp_seq=3 ttl=48 time=83.2 ms
+64 bytes from 209.38.247.142: icmp_seq=4 ttl=48 time=86.2 ms
+64 bytes from 209.38.247.142: icmp_seq=5 ttl=48 time=91.7 ms
+64 bytes from 209.38.247.142: icmp_seq=6 ttl=48 time=91.7 ms
+^C
+--- 209.38.247.142 ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5507ms
+rtt min/avg/max/mdev = 83.174/88.931/97.004/4.941 ms
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ curl 209.38.247.142
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ curl defl-illusion.com
+<html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+<hr><center>nginx/1.26.0 (Ubuntu)</center>
+</body>
+</html>
+erik@DESKTOP-GC41VCD:~/full-stack-dev$ nslookup defl-illusion.com
+Server:         10.255.255.254
+Address:        10.255.255.254#53
+
+Non-authoritative answer:
+Name:   defl-illusion.com
+Address: 209.38.247.142
