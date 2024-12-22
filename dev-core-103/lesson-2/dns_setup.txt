@@ -1,0 +1,30 @@
+# nslookup defl-illusion.com
+
+Server:         10.255.255.254
+Address:        10.255.255.254#53
+
+Non-authoritative answer:
+Name:   defl-illusion.com
+Address: 209.38.247.142
+
+
+# dig defl-illusion.com
+
+; <<>> DiG 9.18.28-0ubuntu0.22.04.1-Ubuntu <<>> defl-illusion.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 31034
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;defl-illusion.com.             IN      A
+
+;; ANSWER SECTION:
+defl-illusion.com.      1799    IN      A       209.38.247.142
+
+;; Query time: 293 msec
+;; SERVER: 10.255.255.254#53(10.255.255.254) (UDP)
+;; WHEN: Sun Dec 22 21:47:54 +05 2024
+;; MSG SIZE  rcvd: 62
