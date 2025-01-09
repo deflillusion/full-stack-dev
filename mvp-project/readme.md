@@ -30,31 +30,43 @@
 
 
 SQLite таблицы
-Таблица Users
-    id:
-    username:
-    password:
-    email:
-    created:
-
-Таблица Category:
-    id:
-    name:
-    transaction_type_id:
-    description:
-
-Таблица Transactions:
-    id:
-    user_id:
-    category_id:
-    amount:
-    transaction_type_id:
-    description:
-    datetime:
 
 
-Таблица transaction_type:
-    id:
-    name: (Доход, Расход, Перевод)
+```mermaid
+erDiagram
+    User {
+        int id
+        string username
+        string password
+        string email
+        datetime created
+    }
+
+    Category {
+        int id
+        string name
+        int transaction_type_id
+        string description
+    }
+
+    Transactions {
+        int id
+        int user_id
+        int category_id
+        float amount
+        int transaction_type_id
+        string description
+        datetime datetime
+    }
+
+    Transaction_type {
+        int id
+        string name
+    }
+
+    User ||--o{ Transactions : "связан с"
+    Category ||--o{ Transactions : "связана с"
+    Transaction_type ||--o{ Category : "определяет"
+    Transaction_type ||--o{ Transactions : "определяет"
 
 
