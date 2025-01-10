@@ -21,3 +21,19 @@ class TransactionUpdate(BaseModel):
     amount: Optional[float]
     description: Optional[str]
     datetime: Optional[datetime]
+
+
+class CategoryBase(BaseModel):
+    name: str
+    description: str
+
+
+class CategoryCreate(CategoryBase):
+    pass
+
+
+class Category(CategoryBase):
+    id: int
+
+    class Config:
+        orm_mode = True
