@@ -42,6 +42,14 @@ erDiagram
         datetime created
     }
 
+    Account {
+        int id
+        int user_id
+        string name
+        float balance
+        datetime created
+    }
+
     Category {
         int id
         string name
@@ -52,6 +60,7 @@ erDiagram
     Transactions {
         int id
         int user_id
+        int account_id
         int category_id
         float amount
         int transaction_type_id
@@ -64,9 +73,12 @@ erDiagram
         string name
     }
 
+    User ||--o{ Account : "имеет"
     User ||--o{ Transactions : "связан с"
+    Account ||--o{ Transactions : "участвует в"
     Category ||--o{ Transactions : "связана с"
     Transaction_type ||--o{ Category : "определяет"
     Transaction_type ||--o{ Transactions : "определяет"
+
 
 

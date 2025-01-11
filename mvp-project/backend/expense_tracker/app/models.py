@@ -24,14 +24,20 @@ class Category(Base):
 
 class Transaction(Base):
     __tablename__ = "transactions"
-
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    category_id = Column(Integer, ForeignKey("categories.id"))
-    amount = Column(Float)
-    transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    account_id = Column(Integer, ForeignKey("accounts.id"),
+                        nullable=False)  # Новое поле
+    amount = Column(Float, nullable=False)
     description = Column(String)
-    datetime = Column(DateTime)
+    transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
+    datetime = Column(DateTime, nullable=False)
+
+    user = relationship("User", back_populates="transactions")
+    category = relationship("Category", back_populates="transactions")
+    account = relationship(
+        "Account", back_populates="transactions")  # Связь с Account
 
 
 class TransactionType(Base):
@@ -39,3 +45,15 @@ class TransactionType(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+
+
+class Account(Base):
+    __tablename__ = "accounts"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    balance = Column(Float, default=0.0)
+    created_at = Column(DateTime, nullable=False)
+
+    user = relationship("User", back_populates="accounts")
+    transactions = relationship("Transaction", back_populates="account")
