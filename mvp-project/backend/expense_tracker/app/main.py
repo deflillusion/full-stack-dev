@@ -6,12 +6,17 @@ from app.models import Transaction, Category
 from app.schemas import TransactionCreate, TransactionUpdate, CategoryCreate, Category
 from typing import List
 from app.routers import accounts, transactions, categories
+from app.init_data import init_transaction_types
+
 
 # Создаем приложение
 app = FastAPI()
 
 # Инициализация базы данных
 Base.metadata.create_all(bind=engine)
+
+
+init_transaction_types()
 
 
 def get_db():

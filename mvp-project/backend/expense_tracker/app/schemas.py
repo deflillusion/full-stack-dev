@@ -6,6 +6,8 @@ from datetime import datetime
 class TransactionBase(BaseModel):
     user_id: int
     category_id: int
+    account_id: int
+    transaction_type_id: int
     amount: float
     description: Optional[str] = None
     datetime: datetime
@@ -17,6 +19,7 @@ class TransactionCreate(TransactionBase):
 
 class TransactionGet(TransactionBase):
     id: int
+    user_id: int
 
     class Config:
         from_attributes = True
@@ -49,6 +52,7 @@ class Category(CategoryBase):
 
 
 class AccountBase(BaseModel):
+    user_id: int
     name: str
     balance: Optional[float] = 0.0
 

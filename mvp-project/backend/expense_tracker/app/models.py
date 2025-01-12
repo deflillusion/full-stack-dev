@@ -18,29 +18,21 @@ class Category(Base):
 
 class Transaction(Base):
     __tablename__ = "transactions"
+    __table_args__ = {'extend_existing': True}
+
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
-    account_id = Column(Integer, ForeignKey("accounts.id"),
-                        nullable=False)  # Новое поле
-    amount = Column(Float, nullable=False)
-    description = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'))
+    amount = Column(Float)
+    description = Column(String, nullable=True)
+    datetime = Column(DateTime)
+    account_id = Column(Integer, ForeignKey('accounts.id'))
     transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
-    datetime = Column(DateTime, nullable=False)
 
+    account = relationship("Account", back_populates="transactions")
     user = relationship("User", back_populates="transactions")
     category = relationship("Category", back_populates="transactions")
-    account = relationship(
-        "Account", back_populates="transactions")  # Связь с Account
-    user = relationship("User", back_populates="transactions")
-    category = relationship("Category", back_populates="transactions")
-
-
-class TransactionType(Base):
-    __tablename__ = "transaction_types"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    transaction_type = relationship("TransactionType")
 
 
 class Account(Base):
@@ -53,7 +45,6 @@ class Account(Base):
 
     user = relationship("User", back_populates="accounts")
     transactions = relationship("Transaction", back_populates="account")
-    user = relationship("User", back_populates="accounts")
 
 
 class User(Base):
@@ -70,3 +61,11 @@ class User(Base):
     transactions = relationship("Transaction", back_populates="user")
     accounts = relationship("Account", back_populates="user")
     categories = relationship("Category", back_populates="user")
+
+
+class TransactionType(Base):
+    __tablename__ = "transaction_types"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)

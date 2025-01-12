@@ -52,6 +52,7 @@ erDiagram
 
     Category {
         int id
+        int user_id
         string name
         int transaction_type_id
         string description
