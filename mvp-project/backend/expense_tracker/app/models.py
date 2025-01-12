@@ -10,8 +10,10 @@ class Category(Base):
     name = Column(String)
     transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
     description = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'))
 
     transactions = relationship("Transaction", back_populates="category")
+    user = relationship("User", back_populates="categories")
 
 
 class Transaction(Base):
@@ -67,3 +69,4 @@ class User(Base):
 
     transactions = relationship("Transaction", back_populates="user")
     accounts = relationship("Account", back_populates="user")
+    categories = relationship("Category", back_populates="user")

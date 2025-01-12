@@ -41,9 +41,11 @@ class CategoryCreate(CategoryBase):
 
 class Category(CategoryBase):
     id: int
+    user_id: int
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 class AccountBase(BaseModel):
