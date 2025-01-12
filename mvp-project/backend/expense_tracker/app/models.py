@@ -1,16 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    password = Column(String)
-    email = Column(String, unique=True)
-    created = Column(DateTime)
 
 
 class Category(Base):
@@ -20,6 +10,8 @@ class Category(Base):
     name = Column(String)
     transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
     description = Column(String)
+
+    transactions = relationship("Transaction", back_populates="category")
 
 
 class Transaction(Base):
@@ -38,6 +30,8 @@ class Transaction(Base):
     category = relationship("Category", back_populates="transactions")
     account = relationship(
         "Account", back_populates="transactions")  # Связь с Account
+    user = relationship("User", back_populates="transactions")
+    category = relationship("Category", back_populates="transactions")
 
 
 class TransactionType(Base):
@@ -57,3 +51,19 @@ class Account(Base):
 
     user = relationship("User", back_populates="accounts")
     transactions = relationship("Transaction", back_populates="account")
+    user = relationship("User", back_populates="accounts")
+
+
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)  # Добавляем атрибут hashed_password
+    email = Column(String, unique=True)
+    created = Column(DateTime)
+    is_active = Column(Boolean, default=True)
+
+    transactions = relationship("Transaction", back_populates="user")
+    accounts = relationship("Account", back_populates="user")
