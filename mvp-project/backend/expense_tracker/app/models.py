@@ -11,9 +11,11 @@ class Category(Base):
     transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
     description = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
+    transaction_type_id = Column(Integer, ForeignKey('transaction_types.id'))
 
     transactions = relationship("Transaction", back_populates="category")
     user = relationship("User", back_populates="categories")
+    transaction_type = relationship("TransactionType")
 
 
 class Transaction(Base):

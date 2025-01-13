@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class TransactionBase(BaseModel):
-    user_id: int
+    # user_id: int
     category_id: int
     account_id: int
     transaction_type_id: int
@@ -36,13 +36,14 @@ class TransactionUpdate(BaseModel):
 class CategoryBase(BaseModel):
     name: str
     description: str
+    transaction_type_id: int
 
 
 class CategoryCreate(CategoryBase):
     pass
 
 
-class Category(CategoryBase):
+class CategoryGet(CategoryBase):
     id: int
     user_id: int
 
