@@ -7,10 +7,25 @@ from app.schemas import TransactionCreate, TransactionUpdate, CategoryCreate, Ca
 from typing import List
 from app.routers import users, accounts, transactions, categories
 from app.init_data import init_transaction_types
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Создаем приложение
 app = FastAPI()
+
+
+# Настройка CORS
+origins = [
+    "http://localhost:3000",  # Добавьте сюда адрес вашего фронтенда
+    "http://127.0.0.1:3000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Инициализация базы данных
 Base.metadata.create_all(bind=engine)
