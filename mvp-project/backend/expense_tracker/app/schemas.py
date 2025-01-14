@@ -26,7 +26,7 @@ class TransactionGet(TransactionBase):
 
 
 class TransactionUpdate(BaseModel):
-    user_id: Optional[int]
+    # user_id: Optional[int]
     category_id: Optional[int]
     amount: Optional[float]
     description: Optional[str]
@@ -53,7 +53,7 @@ class CategoryGet(CategoryBase):
 
 
 class AccountBase(BaseModel):
-    user_id: int
+    # user_id: int
     name: str
     balance: Optional[float] = 0.0
 

@@ -25,11 +25,11 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     category_id = Column(Integer, ForeignKey('categories.id'))
+    account_id = Column(Integer, ForeignKey('accounts.id'))
+    transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
     amount = Column(Float)
     description = Column(String, nullable=True)
     datetime = Column(DateTime)
-    account_id = Column(Integer, ForeignKey('accounts.id'))
-    transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
 
     account = relationship("Account", back_populates="transactions")
     user = relationship("User", back_populates="transactions")
