@@ -8,10 +8,15 @@ const Transactions = () => {
         const fetchTransactions = async () => {
             const token = localStorage.getItem('token');
             if (token) {
-                const response = await getTransactions(token);
-                setTransactions(response.data);
+                try {
+                    const response = await getTransactions(token);
+                    setTransactions(response.data);
+                } catch (error) {
+                    alert('Failed to fetch transactions');
+                }
             }
         };
+
         fetchTransactions();
     }, []);
 
@@ -20,7 +25,9 @@ const Transactions = () => {
             <h1>Transactions</h1>
             <ul>
                 {transactions.map((transaction) => (
-                    <li key={transaction.id}>{transaction.description}: {transaction.amount}</li>
+                    <li key={transaction.id}>
+                        {transaction.description} - {transaction.amount}
+                    </li>
                 ))}
             </ul>
         </div>

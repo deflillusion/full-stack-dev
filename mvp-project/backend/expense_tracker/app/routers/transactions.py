@@ -7,8 +7,7 @@ from app.schemas import TransactionGet, TransactionCreate, TransactionUpdate
 from app.auth import get_current_active_user
 
 router = APIRouter(
-    prefix="/transactions",
-    tags=["Transactions"],
+
 )
 
 
@@ -63,7 +62,7 @@ def delete_transaction(
 
 
 @router.get("/", response_model=List[TransactionGet])
-def read_transactions(
+def get_transactions(
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db),

@@ -8,10 +8,15 @@ const Categories = () => {
         const fetchCategories = async () => {
             const token = localStorage.getItem('token');
             if (token) {
-                const response = await getCategories(token);
-                setCategories(response.data);
+                try {
+                    const response = await getCategories(token);
+                    setCategories(response.data);
+                } catch (error) {
+                    alert('Failed to fetch categories');
+                }
             }
         };
+
         fetchCategories();
     }, []);
 
@@ -20,7 +25,9 @@ const Categories = () => {
             <h1>Categories</h1>
             <ul>
                 {categories.map((category) => (
-                    <li key={category.id}>{category.name}</li>
+                    <li key={category.id}>
+                        {category.name}
+                    </li>
                 ))}
             </ul>
         </div>

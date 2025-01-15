@@ -2,8 +2,8 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine, Base, get_db
-from app.models import Transaction, Category
-from app.schemas import TransactionCreate, TransactionUpdate, CategoryCreate, CategoryGet
+from app.models import Transaction, Category, Account
+from app.schemas import TransactionCreate, TransactionUpdate, CategoryCreate, CategoryGet, AccountResponse
 from typing import List
 from app.routers import users, accounts, transactions, categories
 from app.init_data import init_transaction_types

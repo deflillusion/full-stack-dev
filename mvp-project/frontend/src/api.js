@@ -28,7 +28,6 @@ export const getCategories = (token) => api.get('/categories', {
         Authorization: `Bearer ${token}`,
     },
 });
-
 export const createTransaction = (token, transactionData) => api.post('/transactions', transactionData, {
     headers: {
         Authorization: `Bearer ${token}`,
