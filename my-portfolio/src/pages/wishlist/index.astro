@@ -5,5 +5,52 @@ import Layout from "../../layouts/Layout.astro";
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout />
-<h1>Доска желаний</h1>
+<Layout>
+    <section class="text-gray-600 body-font">
+        <div
+            class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
+        >
+            <h1
+                class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+            >
+                Ноутбук Lenovo Legion
+            </h1>
+            <img
+                class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
+                alt="Lenovo Legion"
+                src="/images/Lenovo_Legion.webp"
+            />
+            <div class="text-center lg:w-2/3 w-full"></div>
+        </div>
+        <div
+            class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
+        >
+            <h1
+                class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+            >
+                Путешествия
+            </h1>
+            <img
+                class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
+                alt="Lenovo Legion"
+                src="/images/travel.webp"
+            />
+            <div class="text-center lg:w-2/3 w-full"></div>
+        </div>
+        <div
+            class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
+        >
+            <h1
+                class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+            >
+                Финансовую подушку на несколько лет
+            </h1>
+            <img
+                class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
+                alt="Lenovo Legion"
+                src="/images/money.webp"
+            />
+            <div class="text-center lg:w-2/3 w-full"></div>
+        </div>
+    </section>
+</Layout>
