@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { createTransaction } from '../api';
+import { 
+  Container, TextField, Button, Typography, Box, 
+  AppBar, Toolbar, IconButton, Card 
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const CreateTransaction = () => {
     const [categoryId, setCategoryId] = useState('');
@@ -31,48 +36,75 @@ const CreateTransaction = () => {
     };
 
     return (
-        <div>
-            <h1>Create Transaction</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Category ID"
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Account ID"
-                    value={accountId}
-                    onChange={(e) => setAccountId(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Transaction Type ID"
-                    value={transactionTypeId}
-                    onChange={(e) => setTransactionTypeId(e.target.value)}
-                />
-                <input
-                    type="number"
-                    placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <input
-                    type="datetime-local"
-                    placeholder="Datetime"
-                    value={datetime}
-                    onChange={(e) => setDatetime(e.target.value)}
-                />
-                <button type="submit">Create</button>
-            </form>
-        </div>
+        <Box sx={{ bgcolor: '#F2F2F7', minHeight: '100vh' }}>
+            <AppBar position="static" elevation={0} sx={{ bgcolor: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(20px)' }}>
+                <Toolbar>
+                    <IconButton edge="start" sx={{ color: '#007AFF' }}>
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Typography variant="h6" sx={{ color: '#000', flexGrow: 1, fontWeight: 600 }}>
+                        New Transaction
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+
+            <Container sx={{ mt: 2 }}>
+                <Card sx={{ p: 2 }}>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Amount"
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Category"
+                            value={categoryId}
+                            onChange={(e) => setCategoryId(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Account"
+                            value={accountId}
+                            onChange={(e) => setAccountId(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            type="datetime-local"
+                            label="Date and Time"
+                            value={datetime}
+                            onChange={(e) => setDatetime(e.target.value)}
+                            sx={{ mb: 2 }}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                        <Button 
+                            fullWidth 
+                            variant="contained" 
+                            type="submit"
+                            sx={{ 
+                                bgcolor: '#007AFF',
+                                height: 48,
+                                fontSize: 16,
+                            }}
+                        >
+                            Create Transaction
+                        </Button>
+                    </form>
+                </Card>
+            </Container>
+        </Box>
     );
 };
 

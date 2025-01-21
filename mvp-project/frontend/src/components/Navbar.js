@@ -1,19 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 
 const Navbar = () => {
     return (
-        <nav>
-            <ul>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/login">Login</Link></li>
-                <li><Link to="/register">Register</Link></li>
-                <li><Link to="/transactions">Transactions</Link></li>
-                <li><Link to="/accounts">Accounts</Link></li>
-                <li><Link to="/categories">Categories</Link></li>
-                <li><Link to="/create-transaction">Create Transaction</Link></li>
-            </ul>
-        </nav>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                    Expense Tracker
+                </Typography>
+                <Button color="inherit" component={Link} to="/">Home</Button>
+                <Button color="inherit" component={Link} to="/login">Login</Button>
+                <Button color="inherit" component={Link} to="/register">Register</Button>
+                <Button color="inherit" component={Link} to="/transactions">Transactions</Button>
+                <Button color="inherit" component={Link} to="/accounts">Accounts</Button>
+                <Button color="inherit" component={Link} to="/categories">Categories</Button>
+                <Button color="inherit" component={Link} to="/create-transaction">Create Transaction</Button>
+            </Toolbar>
+        </AppBar>
     );
 };
 
