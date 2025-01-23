@@ -5,8 +5,10 @@ import {
   AppBar, Toolbar, IconButton, Card 
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 const CreateTransaction = () => {
+    const navigate = useNavigate();
     const [categoryId, setCategoryId] = useState('');
     const [accountId, setAccountId] = useState('');
     const [transactionTypeId, setTransactionTypeId] = useState('');
@@ -29,6 +31,7 @@ const CreateTransaction = () => {
                 };
                 await createTransaction(token, transactionData);
                 alert('Transaction created successfully');
+                navigate('/transactions'); // Добавляем навигацию после успешного создания
             } catch (error) {
                 alert('Failed to create transaction');
             }
@@ -39,7 +42,11 @@ const CreateTransaction = () => {
         <Box sx={{ bgcolor: '#F2F2F7', minHeight: '100vh' }}>
             <AppBar position="static" elevation={0} sx={{ bgcolor: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(20px)' }}>
                 <Toolbar>
-                    <IconButton edge="start" sx={{ color: '#007AFF' }}>
+                    <IconButton 
+                        edge="start" 
+                        sx={{ color: '#007AFF' }}
+                        onClick={() => navigate(-1)}
+                    >
                         <ArrowBackIcon />
                     </IconButton>
                     <Typography variant="h6" sx={{ color: '#000', flexGrow: 1, fontWeight: 600 }}>
