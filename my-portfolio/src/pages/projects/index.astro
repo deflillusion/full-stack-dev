@@ -1,6 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
+import ProjectsCard from "../../components/Projects-Card.astro";
+const Projects = [
+    {
+        title: "Калькулятор на Python (dev-core-101)",
+        img: "/images/calc_py.jpg",
+        url: "https://github.com/deflillusion/full-stack-dev/blob/main/dev-core-101/dev-core-101-finalproject.py",
+    },
+    {
+        title: "Текущий сайт (front-end-101)",
+        img: "/images/my-website.jpg",
+        url: "https://github.com/deflillusion/full-stack-dev/blob/main/front-end-101/final_project_plan/index.html",
+    },
+];
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
@@ -10,53 +22,20 @@ import Layout from "../../layouts/Layout.astro";
         class="container mx-auto flex px-1 py-5 items-center justify-center flex-col"
     >
         <h1
-            class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+            class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900 text-center dark:text-white"
         >
             Проекты
         </h1>
     </div>
-    <section class="text-gray-600 body-font">
-        <div
-            class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
-        >
-            <img
-                class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
-                alt="calc_py"
-                src="/images/calc_py.jpg"
-            />
-            <div class="text-center lg:w-2/3 w-full">
-                <h1
-                    class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
-                >
-                    <a
-                        href="https://github.com/deflillusion/full-stack-dev/blob/main/dev-core-101/dev-core-101-finalproject.py"
-                        >Калькулятор на Python (dev-core-101)</a
-                    >
-                </h1>
-                <p class="mb-8 leading-relaxed">Калькулятор в терминале.</p>
-            </div>
-        </div>
-    </section>
-    <section class="text-gray-600 body-font">
-        <div
-            class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
-        >
-            <img
-                class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
-                alt="my-website"
-                src="/images/my-website.jpg"
-            />
-            <div class="text-center lg:w-2/3 w-full">
-                <h1
-                    class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
-                >
-                    <a
-                        href="https://github.com/deflillusion/full-stack-dev/blob/main/front-end-101/final_project_plan/index.html"
-                        >Текущий сайт (front-end-101)</a
-                    >
-                </h1>
-                <p class="mb-8 leading-relaxed">Файлы index.html.</p>
-            </div>
-        </div>
+    <div class="text-gray-600 body-font">
+        {
+            Projects.map((data) => (
+                <ProjectsCard
+                    title={data.title}
+                    url={data.url}
+                    img={data.img}
+                />
+            ))
+        }
     </section>
 </Layout>

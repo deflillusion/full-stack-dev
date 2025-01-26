@@ -1,17 +1,34 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
+import Card from "../../components/Card.astro";
+const anime = [
+    {
+        title: "Ноутбук Lenovo Legion",
+        img: "/images/Lenovo_Legion.webp",
+        url: "https://www.lenovo.com/kz/ru/p/laptops/legion-laptops/legion-pro-series/legion-pro-7i-gen-8-16-inch-intel/len101g0023/",
+    },
+    {
+        title: "Путешествия",
+        img: "/images/travel.webp",
+        url: "https://vietnam-cheap-tour.ru/blog/zolotoy-most-ruki-boga/",
+    },
+    {
+        title: "Финансовую подушку на несколько лет",
+        img: "/images/money.webp",
+        url: "https://journal.tinkoff.ru/guide/emergency-fund/",
+    },
+];
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-    <section class="text-gray-600 body-font">
+    <section class="text-gray-600 body-font dark:text-white">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-wrap w-full mb-20">
                 <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
                     <h1
-                        class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900"
+                        class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900   dark:text-white"
                     >
                         Доска желаний
                     </h1>
@@ -19,50 +36,16 @@ import Layout from "../../layouts/Layout.astro";
                 </div>
                 <p class="lg:w-1/2 w-full leading-relaxed text-gray-500"></p>
             </div>
-            <div
-                class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
-            >
-                <h1
-                    class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
-                >
-                    Ноутбук Lenovo Legion
-                </h1>
-                <img
-                    class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
-                    alt="Lenovo Legion"
-                    src="/images/Lenovo_Legion.webp"
-                />
-                <div class="text-center lg:w-2/3 w-full"></div>
-            </div>
-            <div
-                class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
-            >
-                <h1
-                    class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
-                >
-                    Путешествия
-                </h1>
-                <img
-                    class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
-                    alt="Lenovo Legion"
-                    src="/images/travel.webp"
-                />
-                <div class="text-center lg:w-2/3 w-full"></div>
-            </div>
-            <div
-                class="container mx-auto flex px-5 py-24 items-center justify-center flex-col"
-            >
-                <h1
-                    class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
-                >
-                    Финансовую подушку на несколько лет
-                </h1>
-                <img
-                    class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded"
-                    alt="Lenovo Legion"
-                    src="/images/money.webp"
-                />
-                <div class="text-center lg:w-2/3 w-full"></div>
+            <div class="flex flex-wrap -m-4">
+                {
+                    anime.map((data) => (
+                        <Card
+                            title={data.title}
+                            url={data.url}
+                            img={data.img}
+                        />
+                    ))
+                }
             </div>
         </div>
     </section>
