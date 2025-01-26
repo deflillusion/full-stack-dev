@@ -96,3 +96,11 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+
+class TransactionTypeGet(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        orm_mode = True

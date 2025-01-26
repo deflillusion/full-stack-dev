@@ -45,7 +45,7 @@ export const updateTransaction = (token, id, data) => api.put(`/transactions/${i
 export const deleteTransaction = (token, id) => api.delete(`/transactions/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 
 // Transaction Types
-export const getTransactionTypes = (token) => api.get('/transaction_types', {
+export const getTransactionTypes = (token) => api.get('/categories/transaction_types', {
     headers: { Authorization: `Bearer ${token}` }
 });
 

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.models import Category, User
-from app.schemas import CategoryCreate, CategoryGet
+from app.models import Category, User, TransactionType
+from app.schemas import CategoryCreate, CategoryGet, TransactionTypeGet
 from app.auth import get_current_active_user
 
 router = APIRouter(
@@ -45,6 +45,15 @@ def get_categories(
     categories = db.query(Category).filter(
         Category.user_id == current_user.id).offset(skip).limit(limit).all()
     return categories
+
+
+@router.get("/transaction_types", response_model=List[TransactionTypeGet])
+def get_transaction_types(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    transaction_types = db.query(TransactionType).all()
+    return transaction_types
 
 
 @router.get("/{category_id}", response_model=CategoryGet)
