@@ -17,9 +17,10 @@ const Login = () => {
         try {
             const response = await loginUser({ username, password });
             localStorage.setItem('token', response.data.access_token);
-            navigate('/'); // Редирект на главную страницу после входа
+            navigate('/');
         } catch (error) {
-            alert('Login failed');
+            console.error('Login error:', error);
+            alert(error.response?.data?.detail || 'Failed to login');
         }
     };
 

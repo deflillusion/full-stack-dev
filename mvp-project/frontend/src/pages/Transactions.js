@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getTransactions } from '../api';
+import { getTransactions, deleteTransaction } from '../api';
 import { 
   List, ListItem, ListItemText, Typography, Container, AppBar, 
   Toolbar, IconButton, Card, Box, Fab 
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
 const Transactions = () => {
@@ -38,6 +39,18 @@ const Transactions = () => {
 
   const handleBack = () => {
     navigate('/'); // Явно указываем переход на главную страницу
+  };
+
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await deleteTransaction(token, id);
+        setTransactions(transactions.filter(t => t.id !== id));
+      } catch (error) {
+        alert('Failed to delete transaction');
+      }
+    }
   };
 
   return (
@@ -80,6 +93,9 @@ const Transactions = () => {
                     </Typography>
                   }
                 />
+                <IconButton onClick={() => handleDelete(transaction.id)} color="error">
+                  <DeleteIcon />
+                </IconButton>
               </ListItem>
             ))}
           </List>

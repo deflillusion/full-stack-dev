@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getCategories } from '../api';
+import { getCategories, deleteCategory } from '../api';
 import { 
     Container, Typography, Box, Card, List, ListItem,
     ListItemText, AppBar, Toolbar, IconButton, Fab 
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
@@ -27,6 +28,22 @@ const Categories = () => {
 
         fetchCategories();
     }, []);
+
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                await deleteCategory(token, id);
+                setCategories(categories.filter(c => c.id !== id));
+            } catch (error) {
+                alert('Failed to delete category');
+            }
+        }
+    };
+
+    const handleAddCategory = () => {
+        navigate('/categories/create');
+    };
 
     return (
         <Box sx={{ bgcolor: '#F2F2F7', minHeight: '100vh' }}>
@@ -60,6 +77,9 @@ const Categories = () => {
                                         </Typography>
                                     }
                                 />
+                                <IconButton onClick={() => handleDelete(category.id)} color="error">
+                                    <DeleteIcon />
+                                </IconButton>
                             </ListItem>
                         ))}
                     </List>
@@ -68,6 +88,7 @@ const Categories = () => {
 
             <Fab 
                 color="primary"
+                onClick={handleAddCategory}
                 sx={{ 
                     position: 'fixed',
                     bottom: 16,

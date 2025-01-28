@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getAccounts } from '../api';
-import { 
+import { getAccounts, deleteAccount } from '../api';
+import {
     Container, Typography, Box, Card, List, ListItem,
-    ListItemText, AppBar, Toolbar, IconButton, Fab 
+    ListItemText, AppBar, Toolbar, IconButton, Fab
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
 const Accounts = () => {
@@ -38,9 +39,21 @@ const Accounts = () => {
         navigate('/accounts/create');
     };
 
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                await deleteAccount(token, id);
+                setAccounts(accounts.filter(a => a.id !== id));
+            } catch (error) {
+                alert('Failed to delete account');
+            }
+        }
+    };
+
     return (
         <Box sx={{ bgcolor: '#F2F2F7', minHeight: '100vh' }}>
-            <AppBar position="static" elevation={0} 
+            <AppBar position="static" elevation={0}
                 sx={{ bgcolor: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(20px)' }}>
                 <Toolbar>
                     <IconButton edge="start" sx={{ color: '#007AFF' }} onClick={() => navigate(-1)}>
@@ -66,7 +79,7 @@ const Accounts = () => {
                             </ListItem>
                         ) : (
                             accounts.map((account) => (
-                                <ListItem 
+                                <ListItem
                                     key={account.id}
                                     divider
                                     sx={{
@@ -85,6 +98,9 @@ const Accounts = () => {
                                             </Typography>
                                         }
                                     />
+                                    <IconButton onClick={() => handleDelete(account.id)} color="error">
+                                        <DeleteIcon />
+                                    </IconButton>
                                 </ListItem>
                             ))
                         )}
@@ -92,10 +108,10 @@ const Accounts = () => {
                 </Card>
             </Container>
 
-            <Fab 
+            <Fab
                 color="primary"
                 onClick={handleAddAccount}
-                sx={{ 
+                sx={{
                     position: 'fixed',
                     bottom: 16,
                     right: 16,

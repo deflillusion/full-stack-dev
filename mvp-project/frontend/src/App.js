@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Accounts from './pages/Accounts';
 import Categories from './pages/Categories';
+import CreateCategory from './pages/CreateCategory';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/create" element={<CreateCategory />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
