@@ -2,6 +2,15 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/';
 
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+interface UserData extends LoginCredentials {
+  email: string;
+}
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -10,8 +19,9 @@ const api = axios.create({
 });
 
 // Auth
-export const registerUser = (userData) => api.post('/users/register', userData);
-export const loginUser = (credentials) => {
+export const registerUser = (userData: UserData) => api.post('/users/register', userData);
+
+export const loginUser = (credentials: LoginCredentials) => {
   const formData = new FormData();
   formData.append('username', credentials.username);
   formData.append('password', credentials.password);
