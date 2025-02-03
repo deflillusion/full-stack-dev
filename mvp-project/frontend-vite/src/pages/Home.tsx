@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getTransactions } from '../api';
-import {
-    Container, Typography, Box, Card, Grid, IconButton,
-    AppBar, Toolbar, Button, Fab, List, ListItem, ListItemText
-} from '@mui/material';
-import {
-    AccountBalanceWallet,
-    Receipt,
-    Category,
-    Add
-} from '@mui/icons-material';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
-import { MenuButton } from '../components/ui/menu-button';
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
+import {
+    Wallet as WalletCards,
+    Receipt,
+    PieChart,
+    LogOut,
+    Plus
+} from "lucide-react";
+import { ScrollArea } from "../components/ui/scroll-area";
 
 interface Transaction {
     id: number;
@@ -34,19 +32,25 @@ const Home: React.FC = () => {
 
     const menuItems = [
         {
-            icon: <Receipt sx={{ fontSize: 40, color: '#007AFF' }} />,
+            icon: <Receipt className="h-6 w-6" />,
             title: "Transactions",
-            path: "/transactions"
+            path: "/transactions",
+            bgColor: "bg-blue-500/10",
+            iconColor: "text-blue-500"
         },
         {
-            icon: <AccountBalanceWallet sx={{ fontSize: 40, color: '#34C759' }} />,
+            icon: <WalletCards className="h-6 w-6" />,
             title: "Accounts",
-            path: "/accounts"
+            path: "/accounts",
+            bgColor: "bg-green-500/10",
+            iconColor: "text-green-500"
         },
         {
-            icon: <Category sx={{ fontSize: 40, color: '#FF9500' }} />,
+            icon: <PieChart className="h-6 w-6" />,
             title: "Categories",
-            path: "/categories"
+            path: "/categories",
+            bgColor: "bg-orange-500/10",
+            iconColor: "text-orange-500"
         }
     ];
 
@@ -75,99 +79,73 @@ const Home: React.FC = () => {
     }, [navigate]);
 
     return (
-        <Box sx={{ bgcolor: '#F2F2F7', minHeight: '100vh', pb: 8 }}>
-            <AppBar position="static" elevation={0}
-                sx={{ bgcolor: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(20px)' }}>
-                <Toolbar>
-                    <Typography variant="h6" sx={{ color: '#000', flexGrow: 1, fontWeight: 600 }}>
-                        Finance Tracker
-                    </Typography>
+        <div className="min-h-screen bg-gray-50">
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container flex h-14 items-center justify-between">
+                    <h1 className="font-semibold text-lg">Finance Tracker</h1>
                     <Button
-                        startIcon={<LogoutIcon />}
+                        variant="ghost"
+                        size="icon"
                         onClick={handleLogout}
-                        sx={{ color: '#FF3B30' }}
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
                     >
-                        Logout
+                        <LogOut className="h-5 w-5" />
                     </Button>
-                </Toolbar>
-            </AppBar>
+                </div>
+            </header>
 
-            <Container sx={{ mt: 4 }}>
-                <Grid container spacing={2}>
+            <main className="container py-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {menuItems.map((item) => (
-                        <Grid item xs={6} key={item.title}>
-                            <MenuButton
-                                icon={item.icon}
-                                title={item.title}
-                                onClick={() => navigate(item.path)}
-                            />
-                        </Grid>
+                        <Card
+                            key={item.title}
+                            className="p-4 cursor-pointer hover:shadow-lg transition-all"
+                            onClick={() => navigate(item.path)}
+                        >
+                            <div className={`${item.bgColor} ${item.iconColor} p-3 rounded-lg w-fit`}>
+                                {item.icon}
+                            </div>
+                            <h3 className="mt-3 font-medium text-sm">{item.title}</h3>
+                        </Card>
                     ))}
-                </Grid>
+                </div>
 
-                <Card sx={{ mt: 3 }}>
-                    <List>
-                        <ListItem sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
-                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                Recent Transactions
-                            </Typography>
-                        </ListItem>
+                <Card className="mt-6">
+                    <div className="p-4 border-b">
+                        <h2 className="font-semibold">Recent Transactions</h2>
+                    </div>
+                    <ScrollArea className="h-[400px]">
                         {recentTransactions.map((transaction) => (
-                            <ListItem
+                            <div
                                 key={transaction.id}
-                                divider
-                                sx={{
-                                    '&:last-child': { borderBottom: 'none' },
-                                }}
+                                className="flex items-center justify-between p-4 border-b last:border-0 hover:bg-gray-50"
                             >
-                                <ListItemText
-                                    primary={
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                                            {transaction.description}
-                                        </Typography>
-                                    }
-                                    secondary={
-                                        <Typography variant="body2"
-                                            sx={{ color: transaction.amount > 0 ? '#34C759' : '#FF3B30' }}
-                                        >
-                                            {transaction.amount > 0 ? '+' : ''}{transaction.amount}
-                                        </Typography>
-                                    }
-                                />
-                            </ListItem>
+                                <div>
+                                    <p className="font-medium">{transaction.description}</p>
+                                    <time className="text-sm text-gray-500">
+                                        {new Date(transaction.datetime).toLocaleDateString()}
+                                    </time>
+                                </div>
+                                <span className={`font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                                    }`}>
+                                    {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                                </span>
+                            </div>
                         ))}
-                    </List>
+                    </ScrollArea>
                 </Card>
-            </Container>
+            </main>
 
-            <Box sx={{
-                position: 'fixed',
-                bottom: 16,
-                right: 16,
-                display: 'flex',
-                gap: 2
-            }}>
-                <Fab
-                    color="primary"
-                    onClick={() => navigate('/transactions')}
-                    variant="extended"
-                    sx={{
-                        bgcolor: '#007AFF',
-                        mr: 1
-                    }}
-                >
-                    <Receipt sx={{ mr: 1 }} />
-                    All Transactions
-                </Fab>
-                <Fab
-                    color="primary"
+            <div className="fixed bottom-6 right-6 flex gap-2">
+                <Button
+                    size="lg"
                     onClick={() => navigate('/create-transaction')}
-                    sx={{ bgcolor: '#007AFF' }}
+                    className="shadow-lg"
                 >
-                    <Add />
-                </Fab>
-            </Box>
-        </Box>
+                    <Plus className="mr-2 h-4 w-4" /> New Transaction
+                </Button>
+            </div>
+        </div>
     );
 };
 
