@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    color: rgb(0, 255, 98);
+    font-size: 24px;
+    text-align: center;
+    margin-top: 0;
+}
+
+h2 {
+    color: rgb(255, 0, 166);
+    font-size: 20px;
+    text-align: center;
+}
+
+.main-header {
+    color: rgb(255, 0, 166);
+    font-size: 20px;
+    text-align: center;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(255, 166, 166);
+    padding: 20px;
+    border: 2px solid navy;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+.header-container ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.header-container li {
+    margin-right: 20px
+}
+
+div {
+    background-color: lightblue;
+    position: relative;
+    color: darkblue;
+    padding: 20px;
+    border: 2px solid navy;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas: 
+        "nav main"
+        "nav main"
+        "nav footer";
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    margin: 0;
+}
+
+header {
+    grid-area: header;
+}
+
+nav {
+    grid-area: nav;
+}
+
+main {
+    grid-area: main;
+    padding: 20px;
+    margin-left: 250px; /* Добавляем отступ равный ширине меню */
+}
+
+footer {
+    grid-area: footer;
+    margin-left: 250px; /* Добавляем отступ и для footer */
+}
+
+.side-menu {
+    grid-area: nav;
+    background-color: rgb(255, 166, 166);
+    padding: 20px;
+    border-right: 1px solid #000;
+    height: 100vh;
+    position: fixed;
+    width: 250px;
+    box-sizing: border-box;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.side-menu li {
+    margin-bottom: 15px;
+}
+
+.grid-item {
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+    padding: 20px;
+}
+
+.greed-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    margin: 0;
+    gap: 20px;
+}
