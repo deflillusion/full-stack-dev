@@ -60,7 +60,7 @@ div {
 
 .grid-container {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         "nav main"
         "nav main"
         "nav footer";
@@ -81,12 +81,14 @@ nav {
 main {
     grid-area: main;
     padding: 20px;
-    margin-left: 250px; /* Добавляем отступ равный ширине меню */
+    margin-left: 250px;
+    /* Добавляем отступ равный ширине меню */
 }
 
 footer {
     grid-area: footer;
-    margin-left: 250px; /* Добавляем отступ и для footer */
+    margin-left: 250px;
+    /* Добавляем отступ и для footer */
 }
 
 .side-menu {
