@@ -1,35 +1,17 @@
-import { LoginForm } from "./components/login-form"
-import { ThemeProvider } from "@/components/theme-provider"
+"use client"
+
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { TransactionForm } from "@/components/TransactionForm"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TransactionList } from "@/components/TransactionList"
 import { TransactionChart } from "@/components/TransactionChart"
+import { TabNavigation } from "@/components/TabNavigation"
+import { TransactionDrawer } from "@/components/TransactionDrawer"
 import type { Transaction } from "@/types/transaction"
 import { saveTransactions, getTransactions } from "@/utils/localStorage"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-// export default function Home() {
-//   return (
-
-
-
-//     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-//       <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//         <LoginForm />
-//       </div>
-//     </ThemeProvider>
-
-
-//   )
-// }
 
 export default function ExpenseTracker() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
-  const [filter, setFilter] = useState({ type: "all", category: "all", startDate: "", endDate: "" })
+  const [activeTab, setActiveTab] = useState("overview")
 
   useEffect(() => {
     setTransactions(getTransactions())
@@ -45,122 +27,51 @@ export default function ExpenseTracker() {
 
   const updateTransaction = (updatedTransaction: Transaction) => {
     setTransactions(transactions.map((t) => (t.id === updatedTransaction.id ? updatedTransaction : t)))
-    setEditingTransaction(null)
   }
 
   const deleteTransaction = (id: number) => {
     setTransactions(transactions.filter((t) => t.id !== id))
   }
 
-  const filteredTransactions = transactions.filter(
-    (t) =>
-      (filter.type === "all" || t.type === filter.type) &&
-      (filter.category === "all" || t.category === filter.category) &&
-      (!filter.startDate || t.date >= filter.startDate) &&
-      (!filter.endDate || t.date <= filter.endDate),
-  )
-
-  const balance = filteredTransactions.reduce((acc, t) => {
+  const balance = transactions.reduce((acc, t) => {
     if (t.type === "income") return acc + t.amount
     if (t.type === "expense") return acc - t.amount
     return acc // для переводов баланс не меняется
   }, 0)
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 pb-20">
       <h1 className="text-3xl font-bold mb-4">Учет расходов и доходов</h1>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>{editingTransaction ? "Редактировать транзакцию" : "Добавить новую транзакцию"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TransactionForm
-            onSubmit={editingTransaction ? updateTransaction : addTransaction}
-            initialData={editingTransaction || undefined}
-          />
-        </CardContent>
-      </Card>
+      <TabNavigation onTabChange={setActiveTab} />
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Фильтры</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="type-filter">Тип</Label>
-            <Select value={filter.type} onValueChange={(value) => setFilter({ ...filter, type: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите тип" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все</SelectItem>
-                <SelectItem value="income">Доходы</SelectItem>
-                <SelectItem value="expense">Расходы</SelectItem>
-                <SelectItem value="transfer">Переводы</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="category-filter">Категория</Label>
-            <Select value={filter.category} onValueChange={(value) => setFilter({ ...filter, category: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите категорию" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все</SelectItem>
-                <SelectItem value="food">Еда</SelectItem>
-                <SelectItem value="transport">Транспорт</SelectItem>
-                <SelectItem value="entertainment">Развлечения</SelectItem>
-                <SelectItem value="utilities">Коммунальные услуги</SelectItem>
-                <SelectItem value="salary">Зарплата</SelectItem>
-                <SelectItem value="other">Другое</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="start-date">Начальная дата</Label>
-            <Input
-              id="start-date"
-              type="date"
-              value={filter.startDate}
-              onChange={(e) => setFilter({ ...filter, startDate: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="end-date">Конечная дата</Label>
-            <Input
-              id="end-date"
-              type="date"
-              value={filter.endDate}
-              onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mt-4">
+        {activeTab === "overview" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Баланс: {balance.toFixed(2)}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TransactionChart transactions={transactions} />
+            </CardContent>
+          </Card>
+        )}
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Баланс: {balance.toFixed(2)}</CardTitle>
-          <CardDescription>График доходов и расходов</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TransactionChart transactions={filteredTransactions} />
-        </CardContent>
-      </Card>
+        {activeTab === "transactions" && (
+          <TransactionList transactions={transactions} onEdit={updateTransaction} onDelete={deleteTransaction} />
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Список транзакций</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TransactionList
-            transactions={filteredTransactions}
-            onEdit={setEditingTransaction}
-            onDelete={deleteTransaction}
-          />
-        </CardContent>
-      </Card>
+        {activeTab === "chart" && (
+          <Card>
+            <CardContent>
+              <TransactionChart transactions={transactions} />
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <TransactionDrawer onSubmit={addTransaction} />
     </div>
   )
 }
+

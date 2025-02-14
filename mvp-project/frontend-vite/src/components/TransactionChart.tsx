@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-import type { Transaction } from "@/types/transaction"
+import type { Transaction } from "../types/transaction"
 import dayjs from "dayjs"
 
 interface TransactionChartProps {
