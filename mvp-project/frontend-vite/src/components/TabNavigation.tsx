@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Home, List, BarChart } from "lucide-react"
+import { Home, List, BarChart, Settings } from "lucide-react"
 
 interface TabNavigationProps {
   onTabChange: (tab: string) => void
@@ -40,6 +40,14 @@ export function TabNavigation({ onTabChange }: TabNavigationProps) {
       >
         <BarChart size={24} />
         <span className="text-xs mt-1">График</span>
+      </button>
+      <button
+        onClick={() => handleTabChange("settings")}
+        className={`flex flex-col items-center justify-center w-full h-full ${activeTab === "settings" ? "text-primary" : "text-gray-500"
+          }`}
+      >
+        <Settings size={24} />
+        <span className="text-xs mt-1">Настройки</span>
       </button>
     </div>
   )

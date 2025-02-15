@@ -8,7 +8,10 @@ import { CategoryPieChart } from "@/components/CategoryPieChart"
 import { AccountSelector } from "@/components/AccountSelector"
 import { TabNavigation } from "@/components/TabNavigation"
 import { TransactionDrawer } from "@/components/TransactionDrawer"
-import type { Transaction } from "@/types/transaction"
+import { MonthSelector } from "@/components/MonthSelector"
+import { SettingsPage } from "@/components/SettingsPage"
+import { Badge } from "@/components/ui/badge"
+import type { Transaction, TransactionCategory } from "@/types/transaction"
 import { saveTransactions, getTransactions } from "@/utils/localStorage"
 import dayjs from "dayjs"
 
@@ -16,14 +19,40 @@ export default function ExpenseTracker() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [activeTab, setActiveTab] = useState("overview")
   const [selectedAccount, setSelectedAccount] = useState("Все счета")
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"))
+  const [categories, setCategories] = useState<TransactionCategory[]>([
+    "food",
+    "transport",
+    "entertainment",
+    "utilities",
+    "salary",
+    "other",
+  ])
+  const [accounts, setAccounts] = useState<string[]>(["Основной счет"])
 
   useEffect(() => {
     setTransactions(getTransactions())
+    const savedCategories = localStorage.getItem("categories")
+    if (savedCategories) {
+      setCategories(JSON.parse(savedCategories))
+    }
+    const savedAccounts = localStorage.getItem("accounts")
+    if (savedAccounts) {
+      setAccounts(JSON.parse(savedAccounts))
+    }
   }, [])
 
   useEffect(() => {
     saveTransactions(transactions)
   }, [transactions])
+
+  useEffect(() => {
+    localStorage.setItem("categories", JSON.stringify(categories))
+  }, [categories])
+
+  useEffect(() => {
+    localStorage.setItem("accounts", JSON.stringify(accounts))
+  }, [accounts])
 
   const addTransaction = (newTransaction: Omit<Transaction, "id">) => {
     setTransactions([...transactions, { ...newTransaction, id: Date.now() }])
@@ -38,7 +67,6 @@ export default function ExpenseTracker() {
   }
 
   const filteredTransactions = useMemo(() => {
-    const currentMonth = dayjs().format("YYYY-MM")
     return transactions
       .filter(
         (t) => (selectedAccount === "Все счета" || t.toAccount === selectedAccount) && t.date.startsWith(currentMonth),
@@ -48,12 +76,7 @@ export default function ExpenseTracker() {
         const dateTimeB = dayjs(`${b.date} ${b.time}`)
         return dateTimeB.valueOf() - dateTimeA.valueOf() // Сортировка по убыванию (новые сверху)
       })
-  }, [transactions, selectedAccount])
-
-  const accounts = useMemo(() => {
-    const accountSet = new Set(transactions.map((t) => t.toAccount).filter(Boolean))
-    return ["Все счета", ...Array.from(accountSet)]
-  }, [transactions])
+  }, [transactions, selectedAccount, currentMonth])
 
   const balance = filteredTransactions.reduce((acc, t) => {
     if (t.type === "income") return acc + t.amount
@@ -87,12 +110,85 @@ export default function ExpenseTracker() {
     }, 0)
   }, [filteredTransactions])
 
+  const getTransactionTypeLabel = (type: Transaction["type"]) => {
+    switch (type) {
+      case "income":
+        return "Доход"
+      case "expense":
+        return "Расход"
+      case "transfer":
+        return "Перевод"
+      default:
+        return "Неизвестно"
+    }
+  }
+
+  const getTransactionTypeBadgeVariant = (type: Transaction["type"]) => {
+    switch (type) {
+      case "income":
+        return "success"
+      case "expense":
+        return "destructive"
+      case "transfer":
+        return "secondary"
+      default:
+        return "default"
+    }
+  }
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(dayjs(currentMonth).subtract(1, "month").format("YYYY-MM"))
+  }
+
+  const handleNextMonth = () => {
+    setCurrentMonth(dayjs(currentMonth).add(1, "month").format("YYYY-MM"))
+  }
+
+  const handleAddCategory = (newCategory: string) => {
+    setCategories([...categories, newCategory as TransactionCategory])
+  }
+
+  const handleEditCategory = (oldCategory: string, newCategory: string) => {
+    setCategories(categories.map((c) => (c === oldCategory ? (newCategory as TransactionCategory) : c)))
+    setTransactions(
+      transactions.map((t) =>
+        t.category === oldCategory ? { ...t, category: newCategory as TransactionCategory } : t,
+      ),
+    )
+  }
+
+  const handleDeleteCategory = (categoryToDelete: string) => {
+    setCategories(categories.filter((c) => c !== categoryToDelete))
+    setTransactions(transactions.map((t) => (t.category === categoryToDelete ? { ...t, category: "other" } : t)))
+  }
+
+  const handleAddAccount = (newAccount: string) => {
+    setAccounts([...accounts, newAccount])
+  }
+
+  const handleEditAccount = (oldAccount: string, newAccount: string) => {
+    setAccounts(accounts.map((a) => (a === oldAccount ? newAccount : a)))
+    setTransactions(transactions.map((t) => (t.toAccount === oldAccount ? { ...t, toAccount: newAccount } : t)))
+  }
+
+  const handleDeleteAccount = (accountToDelete: string) => {
+    setAccounts(accounts.filter((a) => a !== accountToDelete))
+    setTransactions(
+      transactions.map((t) => (t.toAccount === accountToDelete ? { ...t, toAccount: "Основной счет" } : t)),
+    )
+  }
+
   return (
     <div className="container mx-auto p-4 pb-20">
       <h1 className="text-3xl font-bold mb-4">Учет расходов и доходов</h1>
 
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between items-center">
         <AccountSelector accounts={accounts} selectedAccount={selectedAccount} onSelectAccount={setSelectedAccount} />
+        <MonthSelector
+          currentMonth={currentMonth}
+          onPreviousMonth={handlePreviousMonth}
+          onNextMonth={handleNextMonth}
+        />
       </div>
 
       <div className="mb-16">
@@ -100,7 +196,7 @@ export default function ExpenseTracker() {
           <>
             <Card className="mb-4">
               <CardHeader>
-                <CardTitle>Финансовый обзор за {dayjs().format("MMMM YYYY")}</CardTitle>
+                <CardTitle>Финансовый обзор за {dayjs(currentMonth).format("MMMM YYYY")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -111,11 +207,15 @@ export default function ExpenseTracker() {
                     </p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-lg font-semibold">Доходы</h3>
+                    <h3 className="text-lg font-semibold">
+                      <Badge variant="success">Доходы</Badge>
+                    </h3>
                     <p className="text-2xl text-green-600">{totalIncome.toFixed(2)}</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-lg font-semibold">Расходы</h3>
+                    <h3 className="text-lg font-semibold">
+                      <Badge variant="destructive">Расходы</Badge>
+                    </h3>
                     <p className="text-2xl text-red-600">{totalExpenses.toFixed(2)}</p>
                   </div>
                 </div>
@@ -157,6 +257,19 @@ export default function ExpenseTracker() {
               <TransactionChart transactions={filteredTransactions} />
             </CardContent>
           </Card>
+        )}
+
+        {activeTab === "settings" && (
+          <SettingsPage
+            categories={categories}
+            accounts={accounts}
+            onAddCategory={handleAddCategory}
+            onEditCategory={handleEditCategory}
+            onDeleteCategory={handleDeleteCategory}
+            onAddAccount={handleAddAccount}
+            onEditAccount={handleEditAccount}
+            onDeleteAccount={handleDeleteAccount}
+          />
         )}
       </div>
 
