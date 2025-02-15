@@ -31,7 +31,7 @@ export function TransactionList({ transactions, onEdit, onDelete }: TransactionL
                         </span>
                     </div>
                     <div className="text-sm text-gray-500 mb-2">
-                        {dayjs(transaction.date).format("DD.MM.YYYY")} • {transaction.category}
+                        {dayjs(`${transaction.date} ${transaction.time}`).format("DD.MM.YYYY HH:mm")} • {transaction.category}
                     </div>
                     <div className="flex justify-end space-x-2">
                         <Button variant="outline" size="sm" onClick={() => onEdit(transaction)}>

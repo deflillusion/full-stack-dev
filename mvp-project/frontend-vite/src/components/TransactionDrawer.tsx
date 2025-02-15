@@ -22,7 +22,7 @@ export function TransactionDrawer({ onSubmit }: TransactionDrawerProps) {
     return (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
-                <Button className="fixed bottom-4 right-4 rounded-full p-0 w-14 h-14">
+                <Button className="fixed bottom-20 right-4 rounded-full p-0 w-14 h-14 shadow-lg">
                     <Plus className="h-6 w-6" />
                 </Button>
             </DrawerTrigger>

@@ -9,5 +9,7 @@ export interface Transaction {
     type: TransactionType
     category: TransactionCategory
     date: string
+    time: string
+    toAccount?: string
 }
 

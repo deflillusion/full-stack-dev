@@ -1,14 +1,12 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Transaction, TransactionType } from "../types/transaction"
-import type { Account } from "../types/account"
-import type { Category } from "../types/category"
+import type { Transaction, TransactionType, TransactionCategory } from "../types/transaction"
 import dayjs from "dayjs"
 
 interface TransactionFormProps {
@@ -20,23 +18,10 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
     const [description, setDescription] = useState(initialData?.description || "")
     const [amount, setAmount] = useState(initialData?.amount.toString() || "")
     const [type, setType] = useState<TransactionType>(initialData?.type || "expense")
-    const [category, setCategory] = useState(initialData?.category || "")
+    const [category, setCategory] = useState<TransactionCategory>(initialData?.category || "other")
     const [date, setDate] = useState(initialData?.date || dayjs().format("YYYY-MM-DD"))
-    const [fromAccount, setFromAccount] = useState(initialData?.fromAccount || "")
+    const [time, setTime] = useState(initialData?.time || dayjs().format("HH:mm"))
     const [toAccount, setToAccount] = useState(initialData?.toAccount || "")
-    const [accounts, setAccounts] = useState<Account[]>([])
-    const [categories, setCategories] = useState<Category[]>([])
-
-    useEffect(() => {
-        const savedAccounts = localStorage.getItem("accounts")
-        const savedCategories = localStorage.getItem("categories")
-        if (savedAccounts) {
-            setAccounts(JSON.parse(savedAccounts))
-        }
-        if (savedCategories) {
-            setCategories(JSON.parse(savedCategories))
-        }
-    }, [])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -46,21 +31,19 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             type,
             category,
             date,
-            fromAccount,
+            time,
             toAccount: type === "transfer" ? toAccount : undefined,
         })
         if (!initialData) {
             setDescription("")
             setAmount("")
             setType("expense")
-            setCategory("")
+            setCategory("other")
             setDate(dayjs().format("YYYY-MM-DD"))
-            setFromAccount("")
+            setTime(dayjs().format("HH:mm"))
             setToAccount("")
         }
     }
-
-    const filteredCategories = categories.filter((cat) => cat.type === "both" || cat.type === type)
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,54 +75,40 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             </div>
             <div>
                 <Label htmlFor="category">Категория</Label>
-                <Select value={category} onValueChange={setCategory}>
+                <Select value={category} onValueChange={(value) => setCategory(value as TransactionCategory)}>
                     <SelectTrigger>
                         <SelectValue placeholder="Выберите категорию" />
                     </SelectTrigger>
                     <SelectContent>
-                        {filteredCategories.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id}>
-                                {cat.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-            <div>
-                <Label htmlFor="fromAccount">Счет списания</Label>
-                <Select value={fromAccount} onValueChange={setFromAccount}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Выберите счет" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {accounts.map((account) => (
-                            <SelectItem key={account.id} value={account.id}>
-                                {account.name}
-                            </SelectItem>
-                        ))}
+                        <SelectItem value="food">Еда</SelectItem>
+                        <SelectItem value="transport">Транспорт</SelectItem>
+                        <SelectItem value="entertainment">Развлечения</SelectItem>
+                        <SelectItem value="utilities">Коммунальные услуги</SelectItem>
+                        <SelectItem value="salary">Зарплата</SelectItem>
+                        <SelectItem value="other">Другое</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
             {type === "transfer" && (
                 <div>
                     <Label htmlFor="toAccount">Счет назначения</Label>
-                    <Select value={toAccount} onValueChange={setToAccount}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Выберите счет" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {accounts.map((account) => (
-                                <SelectItem key={account.id} value={account.id}>
-                                    {account.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Input
+                        id="toAccount"
+                        value={toAccount}
+                        onChange={(e) => setToAccount(e.target.value)}
+                        required={type === "transfer"}
+                    />
                 </div>
             )}
-            <div>
-                <Label htmlFor="date">Дата</Label>
-                <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+            <div className="flex space-x-4">
+                <div className="flex-1">
+                    <Label htmlFor="date">Дата</Label>
+                    <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                </div>
+                <div className="flex-1">
+                    <Label htmlFor="time">Время</Label>
+                    <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
+                </div>
             </div>
             <Button type="submit">{initialData ? "Обновить" : "Добавить"} транзакцию</Button>
         </form>
