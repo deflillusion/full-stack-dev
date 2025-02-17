@@ -6,8 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { CalendarIcon, Clock } from "lucide-react"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 import type { Transaction, TransactionType, TransactionCategory } from "../types/transaction"
 import dayjs from "dayjs"
+import { TimePicker } from "./TimePicker"
 
 interface TransactionFormProps {
     onSubmit: (transaction: Omit<Transaction, "id">) => void
@@ -19,9 +25,11 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
     const [amount, setAmount] = useState(initialData?.amount.toString() || "")
     const [type, setType] = useState<TransactionType>(initialData?.type || "expense")
     const [category, setCategory] = useState<TransactionCategory>(initialData?.category || "other")
-    const [date, setDate] = useState(initialData?.date || dayjs().format("YYYY-MM-DD"))
+    const [date, setDate] = useState<Date | undefined>(initialData?.date ? new Date(initialData.date) : new Date())
     const [time, setTime] = useState(initialData?.time || dayjs().format("HH:mm"))
     const [toAccount, setToAccount] = useState(initialData?.toAccount || "")
+    const [isDateOpen, setIsDateOpen] = useState(false)
+    const [isTimeOpen, setIsTimeOpen] = useState(false)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -30,7 +38,7 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             amount: Number.parseFloat(amount),
             type,
             category,
-            date,
+            date: date ? format(date, "yyyy-MM-dd") : dayjs().format("YYYY-MM-DD"),
             time,
             toAccount: type === "transfer" ? toAccount : undefined,
         })
@@ -39,10 +47,19 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             setAmount("")
             setType("expense")
             setCategory("other")
-            setDate(dayjs().format("YYYY-MM-DD"))
+            setDate(new Date())
             setTime(dayjs().format("HH:mm"))
             setToAccount("")
         }
+    }
+
+    const handleDateSelect = (newDate: Date | undefined) => {
+        setDate(newDate)
+        setIsDateOpen(false)
+    }
+
+    const handleTimeSelect = (newTime: string) => {
+        setTime(newTime)
     }
 
     return (
@@ -103,11 +120,39 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             <div className="flex space-x-4">
                 <div className="flex-1">
                     <Label htmlFor="date">Дата</Label>
-                    <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                    <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                type="button"
+                                variant={"outline"}
+                                className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? format(date, "PPP") : <span>Выберите дату</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
+                        </PopoverContent>
+                    </Popover>
                 </div>
                 <div className="flex-1">
                     <Label htmlFor="time">Время</Label>
-                    <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
+                    <Popover open={isTimeOpen} onOpenChange={setIsTimeOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                type="button"
+                                variant={"outline"}
+                                className={cn("w-full justify-start text-left font-normal", !time && "text-muted-foreground")}
+                            >
+                                <Clock className="mr-2 h-4 w-4" />
+                                {time || <span>Выберите время</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                            <TimePicker value={time} onChange={handleTimeSelect} onClose={() => setIsTimeOpen(false)} />
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
             <Button type="submit">{initialData ? "Обновить" : "Добавить"} транзакцию</Button>
