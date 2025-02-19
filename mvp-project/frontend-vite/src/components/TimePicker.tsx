@@ -27,23 +27,23 @@ export function TimePicker({ value, onChange, onClose }: TimePickerProps) {
 
     const renderClockFace = () => {
         const items = mode === "hour" ? [...Array(24).keys()] : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
-        const radius = 140
-        const innerRadius = 100
+        const radius = 110
+        const innerRadius = 80
         const angleStep = (2 * Math.PI) / 12
 
         return (
-            <div className="relative w-[300px] h-[300px]">
+            <div className="relative w-[240px] h-[240px]">
                 {items.map((item, index) => {
                     const isInnerCircle = mode === "hour" && index < 12
                     const currentRadius = isInnerCircle ? innerRadius : radius
                     const angle = (index % 12) * angleStep - Math.PI / 2
-                    const x = currentRadius * Math.cos(angle) + 150
-                    const y = currentRadius * Math.sin(angle) + 150
+                    const x = currentRadius * Math.cos(angle) + 120
+                    const y = currentRadius * Math.sin(angle) + 120
 
                     return (
                         <Button
                             key={item}
-                            className={`absolute w-8 h-8 p-0 rounded-full ${isInnerCircle ? "text-sm" : ""}`}
+                            className={`absolute w-6 h-6 p-0 rounded-full ${isInnerCircle ? "text-xs" : "text-sm"}`}
                             style={{ left: `${x}px`, top: `${y}px`, transform: "translate(-50%, -50%)" }}
                             onClick={() => (mode === "hour" ? handleHourClick(item) : handleMinuteClick(item))}
                             variant={
@@ -66,15 +66,15 @@ export function TimePicker({ value, onChange, onClose }: TimePickerProps) {
 
     return (
         <div className="flex flex-col items-center p-4 bg-background rounded-lg shadow-lg">
-            <div className="text-2xl mb-4">
+            <div className="text-xl mb-4">
                 {selectedHour.toString().padStart(2, "0")}:{selectedMinute.toString().padStart(2, "0")}
             </div>
             {renderClockFace()}
-            <div className="mt-4">
-                <Button onClick={() => setMode("hour")} variant={mode === "hour" ? "default" : "outline"}>
+            <div className="mt-2 space-x-2">
+                <Button size="sm" onClick={() => setMode("hour")} variant={mode === "hour" ? "default" : "outline"}>
                     Часы
                 </Button>
-                <Button onClick={() => setMode("minute")} variant={mode === "minute" ? "default" : "outline"}>
+                <Button size="sm" onClick={() => setMode("minute")} variant={mode === "minute" ? "default" : "outline"}>
                     Минуты
                 </Button>
             </div>

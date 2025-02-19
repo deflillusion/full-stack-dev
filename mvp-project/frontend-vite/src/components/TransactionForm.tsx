@@ -18,9 +18,11 @@ import { TimePicker } from "./TimePicker"
 interface TransactionFormProps {
     onSubmit: (transaction: Omit<Transaction, "id">) => void
     initialData?: Transaction
+    accounts: string[]
 }
 
-export function TransactionForm({ onSubmit, initialData }: TransactionFormProps) {
+export function TransactionForm({ onSubmit, initialData, accounts }: TransactionFormProps) {
+    const [account, setAccount] = useState(initialData?.toAccount || (accounts && accounts.length > 0 ? accounts[0] : ""))
     const [description, setDescription] = useState(initialData?.description || "")
     const [amount, setAmount] = useState(initialData?.amount.toString() || "")
     const [type, setType] = useState<TransactionType>(initialData?.type || "expense")
@@ -40,7 +42,7 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             category,
             date: date ? format(date, "yyyy-MM-dd") : dayjs().format("YYYY-MM-DD"),
             time,
-            toAccount: type === "transfer" ? toAccount : undefined,
+            toAccount: type === "transfer" ? toAccount : account,
         })
         if (!initialData) {
             setDescription("")
@@ -64,6 +66,25 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <Label htmlFor="account">Счет</Label>
+                <Select value={account} onValueChange={setAccount}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Выберите счет" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {accounts && accounts.length > 0 ? (
+                            accounts.map((acc) => (
+                                <SelectItem key={acc} value={acc}>
+                                    {acc}
+                                </SelectItem>
+                            ))
+                        ) : (
+                            <SelectItem value="no-accounts">No accounts available</SelectItem>
+                        )}
+                    </SelectContent>
+                </Select>
+            </div>
             <div>
                 <Label htmlFor="description">Описание</Label>
                 <Input id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
@@ -109,12 +130,24 @@ export function TransactionForm({ onSubmit, initialData }: TransactionFormProps)
             {type === "transfer" && (
                 <div>
                     <Label htmlFor="toAccount">Счет назначения</Label>
-                    <Input
-                        id="toAccount"
-                        value={toAccount}
-                        onChange={(e) => setToAccount(e.target.value)}
-                        required={type === "transfer"}
-                    />
+                    <Select value={toAccount} onValueChange={setToAccount}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Выберите счет назначения" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {accounts && accounts.length > 0 ? (
+                                accounts
+                                    .filter((acc) => acc !== account)
+                                    .map((acc) => (
+                                        <SelectItem key={acc} value={acc}>
+                                            {acc}
+                                        </SelectItem>
+                                    ))
+                            ) : (
+                                <SelectItem value="no-other-accounts">No other accounts available</SelectItem>
+                            )}
+                        </SelectContent>
+                    </Select>
                 </div>
             )}
             <div className="flex space-x-4">

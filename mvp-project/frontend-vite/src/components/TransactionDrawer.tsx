@@ -9,9 +9,10 @@ import { Plus } from "lucide-react"
 
 interface TransactionDrawerProps {
     onSubmit: (transaction: Omit<Transaction, "id">) => void
+    accounts: string[]
 }
 
-export function TransactionDrawer({ onSubmit }: TransactionDrawerProps) {
+export function TransactionDrawer({ onSubmit, accounts }: TransactionDrawerProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const handleSubmit = (transaction: Omit<Transaction, "id">) => {
@@ -31,7 +32,7 @@ export function TransactionDrawer({ onSubmit }: TransactionDrawerProps) {
                     <DrawerTitle>Добавить транзакцию</DrawerTitle>
                 </DrawerHeader>
                 <div className="p-4 pb-0">
-                    <TransactionForm onSubmit={handleSubmit} />
+                    <TransactionForm onSubmit={handleSubmit} accounts={accounts} />
                 </div>
             </DrawerContent>
         </Drawer>

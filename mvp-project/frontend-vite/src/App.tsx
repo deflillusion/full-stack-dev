@@ -231,12 +231,17 @@ export default function ExpenseTracker() {
                 <ul>
                   {Object.entries(categorySums)
                     .sort((a, b) => b[1] - a[1])
-                    .map(([category, sum]) => (
-                      <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                        <span>{category}</span>
-                        <span>{sum.toFixed(2)}</span>
-                      </li>
-                    ))}
+                    .map(([category, sum]) => {
+                      const percentage = ((sum / totalExpenses) * 100).toFixed(1)
+                      return (
+                        <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
+                          <span>{category}</span>
+                          <span>
+                            ({percentage}%) {sum.toFixed(2)}
+                          </span>
+                        </li>
+                      )
+                    })}
                 </ul>
               </CardContent>
             </Card>
@@ -273,7 +278,7 @@ export default function ExpenseTracker() {
         )}
       </div>
 
-      <TransactionDrawer onSubmit={addTransaction} />
+      <TransactionDrawer onSubmit={addTransaction} accounts={accounts} />
       <TabNavigation onTabChange={setActiveTab} />
     </div>
   )
