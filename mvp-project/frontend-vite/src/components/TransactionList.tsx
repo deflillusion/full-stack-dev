@@ -1,6 +1,7 @@
 import type { Transaction } from "../types/transaction"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
 import dayjs from "dayjs"
 
 interface TransactionListProps {
@@ -39,10 +40,16 @@ export function TransactionList({ transactions, onEdit, onDelete }: TransactionL
     return (
         <div className="space-y-4">
             {transactions.map((transaction) => (
-                <div key={transaction.id} className="flex flex-col p-4 bg-white rounded-lg shadow">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold">{transaction.description}</span>
-                        <div className="flex items-center space-x-2">
+                <Card key={transaction.id} className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <div className="font-semibold mb-1">{transaction.description}</div>
+                            <div className="text-sm text-gray-500">
+                                {dayjs(`${transaction.date} ${transaction.time}`).format("DD.MM.YYYY HH:mm")} • {transaction.category}
+                                {transaction.type === "transfer" && ` • ${transaction.toAccount}`}
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-end space-y-2">
                             <Badge variant={getTransactionTypeBadgeVariant(transaction.type)}>
                                 {getTransactionTypeLabel(transaction.type)}
                             </Badge>
@@ -59,11 +66,7 @@ export function TransactionList({ transactions, onEdit, onDelete }: TransactionL
                             </span>
                         </div>
                     </div>
-                    <div className="text-sm text-gray-500 mb-2">
-                        {dayjs(`${transaction.date} ${transaction.time}`).format("DD.MM.YYYY HH:mm")} • {transaction.category}
-                        {transaction.type === "transfer" && ` • ${transaction.toAccount}`}
-                    </div>
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end space-x-2 mt-2">
                         <Button variant="outline" size="sm" onClick={() => onEdit(transaction)}>
                             Изменить
                         </Button>
@@ -71,7 +74,7 @@ export function TransactionList({ transactions, onEdit, onDelete }: TransactionL
                             Удалить
                         </Button>
                     </div>
-                </div>
+                </Card>
             ))}
         </div>
     )

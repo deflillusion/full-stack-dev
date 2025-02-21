@@ -38,7 +38,8 @@ export default function ExpenseTracker() {
     }
     const savedAccounts = localStorage.getItem("accounts")
     if (savedAccounts) {
-      setAccounts(JSON.parse(savedAccounts))
+      const parsedAccounts = JSON.parse(savedAccounts)
+      setAccounts(parsedAccounts.length > 0 ? parsedAccounts : ["Основной счет"])
     }
   }, [])
 
@@ -179,103 +180,128 @@ export default function ExpenseTracker() {
   }
 
   return (
-    <div className="container mx-auto p-4 pb-20">
-      <h1 className="text-3xl font-bold mb-4">Учет расходов и доходов</h1>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-4 pb-20 md:pb-4 md:pl-20">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold mb-4">Учет расходов и доходов</h1>
 
-      <div className="mb-4 flex justify-between items-center">
-        <AccountSelector accounts={accounts} selectedAccount={selectedAccount} onSelectAccount={setSelectedAccount} />
-        <MonthSelector
-          currentMonth={currentMonth}
-          onPreviousMonth={handlePreviousMonth}
-          onNextMonth={handleNextMonth}
-        />
-      </div>
+          <div className="mb-4 flex justify-between items-center">
+            <AccountSelector
+              accounts={accounts}
+              selectedAccount={selectedAccount}
+              onSelectAccount={setSelectedAccount}
+            />
+            <MonthSelector
+              currentMonth={currentMonth}
+              onPreviousMonth={handlePreviousMonth}
+              onNextMonth={handleNextMonth}
+            />
+          </div>
 
-      <div className="mb-16">
-        {activeTab === "overview" && (
-          <>
-            <Card className="mb-4">
-              <CardHeader>
-                <CardTitle>Финансовый обзор за {dayjs(currentMonth).format("MMMM YYYY")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold">Баланс</h3>
-                    <p className={`text-2xl ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {balance.toFixed(2)}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold">
-                      <Badge variant="success">Доходы</Badge>
-                    </h3>
-                    <p className="text-2xl text-green-600">{totalIncome.toFixed(2)}</p>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold">
-                      <Badge variant="destructive">Расходы</Badge>
-                    </h3>
-                    <p className="text-2xl text-red-600">{totalExpenses.toFixed(2)}</p>
-                  </div>
+          <div className="mb-16">
+            {activeTab === "overview" && (
+              <>
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Финансовый обзор за {dayjs(currentMonth).format("MMMM YYYY")}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold">Баланс</h3>
+                          <p className={`text-2xl ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                            {balance.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold">
+                            <Badge variant="success">Доходы</Badge>
+                          </h3>
+                          <p className="text-2xl text-green-600">{totalIncome.toFixed(2)}</p>
+                        </div>
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold">
+                            <Badge variant="destructive">Расходы</Badge>
+                          </h3>
+                          <p className="text-2xl text-red-600">{totalExpenses.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Расходы по категориям</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {Object.entries(categorySums)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([category, sum]) => {
+                            const percentage = ((sum / totalExpenses) * 100).toFixed(1)
+                            return (
+                              <li
+                                key={category}
+                                className="flex justify-between items-center py-2 border-b last:border-b-0"
+                              >
+                                <span>{category}</span>
+                                <span>
+                                  ({percentage}%) {sum.toFixed(2)}
+                                </span>
+                              </li>
+                            )
+                          })}
+                      </ul>
+                    </CardContent>
+                  </Card>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Расходы по категориям</h3>
-                <CategoryPieChart transactions={filteredTransactions} type="expense" />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Расходы по категориям</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul>
-                  {Object.entries(categorySums)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([category, sum]) => {
-                      const percentage = ((sum / totalExpenses) * 100).toFixed(1)
-                      return (
-                        <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                          <span>{category}</span>
-                          <span>
-                            ({percentage}%) {sum.toFixed(2)}
-                          </span>
-                        </li>
-                      )
-                    })}
-                </ul>
-              </CardContent>
-            </Card>
-          </>
-        )}
 
-        {activeTab === "transactions" && (
-          <TransactionList
-            transactions={filteredTransactions}
-            onEdit={updateTransaction}
-            onDelete={deleteTransaction}
-          />
-        )}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>График расходов по категориям</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CategoryPieChart transactions={filteredTransactions} type="expense" />
+                  </CardContent>
+                </Card>
+              </>
+            )}
 
-        {activeTab === "chart" && (
-          <Card>
-            <CardContent>
-              <TransactionChart transactions={filteredTransactions} />
-            </CardContent>
-          </Card>
-        )}
+            {activeTab === "transactions" && (
+              <div className="max-w-2xl mx-auto">
+                <TransactionList
+                  transactions={filteredTransactions}
+                  onEdit={updateTransaction}
+                  onDelete={deleteTransaction}
+                />
+              </div>
+            )}
 
-        {activeTab === "settings" && (
-          <SettingsPage
-            categories={categories}
-            accounts={accounts}
-            onAddCategory={handleAddCategory}
-            onEditCategory={handleEditCategory}
-            onDeleteCategory={handleDeleteCategory}
-            onAddAccount={handleAddAccount}
-            onEditAccount={handleEditAccount}
-            onDeleteAccount={handleDeleteAccount}
-          />
-        )}
+            {activeTab === "chart" && (
+              <Card>
+                <CardContent>
+                  <TransactionChart transactions={filteredTransactions} />
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "settings" && (
+              <div className="max-w-2xl mx-auto">
+                <SettingsPage
+                  categories={categories}
+                  accounts={accounts}
+                  onAddCategory={handleAddCategory}
+                  onEditCategory={handleEditCategory}
+                  onDeleteCategory={handleDeleteCategory}
+                  onAddAccount={handleAddAccount}
+                  onEditAccount={handleEditAccount}
+                  onDeleteAccount={handleDeleteAccount}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <TransactionDrawer onSubmit={addTransaction} accounts={accounts} />
