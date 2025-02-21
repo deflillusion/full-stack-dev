@@ -14,7 +14,8 @@ class TransactionBase(BaseModel):
 
 
 class TransactionCreate(TransactionBase):
-    pass
+
+    to_account_id: Optional[int] = None  # Для переводов между счетами
 
 
 class TransactionGet(TransactionBase):

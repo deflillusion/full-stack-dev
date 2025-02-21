@@ -11,18 +11,74 @@ router = APIRouter(
 )
 
 
+# @router.post("/", response_model=TransactionGet)
+# def create_transaction(
+#     transaction: TransactionCreate,
+#     db: Session = Depends(get_db),
+#     current_user: User = Depends(get_current_active_user)
+# ):
+#     new_transaction = Transaction(
+#         **transaction.dict(), user_id=current_user.id)
+#     db.add(new_transaction)
+#     db.commit()
+#     db.refresh(new_transaction)
+#     return new_transaction
+
+
 @router.post("/", response_model=TransactionGet)
 def create_transaction(
     transaction: TransactionCreate,
     db: Session = Depends(get_db),
+    # Добавляем получение текущего пользователя
     current_user: User = Depends(get_current_active_user)
 ):
-    new_transaction = Transaction(
-        **transaction.dict(), user_id=current_user.id)
-    db.add(new_transaction)
-    db.commit()
-    db.refresh(new_transaction)
-    return new_transaction
+    if transaction.transaction_type_id == 3:  # Перевод
+        if not transaction.to_account_id:
+            raise HTTPException(
+                status_code=400, detail="Для перевода необходимо указать счет получателя")
+
+        # Создаем транзакцию списания
+        withdrawal = Transaction(
+            amount=-abs(transaction.amount),
+            description=transaction.description,
+            datetime=transaction.datetime,
+            account_id=transaction.account_id,
+            transaction_type_id=3,
+            category_id=transaction.category_id,
+            user_id=current_user.id  # Добавляем user_id
+        )
+        db.add(withdrawal)
+        db.flush()
+
+        # Создаем транзакцию зачисления
+        deposit = Transaction(
+            amount=abs(transaction.amount),
+            description=transaction.description,
+            datetime=transaction.datetime,
+            account_id=transaction.to_account_id,
+            transaction_type_id=3,
+            category_id=transaction.category_id,
+            user_id=current_user.id,  # Добавляем user_id
+            related_transaction_id=withdrawal.id
+        )
+        db.add(deposit)
+
+        withdrawal.related_transaction_id = deposit.id
+
+        db.commit()
+        return withdrawal
+    else:  # Обычная транзакция (доход или расход)
+        if not transaction.category_id:
+            raise HTTPException(
+                status_code=400, detail="Для доходов и расходов необходимо указать категорию")
+        db_transaction = Transaction(
+            **transaction.dict(),
+            user_id=current_user.id  # Добавляем user_id
+        )
+        db.add(db_transaction)
+        db.commit()
+        db.refresh(db_transaction)
+        return db_transaction
 
 
 @router.put("/{transaction_id}", response_model=TransactionGet)

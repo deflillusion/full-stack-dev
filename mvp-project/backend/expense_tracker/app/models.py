@@ -30,6 +30,8 @@ class Transaction(Base):
     amount = Column(Float)
     description = Column(String, nullable=True)
     datetime = Column(DateTime)
+    related_transaction_id = Column(Integer, ForeignKey(
+        'transactions.id'), nullable=True)  # Для связи парных переводов
 
     account = relationship("Account", back_populates="transactions")
     user = relationship("User", back_populates="transactions")
