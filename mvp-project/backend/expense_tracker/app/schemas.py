@@ -104,3 +104,13 @@ class TransactionTypeGet(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class MonthlySummary(BaseModel):
+    end_balance: float
+    total_expenses: float
+    total_income: float
+    total_transfers: float
+
+    class Config:
+        from_attributes = True

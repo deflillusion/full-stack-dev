@@ -5,7 +5,7 @@ from app.database import SessionLocal, engine, Base, get_db
 from app.models import Transaction, Category, Account
 from app.schemas import TransactionCreate, TransactionUpdate, CategoryCreate, CategoryGet, AccountResponse
 from typing import List
-from app.routers import users, accounts, transactions, categories
+from app.routers import users, accounts, transactions, categories, statistic
 from app.init_data import init_transaction_types
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -48,3 +48,4 @@ app.include_router(transactions.router,
                    prefix="/transactions", tags=["Transactions"])
 app.include_router(categories.router, prefix="/categories",
                    tags=["Categories"])
+app.include_router(statistic.router, prefix="/statistic", tags=["Statistic"])
