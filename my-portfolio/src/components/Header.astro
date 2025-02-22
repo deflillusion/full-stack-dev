@@ -1,5 +1,24 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
+// Получаем текущий путь
+const currentPath = Astro.url.pathname;
+
+// Функция для определения активного пункта меню
+const isActive = (path: string) => {
+    if (path === "/" && currentPath === "/") return true;
+    if (path !== "/" && currentPath.startsWith(path)) return true;
+    return false;
+};
+
+// Массив пунктов меню для упрощения кода
+const menuItems = [
+    { path: "/", label: "Главная" },
+    { path: "/projects", label: "Проекты" },
+    { path: "/contact", label: "Контакты" },
+    { path: "/entertainment", label: "Развлечения" },
+    { path: "/wishlist", label: "Доска желаний" },
+    { path: "/about", label: "О нас" },
+];
 ---
 
 <script
@@ -22,43 +41,25 @@ import ThemeToggle from "./ThemeToggle.astro";
                 id="desktop-menu"
             >
                 <ul class="flex flex-row space-x-8">
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
-                            aria-current="page"
-                            href="/">Главная</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-100 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                            href="/projects">Проекты</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-100 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                            href="/contact">Контакты</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-100 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                            href="/entertainment">Развлечения</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-100 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                            href="/wishlist">Доска желаний</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-100 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                            href="/about">О нас</a
-                        >
-                    </li>
+                    {
+                        menuItems.map(({ path, label }) => (
+                            <li>
+                                <a
+                                    class={`relative inline-block ${
+                                        isActive(path)
+                                            ? "text-white font-bold"
+                                            : "text-gray-400 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white"
+                                    }`}
+                                    aria-current={
+                                        isActive(path) ? "page" : undefined
+                                    }
+                                    href={path}
+                                >
+                                    {label}
+                                </a>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
 
@@ -86,43 +87,25 @@ import ThemeToggle from "./ThemeToggle.astro";
         <!-- Только мобильное меню -->
         <div class="hidden lg:hidden w-full" id="mobile-menu-2">
             <ul class="flex flex-col font-medium mt-4">
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-white border-b border-gray-700 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
-                        aria-current="page"
-                        href="/">Главная</a
-                    >
-                </li>
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                        href="/projects">Проекты</a
-                    >
-                </li>
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                        href="/contact">Контакты</a
-                    >
-                </li>
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                        href="/entertainment">Развлечения</a
-                    >
-                </li>
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                        href="/wishlist">Доска желаний</a
-                    >
-                </li>
-                <li>
-                    <a
-                        class="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-                        href="/about">О нас</a
-                    >
-                </li>
+                {
+                    menuItems.map(({ path, label }) => (
+                        <li>
+                            <a
+                                class={`block py-2 pr-4 pl-3 border-b border-gray-700 ${
+                                    isActive(path)
+                                        ? "text-white bg-primary-700 font-bold"
+                                        : "text-gray-400 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent"
+                                }`}
+                                aria-current={
+                                    isActive(path) ? "page" : undefined
+                                }
+                                href={path}
+                            >
+                                {label}
+                            </a>
+                        </li>
+                    ))
+                }
             </ul>
         </div>
     </nav>
@@ -167,5 +150,21 @@ import ThemeToggle from "./ThemeToggle.astro";
         #mobile-menu-2 ul {
             padding: 0.5rem 0;
         }
+        #desktop-menu a {
+            padding: 0.5rem 0;
+        }
+    }
+    a[aria-current="page"] {
+        position: relative;
+    }
+
+    a[aria-current="page"]::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #6366f1;
     }
 </style>
