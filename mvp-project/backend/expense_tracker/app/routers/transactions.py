@@ -29,7 +29,6 @@ router = APIRouter(
 def create_transaction(
     transaction: TransactionCreate,
     db: Session = Depends(get_db),
-    # Добавляем получение текущего пользователя
     current_user: User = Depends(get_current_active_user)
 ):
     if transaction.transaction_type_id == 3:  # Перевод
@@ -45,10 +44,10 @@ def create_transaction(
             account_id=transaction.account_id,
             transaction_type_id=3,
             category_id=transaction.category_id,
-            user_id=current_user.id  # Добавляем user_id
+            user_id=current_user.id
         )
         db.add(withdrawal)
-        db.flush()
+        db.flush()  # Получаем ID первой транзакции
 
         # Создаем транзакцию зачисления
         deposit = Transaction(
@@ -58,27 +57,17 @@ def create_transaction(
             account_id=transaction.to_account_id,
             transaction_type_id=3,
             category_id=transaction.category_id,
-            user_id=current_user.id,  # Добавляем user_id
-            related_transaction_id=withdrawal.id
+            user_id=current_user.id,
+            related_transaction_id=withdrawal.id  # ID списания
         )
         db.add(deposit)
+        db.flush()  # Получаем ID второй транзакции
 
+        # Обновляем первую транзакцию, добавляя ссылку на вторую
         withdrawal.related_transaction_id = deposit.id
 
         db.commit()
         return withdrawal
-    else:  # Обычная транзакция (доход или расход)
-        if not transaction.category_id:
-            raise HTTPException(
-                status_code=400, detail="Для доходов и расходов необходимо указать категорию")
-        db_transaction = Transaction(
-            **transaction.dict(),
-            user_id=current_user.id  # Добавляем user_id
-        )
-        db.add(db_transaction)
-        db.commit()
-        db.refresh(db_transaction)
-        return db_transaction
 
 
 @router.put("/{transaction_id}", response_model=TransactionGet)

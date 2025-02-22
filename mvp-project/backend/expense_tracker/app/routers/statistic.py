@@ -77,10 +77,10 @@ def get_monthly_summary(
             models.Transaction.amount > 0
         ).with_entities(func.sum(models.Transaction.amount)).scalar() or 0.0
 
-        # Для отображения общей суммы переводов по конкретному счету
-        total_transfers = abs(outgoing_transfers) + incoming_transfers
-        # Для расчета баланса учитываем как входящие, так и исходящие переводы
-        transfer_balance = outgoing_transfers + incoming_transfers
+        # Показываем фактическое значение переводов (отрицательное или положительное)
+        total_transfers = outgoing_transfers + incoming_transfers
+        # Для расчета баланса используем то же значение
+        transfer_balance = total_transfers
     else:
         # Для всех счетов не показываем переводы, так как они взаимно компенсируются
         total_transfers = 0
