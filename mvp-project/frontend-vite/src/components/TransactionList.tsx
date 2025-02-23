@@ -1,4 +1,4 @@
-import type { Transaction } from "../types/transaction"
+import type { Transaction } from "@/types/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"

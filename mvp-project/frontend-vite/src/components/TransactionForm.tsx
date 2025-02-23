@@ -11,7 +11,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon, Clock } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
-import type { Transaction, TransactionType, TransactionCategory } from "../types/transaction"
+import type { Transaction, TransactionType, TransactionCategory } from "@/types/types"
 import dayjs from "dayjs"
 import { TimePicker } from "./TimePicker"
 

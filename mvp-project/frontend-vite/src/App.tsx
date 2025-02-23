@@ -1,17 +1,15 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { TransactionList } from "@/components/TransactionList"
-import { TransactionChart } from "@/components/TransactionChart"
-import { CategoryPieChart } from "@/components/CategoryPieChart"
 import { AccountSelector } from "@/components/AccountSelector"
 import { TabNavigation } from "@/components/TabNavigation"
 import { TransactionDrawer } from "@/components/TransactionDrawer"
 import { MonthSelector } from "@/components/MonthSelector"
 import { SettingsPage } from "@/components/SettingsPage"
-import { Badge } from "@/components/ui/badge"
-import type { Transaction, TransactionCategory } from "@/types/transaction"
+import { OverviewTab } from "@/components/OverviewTab"
+import { TransactionsTab } from "@/components/TransactionsTab"
+import { ChartTab } from "@/components/ChartTab"
+import type { Transaction, TransactionCategory } from "@/types/types"
 import { saveTransactions, getTransactions } from "@/utils/localStorage"
 import dayjs from "dayjs"
 
@@ -75,67 +73,9 @@ export default function ExpenseTracker() {
       .sort((a, b) => {
         const dateTimeA = dayjs(`${a.date} ${a.time}`)
         const dateTimeB = dayjs(`${b.date} ${b.time}`)
-        return dateTimeB.valueOf() - dateTimeA.valueOf() // Сортировка по убыванию (новые сверху)
+        return dateTimeB.valueOf() - dateTimeA.valueOf()
       })
   }, [transactions, selectedAccount, currentMonth])
-
-  const balance = filteredTransactions.reduce((acc, t) => {
-    if (t.type === "income") return acc + t.amount
-    if (t.type === "expense") return acc - t.amount
-    return acc // для переводов баланс не меняется
-  }, 0)
-
-  const categorySums = useMemo(() => {
-    return filteredTransactions.reduce(
-      (acc, t) => {
-        if (t.type === "expense") {
-          acc[t.category] = (acc[t.category] || 0) + t.amount
-        }
-        return acc
-      },
-      {} as Record<string, number>,
-    )
-  }, [filteredTransactions])
-
-  const totalIncome = useMemo(() => {
-    return filteredTransactions.reduce((acc, t) => {
-      if (t.type === "income") return acc + t.amount
-      return acc
-    }, 0)
-  }, [filteredTransactions])
-
-  const totalExpenses = useMemo(() => {
-    return filteredTransactions.reduce((acc, t) => {
-      if (t.type === "expense") return acc + t.amount
-      return acc
-    }, 0)
-  }, [filteredTransactions])
-
-  const getTransactionTypeLabel = (type: Transaction["type"]) => {
-    switch (type) {
-      case "income":
-        return "Доход"
-      case "expense":
-        return "Расход"
-      case "transfer":
-        return "Перевод"
-      default:
-        return "Неизвестно"
-    }
-  }
-
-  const getTransactionTypeBadgeVariant = (type: Transaction["type"]) => {
-    switch (type) {
-      case "income":
-        return "success"
-      case "expense":
-        return "destructive"
-      case "transfer":
-        return "secondary"
-      default:
-        return "default"
-    }
-  }
 
   const handlePreviousMonth = () => {
     setCurrentMonth(dayjs(currentMonth).subtract(1, "month").format("YYYY-MM"))
@@ -198,93 +138,20 @@ export default function ExpenseTracker() {
             />
           </div>
 
-          <div className="mb-16">
+          <div className="mb-28 md:mb-4">
             {activeTab === "overview" && (
-              <>
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Финансовый обзор за {dayjs(currentMonth).format("MMMM YYYY")}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center">
-                          <h3 className="text-lg font-semibold">Баланс</h3>
-                          <p className={`text-2xl ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                            {balance.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <h3 className="text-lg font-semibold">
-                            <Badge variant="success">Доходы</Badge>
-                          </h3>
-                          <p className="text-2xl text-green-600">{totalIncome.toFixed(2)}</p>
-                        </div>
-                        <div className="text-center">
-                          <h3 className="text-lg font-semibold">
-                            <Badge variant="destructive">Расходы</Badge>
-                          </h3>
-                          <p className="text-2xl text-red-600">{totalExpenses.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Расходы по категориям</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {Object.entries(categorySums)
-                          .sort((a, b) => b[1] - a[1])
-                          .map(([category, sum]) => {
-                            const percentage = ((sum / totalExpenses) * 100).toFixed(1)
-                            return (
-                              <li
-                                key={category}
-                                className="flex justify-between items-center py-2 border-b last:border-b-0"
-                              >
-                                <span>{category}</span>
-                                <span>
-                                  ({percentage}%) {sum.toFixed(2)}
-                                </span>
-                              </li>
-                            )
-                          })}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>График расходов по категориям</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CategoryPieChart transactions={filteredTransactions} type="expense" />
-                  </CardContent>
-                </Card>
-              </>
+              <OverviewTab transactions={filteredTransactions} currentMonth={currentMonth} />
             )}
 
             {activeTab === "transactions" && (
-              <div className="max-w-2xl mx-auto">
-                <TransactionList
-                  transactions={filteredTransactions}
-                  onEdit={updateTransaction}
-                  onDelete={deleteTransaction}
-                />
-              </div>
+              <TransactionsTab
+                transactions={filteredTransactions}
+                onEdit={updateTransaction}
+                onDelete={deleteTransaction}
+              />
             )}
 
-            {activeTab === "chart" && (
-              <Card>
-                <CardContent>
-                  <TransactionChart transactions={filteredTransactions} />
-                </CardContent>
-              </Card>
-            )}
+            {activeTab === "chart" && <ChartTab transactions={filteredTransactions} />}
 
             {activeTab === "settings" && (
               <div className="max-w-2xl mx-auto">
