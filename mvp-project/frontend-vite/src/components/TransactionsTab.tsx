@@ -2,16 +2,28 @@ import { TransactionList } from "@/components/TransactionList"
 import type { Transaction } from "@/types/types"
 
 interface TransactionsTabProps {
-    transactions: Transaction[]
-    onEdit: (transaction: Transaction) => void
-    onDelete: (id: number) => void
+    currentMonth: string;
+    selectedAccount: string;
+    accounts: string[];
+    onEdit: (transaction: Transaction) => void;
+    onDelete: (id: number) => void;
 }
 
-export function TransactionsTab({ transactions, onEdit, onDelete }: TransactionsTabProps) {
+export function TransactionsTab({
+    currentMonth,
+    selectedAccount,
+    accounts,
+    onEdit,
+    onDelete
+}: TransactionsTabProps) {
     return (
-        <div className="max-w-2xl mx-auto">
-            <TransactionList transactions={transactions} onEdit={onEdit} onDelete={onDelete} />
-        </div>
-    )
+        <TransactionList
+            currentMonth={currentMonth}
+            selectedAccount={selectedAccount}
+            accounts={accounts}
+            onEdit={onEdit}
+            onDelete={onDelete}
+        />
+    );
 }
 

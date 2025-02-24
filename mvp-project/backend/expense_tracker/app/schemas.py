@@ -115,3 +115,12 @@ class MonthlySummary(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ExpensesByCategory(BaseModel):
+    category: str
+    amount: float
+    percentage: float
+
+    class Config:
+        from_attributes = True

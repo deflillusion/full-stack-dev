@@ -3,19 +3,6 @@ export type TransactionType = "income" | "expense" | "transfer"
 
 export type TransactionCategory = "food" | "transport" | "entertainment" | "utilities" | "salary" | "other"
 
-export interface Transaction {
-    id: number;
-    type: TransactionType;
-    amount: number;
-    category: TransactionCategory;
-    description: string;
-    date: string;
-    time: string;
-    toAccount: string;
-    fromAccount?: string;
-}
-
-// Типы для API
 export interface ApiTransaction {
     id: number;
     amount: number;
@@ -28,14 +15,26 @@ export interface ApiTransaction {
     related_transaction_id?: number;
 }
 
-export interface ApiAccount {
+export interface Transaction {
+    id: number;
+    type: "income" | "expense" | "transfer";
+    amount: number;
+    description: string;
+    date: string;
+    time: string;
+    category: string;
+    toAccount: string;
+    fromAccount?: string;
+}
+
+export interface Account {
     id: number;
     name: string;
     balance: number;
     user_id: number;
 }
 
-export interface ApiCategory {
+export interface Category {
     id: number;
     name: string;
     user_id: number;
@@ -46,6 +45,12 @@ export interface ApiMonthlySummary {
     total_expenses: number;
     total_income: number;
     total_transfers: number;
+}
+
+export interface ApiExpensesByCategory {
+    category: string;
+    amount: number;
+    percentage: number;
 }
 
 // Хелперы для преобразования типов
@@ -86,3 +91,4 @@ export interface User {
     name: string;
     email: string;
 }
+

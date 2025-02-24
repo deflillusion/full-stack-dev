@@ -1,59 +1,60 @@
-"use client"
-
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
-import type { Transaction, TransactionCategory } from "@/types/types"
-import { useMemo } from "react"
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { useExpensesByCategory } from "@/hooks/useExpensesByCategory";
+import { useEffect } from 'react';
+import dayjs from "dayjs";
 
 interface CategoryPieChartProps {
-  transactions: Transaction[]
-  type: "income" | "expense"
+  currentMonth: string;
+  selectedAccount?: string;
+  accounts: Array<{
+    id: number;
+    name: string;
+  }>;
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#82CA9D"]
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
-export function CategoryPieChart({ transactions, type }: CategoryPieChartProps) {
-  const data = useMemo(() => {
-    const categoryTotals = transactions
-      .filter((t) => t.type === type)
-      .reduce(
-        (acc, t) => {
-          acc[t.category] = (acc[t.category] || 0) + t.amount
-          return acc
-        },
-        {} as Record<TransactionCategory, number>,
-      )
+export function CategoryPieChart({ currentMonth, selectedAccount, accounts }: CategoryPieChartProps) {
+  const { expenses, isLoading, error, fetchExpensesByCategory } = useExpensesByCategory();
 
-    return Object.entries(categoryTotals).map(([category, total]) => ({
-      name: category,
-      value: total,
-    }))
-  }, [transactions, type])
+  useEffect(() => {
+    const [year, month] = currentMonth.split('-');
+    const account = selectedAccount && selectedAccount !== "Все счета"
+      ? accounts.find(a => a.name === selectedAccount)
+      : undefined;
+
+    fetchExpensesByCategory(year, month, account?.id);
+  }, [currentMonth, selectedAccount, accounts]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-full">Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-full text-red-600">{error}</div>;
+  }
 
   return (
-    <div className="h-[300px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value, name, props) => [`${value.toFixed(2)} (${(props.percent * 100).toFixed(1)}%)`, name]}
-          />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
-  )
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Pie
+          data={expenses}
+          dataKey="amount"
+          nameKey="category"
+          cx="50%"
+          cy="50%"
+          outerRadius={80}
+          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        >
+          {expenses.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip
+          formatter={(value: number) => [`${value.toFixed(2)} KZT`, 'Сумма']}
+        />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  );
 }
-

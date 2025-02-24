@@ -26,7 +26,7 @@ export default function Accounts() {
                         </CardHeader>
                         <CardContent>
                             <p className="text-2xl font-semibold">
-                                {account.balance.toLocaleString()} ₽
+                                {account.balance.toLocaleString()} KZT
                             </p>
                         </CardContent>
                     </Card>

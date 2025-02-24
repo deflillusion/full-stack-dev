@@ -4,6 +4,8 @@ from typing import List
 from app.database import get_db
 from app.models import Transaction, User
 from app.schemas import TransactionGet, TransactionCreate, TransactionUpdate
+from datetime import datetime
+from typing import List, Optional
 from app.auth import get_current_active_user
 
 router = APIRouter(
@@ -31,43 +33,68 @@ def create_transaction(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    if transaction.transaction_type_id == 3:  # Перевод
-        if not transaction.to_account_id:
-            raise HTTPException(
-                status_code=400, detail="Для перевода необходимо указать счет получателя")
+    try:
+        if transaction.transaction_type_id == 3:  # Перевод
+            if not transaction.to_account_id:
+                raise HTTPException(
+                    status_code=400, detail="Для перевода необходимо указать счет получателя")
 
-        # Создаем транзакцию списания
-        withdrawal = Transaction(
-            amount=-abs(transaction.amount),
-            description=transaction.description,
-            datetime=transaction.datetime,
-            account_id=transaction.account_id,
-            transaction_type_id=3,
-            category_id=transaction.category_id,
-            user_id=current_user.id
-        )
-        db.add(withdrawal)
-        db.flush()  # Получаем ID первой транзакции
+            # Создаем транзакцию списания
+            withdrawal = Transaction(
+                amount=-abs(transaction.amount),
+                description=transaction.description,
+                datetime=transaction.datetime,
+                account_id=transaction.account_id,
+                transaction_type_id=3,
+                category_id=transaction.category_id,
+                user_id=current_user.id
+            )
+            db.add(withdrawal)
+            db.flush()
 
-        # Создаем транзакцию зачисления
-        deposit = Transaction(
-            amount=abs(transaction.amount),
-            description=transaction.description,
-            datetime=transaction.datetime,
-            account_id=transaction.to_account_id,
-            transaction_type_id=3,
-            category_id=transaction.category_id,
-            user_id=current_user.id,
-            related_transaction_id=withdrawal.id  # ID списания
-        )
-        db.add(deposit)
-        db.flush()  # Получаем ID второй транзакции
+            # Создаем транзакцию зачисления
+            deposit = Transaction(
+                amount=abs(transaction.amount),
+                description=transaction.description,
+                datetime=transaction.datetime,
+                account_id=transaction.to_account_id,
+                transaction_type_id=3,
+                category_id=transaction.category_id,
+                user_id=current_user.id,
+                related_transaction_id=withdrawal.id
+            )
+            db.add(deposit)
+            db.flush()
 
-        # Обновляем первую транзакцию, добавляя ссылку на вторую
-        withdrawal.related_transaction_id = deposit.id
+            withdrawal.related_transaction_id = deposit.id
+            db.commit()
+            return withdrawal
 
-        db.commit()
-        return withdrawal
+        else:  # Доход или расход
+            # Для расхода делаем сумму отрицательной
+            if transaction.transaction_type_id == 2:  # Расход
+                transaction.amount = -abs(transaction.amount)
+            else:  # Доход
+                transaction.amount = abs(transaction.amount)
+
+            new_transaction = Transaction(
+                amount=transaction.amount,
+                description=transaction.description,
+                datetime=transaction.datetime,
+                account_id=transaction.account_id,
+                transaction_type_id=transaction.transaction_type_id,
+                category_id=transaction.category_id,
+                user_id=current_user.id
+            )
+            db.add(new_transaction)
+            db.commit()
+            db.refresh(new_transaction)
+            return new_transaction
+
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating transaction: {str(e)}")  # Для отладки
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{transaction_id}", response_model=TransactionGet)
@@ -108,11 +135,39 @@ def delete_transaction(
 
 @router.get("/", response_model=List[TransactionGet])
 def get_transactions(
-    skip: int = 0,
-    limit: int = 10,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
+    account_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    transactions = db.query(Transaction).filter(
-        Transaction.user_id == current_user.id).offset(skip).limit(limit).all()
+    query = db.query(Transaction).filter(
+        Transaction.user_id == current_user.id)
+
+    # Фильтрация по счету
+    if account_id:
+        query = query.filter(Transaction.account_id == account_id)
+
+    # Фильтрация по месяцу и году
+    if year and month:
+        try:
+            start_date = datetime(year, month, 1)
+            if month == 12:
+                end_date = datetime(year + 1, 1, 1)
+            else:
+                end_date = datetime(year, month + 1, 1)
+
+            query = query.filter(
+                Transaction.datetime >= start_date,
+                Transaction.datetime < end_date
+            )
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Неверный формат даты"
+            )
+
+    # Получаем все транзакции, отсортированные по дате
+    transactions = query.order_by(Transaction.datetime.desc()).all()
+
     return transactions

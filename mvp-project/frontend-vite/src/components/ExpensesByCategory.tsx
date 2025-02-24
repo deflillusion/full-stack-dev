@@ -1,51 +1,76 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Transaction } from "@/types/types"
-import { useMemo } from "react"
+import { useExpensesByCategory } from "@/hooks/useExpensesByCategory"
+import { useEffect } from "react"
+import dayjs from "dayjs"
+
+
 
 interface ExpensesByCategoryProps {
-    transactions: Transaction[]
+    currentMonth?: string; // делаем опциональным
+    selectedAccount?: string;
+    accounts: Array<{
+        id: number;
+        name: string;
+    }>;
 }
 
-export function ExpensesByCategory({ transactions }: ExpensesByCategoryProps) {
-    const { categorySums, totalExpenses } = useMemo(() => {
-        const sums = transactions.reduce(
-            (acc, t) => {
-                if (t.type === "expense") {
-                    acc.categorySums[t.category] = (acc.categorySums[t.category] || 0) + t.amount
-                    acc.totalExpenses += t.amount
-                }
-                return acc
-            },
-            { categorySums: {} as Record<string, number>, totalExpenses: 0 },
-        )
-        return sums
-    }, [transactions])
+export function ExpensesByCategory({
+    currentMonth = dayjs().format("YYYY-MM"),
+    selectedAccount,
+    accounts
+}: ExpensesByCategoryProps) {
+    const { expenses, isLoading, error, fetchExpensesByCategory } = useExpensesByCategory();
+
+    useEffect(() => {
+        const [year, month] = currentMonth.split('-');
+        const account = selectedAccount && selectedAccount !== "Все счета"
+            ? accounts.find(a => a.name === selectedAccount)
+            : undefined;
+
+        fetchExpensesByCategory(year, month, account?.id);
+    }, [currentMonth, selectedAccount, accounts]);
+
+    if (isLoading) {
+        return (
+            <Card className="h-[670px]">
+                <CardContent className="flex items-center justify-center h-full">
+                    <p>Загрузка...</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (error) {
+        return (
+            <Card className="h-[670px]">
+                <CardContent className="flex items-center justify-center h-full">
+                    <p className="text-red-600">{error}</p>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
-        <Card className="h-[670px] overflow-auto mb-20 md:mb-0">
-            <CardHeader className="sticky top-0 bg-background z-20">
+        <Card className="h-[670px] overflow-auto">
+            <CardHeader>
                 <CardTitle>Расходы по категориям</CardTitle>
             </CardHeader>
             <CardContent>
-                <ul className="space-y-2">
-                    {Object.entries(categorySums)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([category, sum]) => {
-                            const percentage = ((sum / totalExpenses) * 100).toFixed(1)
-                            return (
-                                <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                                    <span>{category}</span>
-                                    <span>
-                                        ({percentage}%) {sum.toFixed(2)}
-                                    </span>
-                                </li>
-                            )
-                        })}
-                </ul>
+                {expenses.length === 0 ? (
+                    <p className="text-center text-gray-500">Нет данных о расходах</p>
+                ) : (
+                    <ul className="space-y-2">
+                        {expenses.map(({ category, amount, percentage }) => (
+                            <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
+                                <span>{category}</span>
+                                <span>
+                                    {amount.toFixed(2)} ₽ ({percentage.toFixed(1)}%)
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </CardContent>
         </Card>
-    )
+    );
 }
-

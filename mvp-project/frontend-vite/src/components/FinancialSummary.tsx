@@ -1,29 +1,46 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { Transaction } from "@/types/types"
+import { useStatistics } from "@/hooks/useStatistics"
 import dayjs from "dayjs"
+import { useEffect } from "react"
 
 interface FinancialSummaryProps {
-    transactions: Transaction[]
     currentMonth: string
+    selectedAccount?: string
+    accounts: { id: number; name: string }[]
 }
 
-export function FinancialSummary({ transactions, currentMonth }: FinancialSummaryProps) {
-    const balance = transactions.reduce((acc, t) => {
-        if (t.type === "income") return acc + t.amount
-        if (t.type === "expense") return acc - t.amount
-        return acc
-    }, 0)
+export function FinancialSummary({ currentMonth, selectedAccount, accounts }: FinancialSummaryProps) {
+    const { summary, isLoading, error, fetchMonthlySummary } = useStatistics();
 
-    const totalIncome = transactions.reduce((acc, t) => {
-        if (t.type === "income") return acc + t.amount
-        return acc
-    }, 0)
+    useEffect(() => {
+        const [year, month] = currentMonth.split('-');
+        const account = selectedAccount && selectedAccount !== "Все счета"
+            ? accounts.find(a => a.name === selectedAccount)
+            : undefined;
 
-    const totalExpenses = transactions.reduce((acc, t) => {
-        if (t.type === "expense") return acc + t.amount
-        return acc
-    }, 0)
+        fetchMonthlySummary(year, month, account?.id);
+    }, [currentMonth, selectedAccount]);
+
+    if (isLoading) {
+        return (
+            <Card className="h-[250px]">
+                <CardContent className="flex items-center justify-center h-full">
+                    <p>Загрузка...</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (error) {
+        return (
+            <Card className="h-[250px]">
+                <CardContent className="flex items-center justify-center h-full">
+                    <p className="text-red-600">{error}</p>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="h-[250px]">
@@ -34,23 +51,29 @@ export function FinancialSummary({ transactions, currentMonth }: FinancialSummar
                 <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                         <h3 className="text-lg font-semibold">Баланс</h3>
-                        <p className={`text-2xl ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>{balance.toFixed(2)}</p>
+                        <p className={`text-2xl ${(summary?.end_balance || 0) >= 0 ? "text-green-600" : "text-red-600"
+                            }`}>
+                            {summary?.end_balance.toFixed(2) || '0.00'}
+                        </p>
                     </div>
                     <div className="text-center">
                         <h3 className="text-lg font-semibold">
                             <Badge variant="success">Доходы</Badge>
                         </h3>
-                        <p className="text-2xl text-green-600">{totalIncome.toFixed(2)}</p>
+                        <p className="text-2xl text-green-600">
+                            {summary?.total_income.toFixed(2) || '0.00'}
+                        </p>
                     </div>
                     <div className="text-center">
                         <h3 className="text-lg font-semibold">
                             <Badge variant="destructive">Расходы</Badge>
                         </h3>
-                        <p className="text-2xl text-red-600">{totalExpenses.toFixed(2)}</p>
+                        <p className="text-2xl text-red-600">
+                            {summary?.total_expenses.toFixed(2) || '0.00'}
+                        </p>
                     </div>
                 </div>
             </CardContent>
         </Card>
     )
 }
-

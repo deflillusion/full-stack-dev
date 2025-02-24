@@ -3,16 +3,25 @@ import { TransactionChart } from "@/components/TransactionChart"
 import type { Transaction } from "@/types/types"
 
 interface ChartTabProps {
-    transactions: Transaction[]
+    currentMonth: string;
+    selectedAccount: string;
+    accounts: Array<{
+        id: number;
+        name: string;
+    }>;
 }
 
-export function ChartTab({ transactions }: ChartTabProps) {
+export function ChartTab({
+    currentMonth,
+    selectedAccount,
+    accounts
+}: ChartTabProps) {
     return (
-        <Card>
-            <CardContent>
-                <TransactionChart transactions={transactions} />
-            </CardContent>
-        </Card>
-    )
+        <TransactionChart
+            currentMonth={currentMonth}
+            selectedAccount={selectedAccount}
+            accounts={accounts}
+        />
+    );
 }
 
