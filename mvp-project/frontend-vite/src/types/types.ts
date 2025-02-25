@@ -79,12 +79,6 @@ export function apiToFrontendTransaction(
     };
 }
 
-export interface Account {
-    id: number;
-    name: string;
-    balance: number;
-    user_id: number;
-}
 
 export interface User {
     id: number;
