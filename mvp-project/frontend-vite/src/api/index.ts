@@ -9,7 +9,7 @@ const API_URL = 'http://localhost:8000';
 
 
 // Тестовый токен для разработки
-const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MDUwODUwNH0.1beRvS13eQQN_xY3zoOPX_owHZBG4nqnIl8sKQLPmFs';
+const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MDU5ODQ4OX0.S3v4imc0cDrbqCMTzSEnwKYRw8d03aRejNFbc0XPESk';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -62,8 +62,12 @@ export const statisticsApi = {
 };
 
 export const categoriesApi = {
-    getAll: () => api.get('/categories/'),
-    create: (data: { name: string }) => api.post('/categories/', data),
+    getAll: () => api.get<Category[]>('/categories'),
+    create: (data: { name: string; transaction_type_id: number }) =>
+        api.post<Category>('/categories', data),
+    update: (id: number, data: { name: string; transaction_type_id: number }) =>
+        api.put<Category>(`/categories/${id}`, data),
+    delete: (id: number) => api.delete(`/categories/${id}`)
 };
 
 
@@ -90,4 +94,14 @@ export const transactionsApi = {
         api.put(`/transactions/${id}`, data),
 
     delete: (id: number) => api.delete(`/transactions/${id}`),
+};
+
+
+export type TransactionType = {
+    id: number;
+    name: string;
+}
+
+export const transactionTypesApi = {
+    getAll: () => api.get<TransactionType[]>('/categories/transaction_types'),
 };

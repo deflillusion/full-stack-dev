@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import dayjs from "dayjs"
 import { useAccounts } from "@/hooks/useAccounts"
+import { useCategories } from "@/hooks/useCategories"
+import { Pencil, Trash2 } from "lucide-react"
 
 export function TransactionList({
     selectedAccount,
@@ -15,6 +17,7 @@ export function TransactionList({
     currentMonth: string;
 }) {
     const { accounts } = useAccounts();
+    const { categories } = useCategories();
     const account_id = selectedAccount && selectedAccount !== "Все счета"
         ? accounts?.find(acc => acc.name === selectedAccount)?.id
         : undefined;
@@ -22,40 +25,41 @@ export function TransactionList({
     const { transactions, isLoading, error, fetchTransactions } =
         useTransactions(account_id, currentMonth);
 
+
     // Добавляем useEffect для отслеживания изменений
     useEffect(() => {
-        console.log('TransactionList render:', {
-            selectedAccount,
-            account_id,
-            currentMonth,
-            accountsLength: accounts?.length
-        });
+        // console.log('TransactionList render:', {
+        //     selectedAccount,
+        //     account_id,
+        //     currentMonth,
+        //     accountsLength: accounts?.length
+        // });
         if (accounts?.length) {
             fetchTransactions();
         }
     }, [currentMonth, account_id, accounts, fetchTransactions]);
 
 
-    const getTransactionTypeLabel = (type: Transaction["type"]) => {
-        switch (type) {
-            case "income":
+    const getTransactionTypeLabel = (type_id: number) => {
+        switch (type_id) {
+            case 1:
                 return "Доход"
-            case "expense":
+            case 2:
                 return "Расход"
-            case "transfer":
+            case 3:
                 return "Перевод"
             default:
                 return "Неизвестно"
         }
     }
 
-    const getTransactionTypeBadgeVariant = (type: Transaction["type"]) => {
-        switch (type) {
-            case "income":
+    const getTransactionTypeBadgeVariant = (type_id: number) => {
+        switch (type_id) {
+            case 1:
                 return "success"
-            case "expense":
+            case 2:
                 return "destructive"
-            case "transfer":
+            case 3:
                 return "secondary"
             default:
                 return "default"
@@ -112,64 +116,67 @@ export function TransactionList({
 
     return (
         <div className="space-y-4">
-            {transactions.length === 0 ? (
-                <Card className="p-4">
-                    <div className="text-center text-gray-500">
-                        Транзакции отсутствуют
-                    </div>
-                </Card>
-            ) : (
-                transactions.map((transaction) => (
-                    <Card key={transaction.id} className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                            <div>
-                                <div className="font-semibold mb-1">
+            {transactions.map((transaction) => (
+                <Card key={transaction.id} className="p-4">
+                    <div className="flex">
+                        {/* Левая часть */}
+                        <div className="flex-1 space-y-2">
+                            <div className="font-medium">
+                                {categories?.find(c => c.id === transaction.category_id)?.name || 'Неизвестная категория'}
+                            </div>
+                            {transaction.description && (
+                                <div className="text-gray-600">
                                     {transaction.description}
                                 </div>
-                                <div className="text-sm text-gray-500">
-                                    {dayjs(`${transaction.date} ${transaction.time}`).format("DD.MM.YYYY HH:mm")} • {transaction.category}
-                                    {transaction.type === "transfer" && (
-                                        <>
-                                            <span> • из {transaction.fromAccount}</span>
-                                            <span> в {transaction.toAccount}</span>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="flex flex-col items-end space-y-2">
-                                <Badge variant={getTransactionTypeBadgeVariant(transaction.type)}>
-                                    {getTransactionTypeLabel(transaction.type)}
-                                </Badge>
-                                <span className={
-                                    transaction.type === "income"
-                                        ? "text-green-500"
-                                        : transaction.type === "expense"
-                                            ? "text-red-500"
-                                            : "text-blue-500"
-                                }>
-                                    {transaction.amount.toFixed(2)}
-                                </span>
+                            )}
+                            <div className="text-gray-500">
+                                {accounts?.find(a => a.id === transaction.account_id)?.name || 'Неизвестный счет'}
                             </div>
                         </div>
-                        <div className="flex justify-end space-x-2 mt-2">
+
+                        {/* Центральная часть - дата и время */}
+                        <div className="mx-4 text-right text-gray-500">
+                            <div>{dayjs(transaction.datetime).format("DD.MM.YYYY")}</div>
+                            <div>{dayjs(transaction.datetime).format("HH:mm")}</div>
+                        </div>
+
+                        {/* Средняя часть справа - тип и сумма */}
+                        <div className="flex flex-col items-end justify-between mr-4">
+                            <Badge variant={getTransactionTypeBadgeVariant(transaction.transaction_type_id)}>
+                                {getTransactionTypeLabel(transaction.transaction_type_id)}
+                            </Badge>
+                            <span className={`text-lg font-semibold ${transaction.transaction_type_id === 1
+                                ? "text-green-500"
+                                : transaction.transaction_type_id === 2
+                                    ? "text-red-500"
+                                    : "text-blue-500"
+                                }`}>
+                                {transaction.amount.toFixed(2)} ₽
+                            </span>
+                        </div>
+
+                        {/* Правая часть - кнопки действий */}
+                        <div className="flex flex-col justify-center space-y-2 ml-4 border-l pl-4">
                             <Button
-                                variant="outline"
-                                size="sm"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleEdit(transaction)}
+                                className="h-8 w-8"
                             >
-                                Изменить
+                                <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
-                                variant="destructive"
-                                size="sm"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleDelete(transaction.id)}
+                                className="h-8 w-8 text-destructive hover:text-destructive"
                             >
-                                Удалить
+                                <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
-                    </Card>
-                ))
-            )}
+                    </div>
+                </Card>
+            ))}
         </div>
     );
 }

@@ -1,6 +1,18 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { categoriesApi } from '@/api';
 import type { Category } from '@/types/types';
+
+
+type CategoryCreateData = {
+    name: string;
+    transaction_type_id: number;
+}
+
+type CategoryUpdateData = {
+    name: string;
+    transaction_type_id: number;
+}
+
 
 export function useCategories() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -20,9 +32,14 @@ export function useCategories() {
         }
     }, []);
 
-    const addCategory = useCallback(async (name: string) => {
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
+
+    const addCategory = useCallback(async (data: CategoryCreateData) => {
         try {
-            const response = await categoriesApi.create({ name });
+            const response = await categoriesApi.create(data);
             setCategories(prev => [...prev, response.data]);
             return response.data;
         } catch (err) {
@@ -31,9 +48,9 @@ export function useCategories() {
         }
     }, []);
 
-    const updateCategory = useCallback(async (id: number, name: string) => {
+    const updateCategory = useCallback(async (id: number, data: CategoryUpdateData) => {
         try {
-            const response = await categoriesApi.update(id, { name });
+            const response = await categoriesApi.update(id, data);
             setCategories(prev =>
                 prev.map(cat => cat.id === id ? response.data : cat)
             );
@@ -53,6 +70,8 @@ export function useCategories() {
             throw new Error('Не удалось удалить категорию');
         }
     }, []);
+
+
 
     return {
         categories,

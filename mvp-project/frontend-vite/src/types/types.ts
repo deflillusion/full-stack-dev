@@ -16,15 +16,16 @@ export interface ApiTransaction {
 }
 
 export interface Transaction {
-    id: number;
-    type: "income" | "expense" | "transfer";
+    category_id: number;
+    account_id: number;
+    transaction_type_id: number;
     amount: number;
     description: string;
-    date: string;
-    time: string;
-    category: string;
-    toAccount: string;
-    fromAccount?: string;
+    datetime: string;
+    id: number;
+    user_id: number;
+    category?: string;
+    account?: string;
 }
 
 export interface Account {
@@ -37,6 +38,7 @@ export interface Account {
 export interface Category {
     id: number;
     name: string;
+    transaction_type_id: number;
     user_id: number;
 }
 

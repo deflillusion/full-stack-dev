@@ -36,7 +36,6 @@ class TransactionUpdate(BaseModel):
 
 class CategoryBase(BaseModel):
     name: str
-    description: str
     transaction_type_id: int
 
 
@@ -50,7 +49,6 @@ class CategoryGet(CategoryBase):
 
     class Config:
         orm_mode = True
-        from_attributes = True
 
 
 class AccountBase(BaseModel):

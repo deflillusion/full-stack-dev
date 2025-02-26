@@ -9,7 +9,6 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     transaction_type_id = Column(Integer, ForeignKey("transaction_types.id"))
-    description = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     transaction_type_id = Column(Integer, ForeignKey('transaction_types.id'))
 

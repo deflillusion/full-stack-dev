@@ -24,10 +24,8 @@ def create_category(
 
     new_category = Category(
         name=category.name,
-        description=category.description,
-        # Добавляем поле transaction_type_id
         transaction_type_id=category.transaction_type_id,
-        user_id=current_user.id  # Связываем категорию с текущим пользователем
+        user_id=current_user.id
     )
     db.add(new_category)
     db.commit()
