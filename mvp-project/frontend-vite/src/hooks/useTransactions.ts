@@ -46,11 +46,11 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         }
     }, []);
 
-    const updateTransaction = useCallback(async (transaction: Transaction) => {
+    const updateTransaction = useCallback(async (id: number, data: Transaction) => {
         try {
-            const response = await transactionsApi.update(transaction.id, transaction);
+            const response = await transactionsApi.update(id, data);
             setTransactions(prev =>
-                prev.map(t => t.id === transaction.id ? response.data : t)
+                prev.map(t => t.id === id ? response.data : t)
             );
         } catch (err) {
             console.error('Error updating transaction:', err);

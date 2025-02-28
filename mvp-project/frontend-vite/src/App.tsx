@@ -12,13 +12,13 @@ import { ChartTab } from "@/components/ChartTab"
 import { useAccounts } from "@/hooks/useAccounts"
 import dayjs from "dayjs"
 import { Toaster } from "sonner"
+import ErrorBoundary from "@/components/ErrorBoundary"
 
 export default function ExpenseTracker() {
   const [activeTab, setActiveTab] = useState("overview")
   const [selectedAccount, setSelectedAccount] = useState("Все счета")
   const { accounts, isLoading, error } = useAccounts()
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"))
-
 
   const handlePreviousMonth = () => {
     setCurrentMonth(dayjs(currentMonth).subtract(1, "month").format("YYYY-MM"))
@@ -29,7 +29,7 @@ export default function ExpenseTracker() {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-4 pb-20 md:pb-4 md:pl-20">
           <div className="max-w-6xl mx-auto">
@@ -77,9 +77,7 @@ export default function ExpenseTracker() {
 
               {activeTab === "settings" && (
                 <div className="max-w-6xl mx-auto">
-                  <SettingsPage
-
-                  />
+                  <SettingsPage />
                 </div>
               )}
             </div>
@@ -90,6 +88,6 @@ export default function ExpenseTracker() {
         <TabNavigation onTabChange={setActiveTab} />
       </div>
       <Toaster richColors />
-    </>
+    </ErrorBoundary>
   )
 }

@@ -1,44 +1,77 @@
+import { useState, useEffect } from "react"
 import { useTransactions } from "@/hooks/useTransactions"
-import { useEffect } from "react"
-import type { Transaction } from "@/types/types"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import dayjs from "dayjs"
 import { useAccounts } from "@/hooks/useAccounts"
 import { useCategories } from "@/hooks/useCategories"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { EditTransactionDialog } from "./EditTransactionDialog"
+import { toast } from "sonner"
 import { Pencil, Trash2 } from "lucide-react"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
-export function TransactionList({
-    selectedAccount,
-    currentMonth
-}: {
-    selectedAccount?: string;
-    currentMonth: string;
-}) {
-    const { accounts } = useAccounts();
-    const { categories } = useCategories();
-    const account_id = selectedAccount && selectedAccount !== "Все счета"
-        ? accounts?.find(acc => acc.name === selectedAccount)?.id
-        : undefined;
+interface TransactionListProps {
+    selectedAccount?: string
+    currentMonth: string
+}
 
-    const { transactions, isLoading, error, fetchTransactions } =
-        useTransactions(account_id, currentMonth);
+export function TransactionList({ selectedAccount, currentMonth }: TransactionListProps) {
+    const [editingTransaction, setEditingTransaction] = useState<any>(null)
+    const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction } = useTransactions(
+        selectedAccount ? parseInt(selectedAccount) : undefined,
+        currentMonth
+    )
+    const { accounts } = useAccounts()
+    const { categories } = useCategories()
 
-
-    // Добавляем useEffect для отслеживания изменений
     useEffect(() => {
-        // console.log('TransactionList render:', {
-        //     selectedAccount,
-        //     account_id,
-        //     currentMonth,
-        //     accountsLength: accounts?.length
-        // });
         if (accounts?.length) {
-            fetchTransactions();
+            fetchTransactions()
         }
-    }, [currentMonth, account_id, accounts, fetchTransactions]);
+    }, [currentMonth, selectedAccount, accounts, fetchTransactions])
 
+    const handleEdit = (transaction: any) => {
+        setEditingTransaction(transaction)
+    }
+
+    const handleUpdate = async (data: any) => {
+        try {
+            await updateTransaction(editingTransaction.id, data)
+            setEditingTransaction(null)
+            toast.success("Транзакция обновлена")
+        } catch (error) {
+            console.error('Ошибка при обновлении транзакции:', error)
+            toast.error("Ошибка при обновлении транзакции")
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteTransaction(id)
+            toast.success("Транзакция удалена")
+        } catch (error) {
+            console.error('Ошибка при удалении транзакции:', error)
+            toast.error("Ошибка при удалении транзакции")
+        }
+    }
 
     const getTransactionTypeLabel = (type_id: number) => {
         switch (type_id) {
@@ -66,24 +99,6 @@ export function TransactionList({
         }
     }
 
-    const handleDelete = async (id: number) => {
-        try {
-            await deleteTransaction(id);
-        } catch (err) {
-            console.error('Ошибка при удалении транзакции:', err);
-            // Здесь можно добавить уведомление об ошибке
-        }
-    };
-
-    const handleEdit = async (transaction: Transaction) => {
-        try {
-            await updateTransaction(transaction);
-        } catch (err) {
-            console.error('Ошибка при обновлении транзакции:', err);
-            // Здесь можно добавить уведомление об ошибке
-        }
-    };
-
     if (isLoading) {
         return (
             <Card className="p-4">
@@ -91,7 +106,7 @@ export function TransactionList({
                     Загрузка транзакций...
                 </div>
             </Card>
-        );
+        )
     }
 
     if (error) {
@@ -101,7 +116,7 @@ export function TransactionList({
                     {error}
                 </div>
             </Card>
-        );
+        )
     }
 
     if (!transactions.length) {
@@ -111,72 +126,100 @@ export function TransactionList({
                     Транзакции не найдены
                 </div>
             </Card>
-        );
+        )
     }
 
     return (
-        <div className="space-y-4">
-            {transactions.map((transaction) => (
-                <Card key={transaction.id} className="p-4">
-                    <div className="flex">
-                        {/* Левая часть */}
-                        <div className="flex-1 space-y-2">
-                            <div className="font-medium">
-                                {categories?.find(c => c.id === transaction.category_id)?.name || 'Неизвестная категория'}
-                            </div>
-                            {transaction.description && (
-                                <div className="text-gray-600">
-                                    {transaction.description}
+        <>
+            <div className="space-y-4">
+                {transactions.map((transaction) => (
+                    <Card key={transaction.id} className="p-4">
+                        <div className="flex">
+                            {/* Левая часть */}
+                            <div className="flex-1 space-y-2">
+                                <div className="font-medium">
+                                    {categories?.find(c => c.id === transaction.category_id)?.name || 'Неизвестная категория'}
                                 </div>
-                            )}
-                            <div className="text-gray-500">
-                                {accounts?.find(a => a.id === transaction.account_id)?.name || 'Неизвестный счет'}
+                                {transaction.description && (
+                                    <div className="text-gray-600">
+                                        {transaction.description}
+                                    </div>
+                                )}
+                                <div className="text-gray-500">
+                                    {accounts?.find(a => a.id === transaction.account_id)?.name || 'Неизвестный счет'}
+                                </div>
+                            </div>
+
+                            {/* Центральная часть - дата и время */}
+                            <div className="mx-4 text-right text-gray-500">
+                                <div>{format(new Date(transaction.datetime), "dd.MM.yyyy", { locale: ru })}</div>
+                                <div>{format(new Date(transaction.datetime), "HH:mm", { locale: ru })}</div>
+                            </div>
+
+                            {/* Средняя часть справа - тип и сумма */}
+                            <div className="flex flex-col items-end justify-between mr-4">
+                                <Badge variant={getTransactionTypeBadgeVariant(transaction.transaction_type_id)}>
+                                    {getTransactionTypeLabel(transaction.transaction_type_id)}
+                                </Badge>
+                                <span className={`text-lg font-semibold ${transaction.transaction_type_id === 1
+                                    ? "text-green-500"
+                                    : transaction.transaction_type_id === 2
+                                        ? "text-red-500"
+                                        : "text-blue-500"
+                                    }`}>
+                                    {transaction.amount.toFixed(2)} ₽
+                                </span>
+                            </div>
+
+                            {/* Правая часть - кнопки действий */}
+                            <div className="flex flex-col justify-center space-y-2 ml-4 border-l pl-4">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleEdit(transaction)}
+                                    className="h-8 w-8"
+                                >
+                                    <Pencil className="h-4 w-4" />
+                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-destructive hover:text-destructive"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Удалить транзакцию?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Это действие нельзя отменить
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Отмена</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDelete(transaction.id)}>
+                                                Удалить
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         </div>
+                    </Card>
+                ))}
+            </div>
 
-                        {/* Центральная часть - дата и время */}
-                        <div className="mx-4 text-right text-gray-500">
-                            <div>{dayjs(transaction.datetime).format("DD.MM.YYYY")}</div>
-                            <div>{dayjs(transaction.datetime).format("HH:mm")}</div>
-                        </div>
-
-                        {/* Средняя часть справа - тип и сумма */}
-                        <div className="flex flex-col items-end justify-between mr-4">
-                            <Badge variant={getTransactionTypeBadgeVariant(transaction.transaction_type_id)}>
-                                {getTransactionTypeLabel(transaction.transaction_type_id)}
-                            </Badge>
-                            <span className={`text-lg font-semibold ${transaction.transaction_type_id === 1
-                                ? "text-green-500"
-                                : transaction.transaction_type_id === 2
-                                    ? "text-red-500"
-                                    : "text-blue-500"
-                                }`}>
-                                {transaction.amount.toFixed(2)} ₽
-                            </span>
-                        </div>
-
-                        {/* Правая часть - кнопки действий */}
-                        <div className="flex flex-col justify-center space-y-2 ml-4 border-l pl-4">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleEdit(transaction)}
-                                className="h-8 w-8"
-                            >
-                                <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDelete(transaction.id)}
-                                className="h-8 w-8 text-destructive hover:text-destructive"
-                            >
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </Card>
-            ))}
-        </div>
-    );
+            <EditTransactionDialog
+                isOpen={!!editingTransaction}
+                onClose={() => setEditingTransaction(null)}
+                transaction={editingTransaction}
+                onSubmit={handleUpdate}
+                accounts={accounts}
+                categories={categories}
+            />
+        </>
+    )
 }
