@@ -71,14 +71,22 @@ def create_transaction(
             return withdrawal
 
         else:  # Доход или расход
-            # Для расхода делаем сумму отрицательной
+            amount = transaction.amount  # Получаем сумму
+
             if transaction.transaction_type_id == 2:  # Расход
-                transaction.amount = -abs(transaction.amount)
-            else:  # Доход
-                transaction.amount = abs(transaction.amount)
+                if amount > 0:
+                    amount = -amount  # Обычный расход (делаем отрицательным)
+                else:
+                    # Возврат расхода (делаем положительным)
+                    amount = abs(amount)
+
+            elif transaction.transaction_type_id == 1:  # Доход
+                # if amount < 0:
+                #     amount = -amount  # Возврат дохода (делаем отрицательным)
+                pass
 
             new_transaction = Transaction(
-                amount=transaction.amount,
+                amount=amount,
                 description=transaction.description,
                 datetime=transaction.datetime,
                 account_id=transaction.account_id,

@@ -44,8 +44,8 @@ export function AccountSelector({
             <SelectContent>
                 <SelectItem value="Все счета">Все счета</SelectItem>
                 {accounts.map((account) => (
-                    <SelectItem key={account.id} value={account.name}>
-                        {account.name} ({account.balance.toFixed(2)} ₽)
+                    <SelectItem key={account.id} value={account.id.toString()}>
+                        {account.name}
                     </SelectItem>
                 ))}
             </SelectContent>

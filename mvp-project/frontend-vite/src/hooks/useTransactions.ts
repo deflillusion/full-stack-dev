@@ -24,7 +24,6 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
                 params.month = month;
             }
 
-            console.log('API params:', params); // Для отладки
             const response = await transactionsApi.getAll(params);
             setTransactions(response.data);
         } catch (err) {
@@ -34,7 +33,17 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         } finally {
             setIsLoading(false);
         }
-    }, [account_id, currentMonth]); // Добавляем зависимости для useCallback
+    }, [account_id, currentMonth]);
+
+    const addTransaction = useCallback(async (data: Transaction) => {
+        try {
+            const response = await transactionsApi.create(data);
+            setTransactions(prev => [...prev, response.data]);
+        } catch (err) {
+            console.error('Error adding transaction:', err);
+            throw new Error('Ошибка при добавлении транзакции');
+        }
+    }, []);
 
     const deleteTransaction = useCallback(async (id: number) => {
         try {
@@ -58,7 +67,6 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         }
     }, []);
 
-    // Используем useEffect только для начальной загрузки
     useEffect(() => {
         fetchTransactions();
     }, [fetchTransactions]);
@@ -68,6 +76,7 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         isLoading,
         error,
         fetchTransactions,
+        addTransaction,
         deleteTransaction,
         updateTransaction
     };

@@ -36,13 +36,16 @@ export function TransactionChart({
 
     // Получаем ID выбранного счета
     const account_id = selectedAccount && selectedAccount !== "Все счета"
-        ? accounts?.find((acc) => acc.name === selectedAccount)?.id
+        ? parseInt(selectedAccount)
         : undefined
 
     const { transactions, isLoading, error } = useTransactions(account_id, currentMonth)
 
     useEffect(() => {
-        if (!transactions?.length) return
+        if (!transactions?.length) {
+            setChartData([]) // Очищаем данные графика, если транзакции отсутствуют
+            return
+        }
 
         try {
             // Группируем транзакции по дням
@@ -94,7 +97,7 @@ export function TransactionChart({
         } catch (err) {
             console.error("Ошибка при обработке данных для графика:", err)
         }
-    }, [transactions, currentMonth])
+    }, [transactions, currentMonth, selectedAccount])
 
     if (isLoading) {
         return (

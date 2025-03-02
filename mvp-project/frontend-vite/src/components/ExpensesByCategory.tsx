@@ -24,7 +24,7 @@ export function ExpensesByCategory({
     useEffect(() => {
         const [year, month] = currentMonth.split('-');
         const account = selectedAccount && selectedAccount !== "Все счета"
-            ? accounts.find(a => a.name === selectedAccount)
+            ? accounts.find(a => a.id.toString() === selectedAccount) // теперь ищем по id
             : undefined;
 
         fetchExpensesByCategory(year, month, account?.id);
@@ -64,7 +64,7 @@ export function ExpensesByCategory({
                             <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
                                 <span>{category}</span>
                                 <span>
-                                    {amount.toFixed(2)} ₽ ({percentage.toFixed(1)}%)
+                                    {amount.toFixed(2)}  ({percentage.toFixed(2)}%)
                                 </span>
                             </li>
                         ))}

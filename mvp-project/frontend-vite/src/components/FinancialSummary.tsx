@@ -16,7 +16,7 @@ export function FinancialSummary({ currentMonth, selectedAccount, accounts }: Fi
     useEffect(() => {
         const [year, month] = currentMonth.split('-');
         const account = selectedAccount && selectedAccount !== "Все счета"
-            ? accounts.find(a => a.name === selectedAccount)
+            ? accounts.find(a => a.id.toString() === selectedAccount) // теперь ищем по id
             : undefined;
 
         fetchMonthlySummary(year, month, account?.id);

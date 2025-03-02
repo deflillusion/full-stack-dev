@@ -174,12 +174,12 @@ def get_expenses_by_category(
     ).all()
 
     # Считаем общую сумму расходов
-    total_expenses = sum(expense.amount for expense in expenses)
+    total_expenses = sum(abs(expense.amount) for expense in expenses)
 
     # Формируем результат с процентами
     result = []
     for expense in expenses:
-        percentage = (expense.amount / total_expenses *
+        percentage = (abs(expense.amount) / total_expenses *
                       100) if total_expenses > 0 else 0
         result.append({
             "category": expense.category,
