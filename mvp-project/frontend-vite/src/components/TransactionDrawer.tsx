@@ -7,15 +7,7 @@ import { useCategories } from "@/hooks/useCategories"
 import { useTransactions } from "@/hooks/useTransactions"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
-
-interface TransactionData {
-    account_id: number;
-    category_id: number;
-    transaction_type_id: number;
-    amount: number;
-    description: string;
-    datetime: string;
-}
+import type { Transaction } from "@/types/types";
 
 export function TransactionDrawer() {
     const [isOpen, setIsOpen] = useState(false)
@@ -23,9 +15,13 @@ export function TransactionDrawer() {
     const { categories, isLoading: categoriesLoading } = useCategories()
     const { addTransaction } = useTransactions()
 
-    const handleSubmit = async (data: TransactionData) => {
+    const handleSubmit = async (data: Omit<Transaction, 'id' | 'user_id'>) => {
         try {
-            await addTransaction(data)
+            await addTransaction({
+                ...data,
+                id: 0, // Заглушка для TypeScript, сервер всё равно вернёт реальный ID
+                user_id: 0 // Укажи реальный user_id, если он у тебя где-то хранится
+            } as Transaction)
             toast.success("Транзакция добавлена")
             setIsOpen(false)
         } catch (error) {
@@ -41,7 +37,7 @@ export function TransactionDrawer() {
     return (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
-                <Button 
+                <Button
                     className="fixed bottom-20 md:bottom-4 right-4 rounded-full p-0 w-14 h-14 shadow-lg z-50"
                     disabled={!accounts?.length || !categories?.length}
                 >
@@ -56,7 +52,7 @@ export function TransactionDrawer() {
                     </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-4">
-                    <TransactionForm 
+                    <TransactionForm
                         onSubmit={handleSubmit}
                         accounts={accounts || []}
                         categories={categories || []}

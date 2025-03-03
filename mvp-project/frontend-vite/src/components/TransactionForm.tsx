@@ -51,9 +51,12 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
     const [categoryId, setCategoryId] = useState(() =>
         initialData?.category_id?.toString() || ""
     );
-    const [amount, setAmount] = useState(() =>
-        initialData?.amount?.toString() || ""
-    );
+    const [amount, setAmount] = useState(() => {
+        if (!initialData) return "";
+
+        const value = initialData.amount;
+        return initialData.transaction_type_id === 2 ? (-value).toString() : value.toString();
+    });
     const [description, setDescription] = useState(initialData?.description || "");
     const [date, setDate] = useState<Date>(() =>
         initialData?.datetime ? new Date(initialData.datetime) : new Date()
@@ -73,12 +76,18 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
             return;
         }
 
+        let amountValue = parseFloat(amount);
+
+        if (initialData && transactionType === 2) {
+            amountValue = -amountValue;
+        }
+
         try {
             await onSubmit({
                 account_id: parseInt(accountId),
                 category_id: parseInt(categoryId),
                 transaction_type_id: transactionType,
-                amount: parseFloat(amount),
+                amount: amountValue, // Используем как есть при добавлении
                 description,
                 datetime: `${format(date, "yyyy-MM-dd")}T${time}:00`,
                 to_account_id: transactionType === 3 ? parseInt(toAccountId) : undefined

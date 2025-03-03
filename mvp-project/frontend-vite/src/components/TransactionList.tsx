@@ -178,6 +178,7 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
                                     size="icon"
                                     onClick={() => handleEdit(transaction)}
                                     className="h-8 w-8"
+                                    disabled={transaction.transaction_type_id === 3}
                                 >
                                     <Pencil className="h-4 w-4" />
                                 </Button>

@@ -136,9 +136,16 @@ def delete_transaction(
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
+    if transaction.related_transaction_id:
+        related_transaction = db.query(Transaction).filter(
+            Transaction.id == transaction.related_transaction_id, Transaction.user_id == current_user.id
+        ).first()
+        if related_transaction:
+            db.delete(related_transaction)
+
     db.delete(transaction)
     db.commit()
-    return {"detail": "Transaction deleted successfully"}
+    return {"detail": "Transaction and related transaction deleted successfully"}
 
 
 @router.get("/", response_model=List[TransactionGet])

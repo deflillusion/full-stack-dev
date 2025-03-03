@@ -26,6 +26,11 @@ export interface Transaction {
     user_id: number;
     category?: string;
     account?: string;
+    type: TransactionType;
+    date?: string;
+    time?: string;
+    toAccount?: string;
+    fromAccount?: string;
 }
 
 export interface Account {
@@ -71,13 +76,20 @@ export function apiToFrontendTransaction(
         id: apiTransaction.id,
         type: typeMap[apiTransaction.transaction_type_id as 1 | 2 | 3],
         amount: apiTransaction.amount,
+        category_id: apiTransaction.category_id,  // Добавляем недостающие поля
+        account_id: apiTransaction.account_id,
+        transaction_type_id: apiTransaction.transaction_type_id,
+        datetime: apiTransaction.datetime,
+        user_id: apiTransaction.user_id,
         category: categories[apiTransaction.category_id] as TransactionCategory,
         description: apiTransaction.description,
         date: apiTransaction.datetime.split(' ')[0],
         time: apiTransaction.datetime.split(' ')[1],
+        account: accounts[apiTransaction.account_id],
         toAccount: accounts[apiTransaction.account_id],
-        fromAccount: apiTransaction.related_transaction_id ?
-            accounts[apiTransaction.related_transaction_id] : undefined
+        fromAccount: apiTransaction.related_transaction_id
+            ? accounts[apiTransaction.related_transaction_id]
+            : undefined
     };
 }
 
