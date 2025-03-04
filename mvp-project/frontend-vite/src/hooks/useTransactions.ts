@@ -41,8 +41,8 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
 
     const addTransaction = useCallback(async (data: Transaction) => {
         try {
-            const response = await transactionsApi.create(data);
-            fetchTransactions(); // Обновляем список транзакций после добавления
+            await transactionsApi.create(data);
+            await fetchTransactions(); // Обновляем список после добавления
         } catch (err) {
             console.error('Error adding transaction:', err);
             throw new Error('Ошибка при добавлении транзакции');

@@ -35,7 +35,7 @@ interface TransactionListProps {
 
 export function TransactionList({ selectedAccount, currentMonth }: TransactionListProps) {
     const [editingTransaction, setEditingTransaction] = useState<any>(null)
-    const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction } = useTransactions(
+    const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction, addTransaction } = useTransactions(
         selectedAccount ? parseInt(selectedAccount) : undefined,
         currentMonth
     )
@@ -130,7 +130,6 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
             </Card>
         )
     }
-
     return (
         <>
             <div className="space-y-4">

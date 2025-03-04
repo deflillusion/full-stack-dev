@@ -7,35 +7,33 @@ import { useCategories } from "@/hooks/useCategories"
 import { useTransactions } from "@/hooks/useTransactions"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import type { Transaction, Account } from "@/types/types";
+import type { Transaction } from "@/types/types"
 
-interface TransactionDrawerProps {
-    accounts: Account[];
-    fetchTransactions: () => void; // Добавляем пропс для обновления списка транзакций
-}
-
-export function TransactionDrawer({ accounts, fetchTransactions }: TransactionDrawerProps) {
+export function TransactionDrawer() {
     const [isOpen, setIsOpen] = useState(false)
+    const { accounts, isLoading: accountsLoading } = useAccounts()
     const { categories, isLoading: categoriesLoading } = useCategories()
-    const { addTransaction } = useTransactions()
+    const { addTransaction, fetchTransactions } = useTransactions() // Добавил fetchTransactions
 
     const handleSubmit = async (data: Omit<Transaction, 'id' | 'user_id'>) => {
         try {
             await addTransaction({
                 ...data,
-                id: 0, // Заглушка для TypeScript, сервер всё равно вернёт реальный ID
+                id: 0, // Заглушка для TypeScript, сервер вернёт реальный ID
                 user_id: 0 // Укажи реальный user_id, если он у тебя где-то хранится
-            } as Transaction)
-            toast.success("Транзакция добавлена")
-            setIsOpen(false)
-            fetchTransactions() // Обновляем список транзакций
+            } as Transaction);
+
+            toast.success("Транзакция добавлена");
+
+            setIsOpen(false);
+            await fetchTransactions(); // Ждём обновления списка транзакций
         } catch (error) {
-            console.error('Ошибка при сохранении транзакции:', error)
-            toast.error("Ошибка при сохранении транзакции")
+            console.error("Ошибка при сохранении транзакции:", error);
+            toast.error("Ошибка при сохранении транзакции");
         }
     }
 
-    if (categoriesLoading) {
+    if (accountsLoading || categoriesLoading) {
         return null;
     }
 

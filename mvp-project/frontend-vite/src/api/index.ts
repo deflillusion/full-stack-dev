@@ -11,7 +11,7 @@ const API_URL = 'http://localhost:8000';
 
 
 // Тестовый токен для разработки
-const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MTEwNjAxNH0.Kt241xynvTejakYnlq-OybVVkaCGKXSrET8Fk4DcVtI';
+const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MTExMjI0OX0.4k6RZ7CRzNAwKV_ILPaeoTZRb9CB3texnbueSILrZKk';
 
 const api = axios.create({
     baseURL: API_URL,
