@@ -1,10 +1,11 @@
 import { TransactionList } from "@/components/TransactionList"
-import type { Transaction } from "@/types/types"
+import type { Account, Transaction } from "@/types/types"
+import internal from "stream";
 
 interface TransactionsTabProps {
     currentMonth: string;
     selectedAccount: string;
-    accounts: string[];
+    accounts: Account[];
     onEdit: (transaction: Transaction) => void;
     onDelete: (id: number) => void;
 }

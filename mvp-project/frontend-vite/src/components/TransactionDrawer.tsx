@@ -7,11 +7,15 @@ import { useCategories } from "@/hooks/useCategories"
 import { useTransactions } from "@/hooks/useTransactions"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import type { Transaction } from "@/types/types";
+import type { Transaction, Account } from "@/types/types";
 
-export function TransactionDrawer() {
+interface TransactionDrawerProps {
+    accounts: Account[];
+    fetchTransactions: () => void; // Добавляем пропс для обновления списка транзакций
+}
+
+export function TransactionDrawer({ accounts, fetchTransactions }: TransactionDrawerProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const { accounts, isLoading: accountsLoading } = useAccounts()
     const { categories, isLoading: categoriesLoading } = useCategories()
     const { addTransaction } = useTransactions()
 
@@ -24,13 +28,14 @@ export function TransactionDrawer() {
             } as Transaction)
             toast.success("Транзакция добавлена")
             setIsOpen(false)
+            fetchTransactions() // Обновляем список транзакций
         } catch (error) {
             console.error('Ошибка при сохранении транзакции:', error)
             toast.error("Ошибка при сохранении транзакции")
         }
     }
 
-    if (accountsLoading || categoriesLoading) {
+    if (categoriesLoading) {
         return null;
     }
 

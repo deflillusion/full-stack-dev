@@ -57,6 +57,7 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
             await updateTransaction(editingTransaction.id, data)
             setEditingTransaction(null)
             toast.success("Транзакция обновлена")
+            fetchTransactions()
         } catch (error) {
             console.error('Ошибка при обновлении транзакции:', error)
             toast.error("Ошибка при обновлении транзакции")
@@ -67,6 +68,7 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
         try {
             await deleteTransaction(id)
             toast.success("Транзакция удалена")
+            fetchTransactions()
         } catch (error) {
             console.error('Ошибка при удалении транзакции:', error)
             toast.error("Ошибка при удалении транзакции")

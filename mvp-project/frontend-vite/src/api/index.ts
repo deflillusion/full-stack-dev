@@ -1,4 +1,6 @@
 import axios from 'axios';
+import type { Account, Category, Transaction } from "@/types/types";
+
 
 const API_URL = 'http://localhost:8000';
 
@@ -9,7 +11,7 @@ const API_URL = 'http://localhost:8000';
 
 
 // Тестовый токен для разработки
-const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MTAyNzE2M30.Xipd79gMwJShXDL5FVcD35c-HOw3BDc2iXHzk_j12b0';
+const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MTEwNjAxNH0.Kt241xynvTejakYnlq-OybVVkaCGKXSrET8Fk4DcVtI';
 
 const api = axios.create({
     baseURL: API_URL,

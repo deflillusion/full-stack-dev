@@ -10,6 +10,7 @@ import { OverviewTab } from "@/components/OverviewTab"
 import { TransactionsTab } from "@/components/TransactionsTab"
 import { ChartTab } from "@/components/ChartTab"
 import { useAccounts } from "@/hooks/useAccounts"
+import { useTransactions } from "@/hooks/useTransactions"
 import dayjs from "dayjs"
 import { Toaster } from "sonner"
 import ErrorBoundary from "@/components/ErrorBoundary"
@@ -18,6 +19,7 @@ export default function ExpenseTracker() {
   const [activeTab, setActiveTab] = useState("overview")
   const [selectedAccount, setSelectedAccount] = useState("Все счета")
   const { accounts, isLoading, error } = useAccounts()
+  const { transactions, fetchTransactions } = useTransactions()
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"))
 
   const handlePreviousMonth = () => {
@@ -84,7 +86,7 @@ export default function ExpenseTracker() {
           </div>
         </div>
 
-        <TransactionDrawer accounts={accounts || []} />
+        <TransactionDrawer accounts={accounts || []} fetchTransactions={fetchTransactions} />
         <TabNavigation onTabChange={setActiveTab} />
       </div>
       <Toaster richColors />

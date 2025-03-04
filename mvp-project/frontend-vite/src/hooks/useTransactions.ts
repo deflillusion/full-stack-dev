@@ -35,15 +35,19 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         }
     }, [account_id, currentMonth]);
 
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions]);
+
     const addTransaction = useCallback(async (data: Transaction) => {
         try {
             const response = await transactionsApi.create(data);
-            setTransactions(prev => [...prev, response.data]);
+            fetchTransactions(); // Обновляем список транзакций после добавления
         } catch (err) {
             console.error('Error adding transaction:', err);
             throw new Error('Ошибка при добавлении транзакции');
         }
-    }, []);
+    }, [fetchTransactions]);
 
     const deleteTransaction = useCallback(async (id: number) => {
         try {
@@ -66,10 +70,6 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
             throw new Error('Ошибка при обновлении транзакции');
         }
     }, []);
-
-    useEffect(() => {
-        fetchTransactions();
-    }, [fetchTransactions]);
 
     return {
         transactions,
