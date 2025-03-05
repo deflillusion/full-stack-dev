@@ -4,36 +4,44 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, Dr
 import { TransactionForm } from "./TransactionForm"
 import { useAccounts } from "@/hooks/useAccounts"
 import { useCategories } from "@/hooks/useCategories"
-import { useTransactions } from "@/hooks/useTransactions"
+import { useTransactions } from "@/hooks/useTransactions" // Добавлен импорт
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import type { Transaction } from "@/types/types"
+import type { Transaction, Account } from "@/types/types"
 
-export function TransactionDrawer() {
+interface TransactionDrawerProps {
+    accounts: Account[];
+    fetchTransactions: () => Promise<any>;
+}
+
+export function TransactionDrawer({
+    accounts,
+    fetchTransactions
+}: TransactionDrawerProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const { accounts, isLoading: accountsLoading } = useAccounts()
     const { categories, isLoading: categoriesLoading } = useCategories()
-    const { addTransaction, fetchTransactions } = useTransactions() // Добавил fetchTransactions
+    const { addTransaction } = useTransactions() // Используем хук для добавления транзакции
 
     const handleSubmit = async (data: Omit<Transaction, 'id' | 'user_id'>) => {
         try {
             await addTransaction({
                 ...data,
-                id: 0, // Заглушка для TypeScript, сервер вернёт реальный ID
-                user_id: 0 // Укажи реальный user_id, если он у тебя где-то хранится
+                id: 0,
+                user_id: 0
             } as Transaction);
 
             toast.success("Транзакция добавлена");
-
             setIsOpen(false);
-            await fetchTransactions(); // Ждём обновления списка транзакций
+
+            // Обновляем список транзакций
+            await fetchTransactions();
         } catch (error) {
             console.error("Ошибка при сохранении транзакции:", error);
             toast.error("Ошибка при сохранении транзакции");
         }
     }
 
-    if (accountsLoading || categoriesLoading) {
+    if (categoriesLoading) {
         return null;
     }
 
@@ -57,7 +65,7 @@ export function TransactionDrawer() {
                 <div className="px-4 pb-4">
                     <TransactionForm
                         onSubmit={handleSubmit}
-                        accounts={accounts || []}
+                        accounts={accounts}
                         categories={categories || []}
                     />
                 </div>

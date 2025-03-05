@@ -51,7 +51,7 @@ export function CategoryPieChart({ currentMonth, selectedAccount, accounts }: Ca
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number) => [`${value.toFixed(2)} KZT`, 'Сумма']}
+          formatter={(value: number) => [`${value.toFixed(2)}`, 'Сумма']}
         />
         <Legend />
       </PieChart>

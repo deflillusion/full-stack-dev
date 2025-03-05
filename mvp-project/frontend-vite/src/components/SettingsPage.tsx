@@ -180,9 +180,6 @@ export function SettingsPage() {
                   <li key={account.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md">
                     <div className="flex items-center space-x-2">
                       <span>{account.name}</span>
-                      {/* <span className="text-sm text-gray-500">
-                        ({account.balance.toFixed(2)} ₽)
-                      </span> */}
                     </div>
                     <div className="flex space-x-2">
                       <Button

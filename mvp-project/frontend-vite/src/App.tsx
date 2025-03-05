@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { AccountSelector } from "@/components/AccountSelector"
 import { TabNavigation } from "@/components/TabNavigation"
 import { TransactionDrawer } from "@/components/TransactionDrawer"
@@ -10,18 +10,47 @@ import { OverviewTab } from "@/components/OverviewTab"
 import { TransactionsTab } from "@/components/TransactionsTab"
 import { ChartTab } from "@/components/ChartTab"
 import { useAccounts } from "@/hooks/useAccounts"
-import { useTransactions } from "@/hooks/useTransactions"
+import { transactionsApi } from '@/api' // Импортируем напрямую API
 import dayjs from "dayjs"
 import { Toaster } from "sonner"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import type { Transaction } from "@/types/types"
 
 export default function ExpenseTracker() {
   const [activeTab, setActiveTab] = useState("overview")
   const [selectedAccount, setSelectedAccount] = useState("Все счета")
   const { accounts, isLoading, error } = useAccounts()
-  const { transactions, fetchTransactions } = useTransactions()
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"))
 
+  // Оптимизированный fetchTransactions с использованием useCallback
+  const fetchTransactions = useCallback(async () => {
+    try {
+      const params: {
+        account_id?: number;
+        year?: string;
+        month?: string
+      } = {};
+
+      if (selectedAccount !== "Все счета") {
+        const accountId = accounts?.find(a => a.name === selectedAccount)?.id;
+        if (accountId) {
+          params.account_id = accountId;
+        }
+      }
+
+      const [year, month] = currentMonth.split('-').map(String);
+      params.year = year;
+      params.month = month;
+
+      // Возвращаем результат вызова API
+      return await transactionsApi.getAll(params);
+    } catch (error) {
+      console.error("Ошибка при загрузке транзакций:", error);
+      throw error;
+    }
+  }, [selectedAccount, currentMonth, accounts]);
+
+  // Обработчики для переключения месяцев
   const handlePreviousMonth = () => {
     setCurrentMonth(dayjs(currentMonth).subtract(1, "month").format("YYYY-MM"))
   }
@@ -86,7 +115,10 @@ export default function ExpenseTracker() {
           </div>
         </div>
 
-        <TransactionDrawer accounts={accounts || []} fetchTransactions={fetchTransactions} />
+        <TransactionDrawer
+          accounts={accounts || []}
+          fetchTransactions={fetchTransactions}
+        />
         <TabNavigation onTabChange={setActiveTab} />
       </div>
       <Toaster richColors />

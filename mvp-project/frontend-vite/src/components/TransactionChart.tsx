@@ -148,14 +148,14 @@ export function TransactionChart({
                         />
                         <YAxis
                             label={{
-                                value: "Сумма (₽)",
+                                value: "Сумма",
                                 angle: -90,
                                 position: "insideLeft",
                                 offset: -5
                             }}
                         />
                         <Tooltip
-                            formatter={(value: number) => [`${value.toFixed(2)} ₽`]}
+                            formatter={(value: number) => [`${value.toFixed(2)} `]}
                             labelFormatter={(label) => `День ${label}`}
                         />
                         <Legend

@@ -48,7 +48,7 @@ export function FinancialSummary({ currentMonth, selectedAccount, accounts }: Fi
                 <CardTitle>Финансовый обзор за {dayjs(currentMonth).format("MMMM YYYY")}</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="text-center">
                         <h3 className="text-lg font-semibold">Баланс</h3>
                         <p className={`text-2xl ${(summary?.end_balance || 0) >= 0 ? "text-green-600" : "text-red-600"
@@ -56,21 +56,23 @@ export function FinancialSummary({ currentMonth, selectedAccount, accounts }: Fi
                             {summary?.end_balance.toFixed(2) || '0.00'}
                         </p>
                     </div>
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold">
-                            <Badge variant="success">Доходы</Badge>
-                        </h3>
-                        <p className="text-2xl text-green-600">
-                            {summary?.total_income.toFixed(2) || '0.00'}
-                        </p>
-                    </div>
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold">
-                            <Badge variant="destructive">Расходы</Badge>
-                        </h3>
-                        <p className="text-2xl text-red-600">
-                            {summary?.total_expenses.toFixed(2) || '0.00'}
-                        </p>
+                    <div className="text-center md:col-span-2 grid grid-cols-2 gap-4">
+                        <div>
+                            <h3 className="text-lg font-semibold">
+                                <Badge variant="success">Доходы</Badge>
+                            </h3>
+                            <p className="text-2xl text-green-600">
+                                {summary?.total_income.toFixed(2) || '0.00'}
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold">
+                                <Badge variant="destructive">Расходы</Badge>
+                            </h3>
+                            <p className="text-2xl text-red-600">
+                                {summary?.total_expenses.toFixed(2) || '0.00'}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </CardContent>

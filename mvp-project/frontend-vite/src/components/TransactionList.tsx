@@ -168,7 +168,7 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
                                         ? "text-red-500"
                                         : "text-blue-500"
                                     }`}>
-                                    {transaction.amount.toFixed(2)} ₽
+                                    {transaction.amount.toFixed(2)}
                                 </span>
                             </div>
 
