@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import dayjs from "dayjs"
+import "dayjs/locale/ru"
 
 interface MonthSelectorProps {
     currentMonth: string
@@ -9,6 +10,8 @@ interface MonthSelectorProps {
 }
 
 export function MonthSelector({ currentMonth, onPreviousMonth, onNextMonth }: MonthSelectorProps) {
+    dayjs.locale("ru")
+
     const formattedMonth = dayjs(currentMonth).format("MMMM YYYY")
 
     return (
@@ -23,4 +26,3 @@ export function MonthSelector({ currentMonth, onPreviousMonth, onNextMonth }: Mo
         </div>
     )
 }
-
