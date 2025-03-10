@@ -168,7 +168,7 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
                                         ? "text-red-500"
                                         : "text-blue-500"
                                     }`}>
-                                    {transaction.amount.toFixed(2)}
+                                    {new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(transaction.amount)}
                                 </span>
                             </div>
 

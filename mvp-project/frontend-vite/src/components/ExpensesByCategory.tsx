@@ -64,7 +64,8 @@ export function ExpensesByCategory({
                             <li key={category} className="flex justify-between items-center py-2 border-b last:border-b-0">
                                 <span>{category}</span>
                                 <span>
-                                    {amount.toFixed(2)}  ({percentage.toFixed(2)}%)
+                                    {amount.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    {" ("}{percentage.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)
                                 </span>
                             </li>
                         ))}

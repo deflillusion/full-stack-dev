@@ -14,6 +14,14 @@ interface CategoryPieChartProps {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
+// Функция для форматирования чисел с разделителями тысяч
+const formatAmount = (amount: number): string => {
+  return new Intl.NumberFormat('ru-RU', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
 export function CategoryPieChart({ currentMonth, selectedAccount, accounts }: CategoryPieChartProps) {
   const { expenses, isLoading, error, fetchExpensesByCategory } = useExpensesByCategory();
 
@@ -51,7 +59,7 @@ export function CategoryPieChart({ currentMonth, selectedAccount, accounts }: Ca
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number) => [`${value.toFixed(2)}`, 'Сумма']}
+          formatter={(value: number) => [`${formatAmount(value)}`, 'Сумма']}
         />
         <Legend />
       </PieChart>

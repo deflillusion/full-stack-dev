@@ -41,6 +41,13 @@ export function TransactionChart({
 
     const { transactions, isLoading, error } = useTransactions(account_id, currentMonth)
 
+    const formatAmount = (amount: number): string => {
+        return new Intl.NumberFormat('ru-RU', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount);
+    };
+
     useEffect(() => {
         if (!transactions?.length) {
             setChartData([]) // Очищаем данные графика, если транзакции отсутствуют
@@ -155,7 +162,7 @@ export function TransactionChart({
                             }}
                         />
                         <Tooltip
-                            formatter={(value: number) => [`${value.toFixed(2)} `]}
+                            formatter={(value: number) => [`${formatAmount(value)}`, "Сумма"]}
                             labelFormatter={(label) => `День ${label}`}
                         />
                         <Legend
