@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db
-from app.models import User, Category
+from app.models import User, Category, Account  # Добавлен импорт Account
 from app.schemas import UserCreate, UserRead, Token
 from app.auth import authenticate_user, create_access_token, get_password_hash, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import datetime, timedelta
 
 router = APIRouter()
-
 
 # Категории по умолчанию
 DEFAULT_CATEGORIES = [
@@ -21,13 +20,22 @@ DEFAULT_CATEGORIES = [
     {"name": "Перевод", "transaction_type_id": 3},  # 3 - Перевод
 ]
 
+# Список счетов, создаваемых при регистрации
+DEFAULT_ACCOUNTS = [
+    {"name": "Наличные", "balance": 0.0},
+    {"name": "Банковский счет", "balance": 0.0}
+]
+
 
 @router.post("/register", response_model=UserRead)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if db_user:
+    # Проверяем, существует ли уже пользователь
+    if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(
-            status_code=400, detail="Username already registered")
+            status_code=400, detail="Username already registered"
+        )
+
+    # Хэшируем пароль и создаем пользователя
     hashed_password = get_password_hash(user.password)
     db_user = User(
         username=user.username,
@@ -39,16 +47,32 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
     # Создаем категории по умолчанию
-    for category in DEFAULT_CATEGORIES:
-        db_category = Category(
+    default_categories = [
+        Category(
             name=category["name"],
             transaction_type_id=category["transaction_type_id"],
             user_id=db_user.id
         )
-        db.add(db_category)
+        for category in DEFAULT_CATEGORIES
+    ]
+    db.add_all(default_categories)
+
+    # Создаем счета по умолчанию
+    default_accounts = [
+        Account(
+            name=account["name"],
+            balance=account["balance"],
+            user_id=db_user.id,
+            created_at=datetime.utcnow()
+        )
+        for account in DEFAULT_ACCOUNTS
+    ]
+    db.add_all(default_accounts)
 
     db.commit()  # Фиксируем изменения
+
     return db_user
 
 
