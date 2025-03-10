@@ -2,12 +2,24 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db
-from app.models import User
+from app.models import User, Category
 from app.schemas import UserCreate, UserRead, Token
 from app.auth import authenticate_user, create_access_token, get_password_hash, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import datetime, timedelta
 
 router = APIRouter()
+
+
+# Категории по умолчанию
+DEFAULT_CATEGORIES = [
+    {"name": "Продукты", "transaction_type_id": 2},  # 2 - Расход
+    {"name": "Зарплата", "transaction_type_id": 1},  # 1 - Доход
+    {"name": "Развлечения", "transaction_type_id": 2},
+    {"name": "Транспорт", "transaction_type_id": 2},
+    {"name": "Здоровье", "transaction_type_id": 2},
+    {"name": "Квартира", "transaction_type_id": 2},
+    {"name": "Перевод", "transaction_type_id": 3},  # 3 - Перевод
+]
 
 
 @router.post("/register", response_model=UserRead)
@@ -27,6 +39,16 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    # Создаем категории по умолчанию
+    for category in DEFAULT_CATEGORIES:
+        db_category = Category(
+            name=category["name"],
+            transaction_type_id=category["transaction_type_id"],
+            user_id=db_user.id
+        )
+        db.add(db_category)
+
+    db.commit()  # Фиксируем изменения
     return db_user
 
 
