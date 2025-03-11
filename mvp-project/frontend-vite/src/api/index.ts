@@ -2,39 +2,68 @@ import axios from 'axios';
 import type { Account, Category, Transaction } from "@/types/types";
 
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-// const api = axios.create({
-//     baseURL: API_URL,
-//     withCredentials: true,
-// });
-
-
-// Тестовый токен для разработки
-const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFcmljayIsImV4cCI6MTc0MTYwODgwNX0.LZDUUjXqeTrOx9v-CAfO2oA0PPNihmbPHTXKHoFP0Dg';
-
+// Создаем экземпляр axios с базовыми настройками
 const api = axios.create({
     baseURL: API_URL,
     withCredentials: true,
     headers: {
-        'Authorization': `Bearer ${TEST_TOKEN}` // Добавляем тестовый токен в заголовки
+        "Content-Type": "application/json",
     }
 });
-// Тестовый токен для разработки
 
+// Добавляем перехватчик запросов для добавления токена Clerk
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("clerk_token");
+    console.log("API запрос:", config.method?.toUpperCase(), config.url);
+    console.log("Токен в localStorage:", token ? "Токен есть" : "Токен отсутствует");
 
+    if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
+        console.log("Добавлен заголовок Authorization");
+    } else {
+        console.warn("Токен отсутствует в localStorage, запрос будет отправлен без авторизации");
+    }
 
-// Интерцептор для токена
-// api.interceptors.request.use((config) => {
-//     const token = localStorage.getItem('token');
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-// });
+    console.log("API заголовки:", config.headers);
+    return config;
+});
 
-// API для транзакций
+// Добавляем перехватчик ответов для обработки ошибок авторизации
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
+        // Если ошибка 401 (Unauthorized) и запрос еще не повторялся
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            console.log("Получена ошибка 401, пробуем обновить токен");
+
+            try {
+                // Пытаемся получить новый токен от Clerk
+                // Для этого нужно использовать window.Clerk, но мы не можем напрямую импортировать его здесь
+                // Поэтому просто перезагружаем страницу, чтобы App.tsx получил новый токен
+                console.log("Перенаправляем пользователя на страницу входа для обновления токена");
+                window.location.href = "/sign-in";
+                return Promise.reject(error);
+            } catch (refreshError) {
+                console.error("Ошибка при обновлении токена:", refreshError);
+                return Promise.reject(error);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+// API для аутентификации
+export const authApi = {
+    register: () => api.post('/auth/register'),
+    verifyToken: () => api.post('/auth/verify-token')
+};
 
 // API для счетов
 export const accountsApi = {

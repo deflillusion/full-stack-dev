@@ -20,7 +20,7 @@ class TransactionCreate(TransactionBase):
 
 class TransactionGet(TransactionBase):
     id: int
-    user_id: int
+    user_id: str
 
     class Config:
         from_attributes = True
@@ -45,7 +45,7 @@ class CategoryCreate(CategoryBase):
 
 class CategoryGet(CategoryBase):
     id: int
-    user_id: int
+    user_id: str
 
     class Config:
         orm_mode = True
@@ -63,7 +63,7 @@ class AccountCreate(AccountBase):
 
 class AccountResponse(AccountBase):
     id: int
-    user_id: int
+    user_id: str
     created_at: datetime
 
     class Config:

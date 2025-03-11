@@ -1,92 +1,72 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm
-from app.database import get_db
-from app.models import User, Category, Account  # Добавлен импорт Account
-from app.schemas import UserCreate, UserRead, Token
-from app.auth import authenticate_user, create_access_token, get_password_hash, ACCESS_TOKEN_EXPIRE_MINUTES
-from datetime import datetime, timedelta
+# import logging
+# from fastapi import APIRouter, Depends, HTTPException
+# from sqlalchemy.orm import Session
+# from datetime import datetime
+# from app.database import get_db
+# from app.models import User, Category, Account
+# from app.schemas import UserRead
+# from app.clerk import get_clerk_user  # Clerk user extractor
 
-router = APIRouter()
+# router = APIRouter()
 
-# Категории по умолчанию
-DEFAULT_CATEGORIES = [
-    {"name": "Продукты", "transaction_type_id": 2},  # 2 - Расход
-    {"name": "Зарплата", "transaction_type_id": 1},  # 1 - Доход
-    {"name": "Развлечения", "transaction_type_id": 2},
-    {"name": "Транспорт", "transaction_type_id": 2},
-    {"name": "Здоровье", "transaction_type_id": 2},
-    {"name": "Квартира", "transaction_type_id": 2},
-    {"name": "Перевод", "transaction_type_id": 3},  # 3 - Перевод
-]
+# # Категории по умолчанию
+# DEFAULT_CATEGORIES = [
+#     {"name": "Продукты", "transaction_type_id": 2},
+#     {"name": "Зарплата", "transaction_type_id": 1},
+#     {"name": "Развлечения", "transaction_type_id": 2},
+#     {"name": "Транспорт", "transaction_type_id": 2},
+#     {"name": "Здоровье", "transaction_type_id": 2},
+#     {"name": "Квартира", "transaction_type_id": 2},
+#     {"name": "Перевод", "transaction_type_id": 3},
+# ]
 
-# Список счетов, создаваемых при регистрации
-DEFAULT_ACCOUNTS = [
-    {"name": "Наличные", "balance": 0.0},
-    {"name": "Банковский счет", "balance": 0.0}
-]
-
-
-@router.post("/register", response_model=UserRead)
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    # Проверяем, существует ли уже пользователь
-    if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(
-            status_code=400, detail="Username already registered"
-        )
-
-    # Хэшируем пароль и создаем пользователя
-    hashed_password = get_password_hash(user.password)
-    db_user = User(
-        username=user.username,
-        hashed_password=hashed_password,
-        email=user.email,
-        created=datetime.utcnow(),
-        is_active=True
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-
-    # Создаем категории по умолчанию
-    default_categories = [
-        Category(
-            name=category["name"],
-            transaction_type_id=category["transaction_type_id"],
-            user_id=db_user.id
-        )
-        for category in DEFAULT_CATEGORIES
-    ]
-    db.add_all(default_categories)
-
-    # Создаем счета по умолчанию
-    default_accounts = [
-        Account(
-            name=account["name"],
-            balance=account["balance"],
-            user_id=db_user.id,
-            created_at=datetime.utcnow()
-        )
-        for account in DEFAULT_ACCOUNTS
-    ]
-    db.add_all(default_accounts)
-
-    db.commit()  # Фиксируем изменения
-
-    return db_user
+# # Счета по умолчанию
+# DEFAULT_ACCOUNTS = [
+#     {"name": "Наличные", "balance": 0.0},
+#     {"name": "Банковский счет", "balance": 0.0}
+# ]
 
 
-@router.post("/token", response_model=Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = authenticate_user(db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+# # Настраиваем логирование
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
+
+
+# @router.post("/register", response_model=UserRead)
+# def register_user(
+#     db: Session = Depends(get_db), clerk_user: dict = Depends(get_clerk_user)
+# ):
+#     logger.debug(f"Получен clerk_user: {clerk_user}")
+
+#     user_id = clerk_user["id"]
+#     email = clerk_user["email_addresses"][0]["email_address"]
+
+#     # Проверяем, пришел ли username
+#     username = clerk_user.get("username") or email.split("@")[0]
+#     if not username:
+#         username = f"user_{user_id[:6]}"
+
+#     logger.debug(
+#         f"Создается пользователь: ID={user_id}, Email={email}, Username={username}")
+
+#     # Проверяем, есть ли пользователь
+#     existing_user = db.query(User).filter(User.id == user_id).first()
+#     if existing_user:
+#         logger.debug("Пользователь уже существует в базе данных")
+#         return existing_user
+
+#     # Создаем нового пользователя
+#     db_user = User(
+#         id=user_id,
+#         username=username,
+#         email=email,
+#         created=datetime.utcnow(),
+#         is_active=True
+#     )
+#     db.add(db_user)
+#     db.commit()
+#     db.refresh(db_user)
+
+#     logger.debug(f"Пользователь создан: {db_user}")
+
+#     return db_user

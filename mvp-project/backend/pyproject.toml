@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mvp backend"
+version = "0.1.0"
+description = "Учет Расходов и Доходов"
+authors = ["deflillusion <defl.illusion@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyjwt = {extras = ["crypto"], version = "^2.10.1"}
+requests = "^2.32.3"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

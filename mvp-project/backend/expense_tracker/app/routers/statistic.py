@@ -5,7 +5,7 @@ from sqlalchemy import func
 from ..database import get_db
 from .. import models, schemas
 from typing import Optional
-from app.auth import get_current_active_user
+from app.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ def get_monthly_summary(
     month: int,
     account_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     start_date = datetime(year, month, 1)
     end_date = datetime(
@@ -134,7 +134,7 @@ def get_expenses_by_category(
     month: int,
     account_id: Optional[int] = None,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     start_date = datetime(year, month, 1)
     end_date = datetime(
