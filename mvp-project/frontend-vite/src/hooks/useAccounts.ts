@@ -1,13 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { accountsApi } from '@/api';
 import type { Account } from '@/types/types';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 export function useAccounts() {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { isSignedIn } = useUser();
+    const { getToken } = useAuth();
 
     const fetchAccounts = useCallback(async () => {
+        // Проверяем, авторизован ли пользователь
+        if (!isSignedIn) {
+            console.log('Пользователь не авторизован, запросы счетов не отправляются');
+            setIsLoading(false);
+            return;
+        }
+
+        // Проверяем наличие токена
+        const token = localStorage.getItem("clerk_token");
+        if (!token) {
+            console.log('Токен отсутствует, запросы счетов не отправляются');
+            setIsLoading(false);
+            return;
+        }
+
         try {
             setIsLoading(true);
             setError(null);
@@ -19,9 +37,26 @@ export function useAccounts() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [isSignedIn]);
+
+    useEffect(() => {
+        // Запрашиваем данные только если пользователь авторизован
+        if (isSignedIn) {
+            fetchAccounts();
+        } else {
+            // Если пользователь не авторизован, очищаем данные
+            setAccounts([]);
+            setIsLoading(false);
+        }
+    }, [fetchAccounts, isSignedIn]);
 
     const addAccount = useCallback(async (data: { name: string; balance: number }) => {
+        // Проверяем, авторизован ли пользователь
+        if (!isSignedIn) {
+            console.error('Пользователь не авторизован');
+            throw new Error('Необходимо авторизоваться');
+        }
+
         try {
             const response = await accountsApi.create(data);
             setAccounts(prev => [...prev, response.data]);
@@ -30,9 +65,15 @@ export function useAccounts() {
             console.error('Ошибка при создании счета:', err);
             throw new Error('Не удалось создать счет');
         }
-    }, []);
+    }, [isSignedIn]);
 
     const updateAccount = useCallback(async (id: number, data: Partial<Account>) => {
+        // Проверяем, авторизован ли пользователь
+        if (!isSignedIn) {
+            console.error('Пользователь не авторизован');
+            throw new Error('Необходимо авторизоваться');
+        }
+
         try {
             const response = await accountsApi.update(id, data);
             setAccounts(prev =>
@@ -43,9 +84,15 @@ export function useAccounts() {
             console.error('Ошибка при обновлении счета:', err);
             throw new Error('Не удалось обновить счет');
         }
-    }, []);
+    }, [isSignedIn]);
 
     const deleteAccount = useCallback(async (id: number) => {
+        // Проверяем, авторизован ли пользователь
+        if (!isSignedIn) {
+            console.error('Пользователь не авторизован');
+            throw new Error('Необходимо авторизоваться');
+        }
+
         try {
             await accountsApi.delete(id);
             setAccounts(prev => prev.filter(account => account.id !== id));
@@ -53,17 +100,13 @@ export function useAccounts() {
             console.error('Ошибка при удалении счета:', err);
             throw new Error('Не удалось удалить счет');
         }
-    }, []);
-
-    useEffect(() => {
-        fetchAccounts();
-    }, [fetchAccounts]);
+    }, [isSignedIn]);
 
     return {
         accounts,
         isLoading,
         error,
-        refetchAccounts: fetchAccounts,
+        fetchAccounts,
         addAccount,
         updateAccount,
         deleteAccount

@@ -42,12 +42,6 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
     const { accounts } = useAccounts()
     const { categories } = useCategories()
 
-    useEffect(() => {
-        if (accounts?.length) {
-            fetchTransactions()
-        }
-    }, [currentMonth, selectedAccount, accounts, fetchTransactions])
-
     const handleEdit = (transaction: any) => {
         setEditingTransaction(transaction)
     }
@@ -57,7 +51,6 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
             await updateTransaction(editingTransaction.id, data)
             setEditingTransaction(null)
             toast.success("Транзакция обновлена")
-            fetchTransactions()
         } catch (error) {
             console.error('Ошибка при обновлении транзакции:', error)
             toast.error("Ошибка при обновлении транзакции")
@@ -68,7 +61,6 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
         try {
             await deleteTransaction(id)
             toast.success("Транзакция удалена")
-            fetchTransactions()
         } catch (error) {
             console.error('Ошибка при удалении транзакции:', error)
             toast.error("Ошибка при удалении транзакции")

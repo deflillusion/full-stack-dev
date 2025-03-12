@@ -1,13 +1,28 @@
 import { useState } from 'react';
 import { statisticsApi } from '@/api';
 import type { ApiExpensesByCategory } from '@/types/types';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 export function useExpensesByCategory() {
     const [expenses, setExpenses] = useState<ApiExpensesByCategory[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { isSignedIn } = useUser();
 
     const fetchExpensesByCategory = async (year: string, month: string, account_id?: number) => {
+        // Проверяем, авторизован ли пользователь
+        if (!isSignedIn) {
+            console.log('Пользователь не авторизован, запросы статистики не отправляются');
+            return;
+        }
+
+        // Проверяем наличие токена
+        const token = localStorage.getItem("clerk_token");
+        if (!token) {
+            console.log('Токен отсутствует, запросы статистики не отправляются');
+            return;
+        }
+
         try {
             setIsLoading(true);
             setError(null); // Сбрасываем ошибку перед новым запросом

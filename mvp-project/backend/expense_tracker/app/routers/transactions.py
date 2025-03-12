@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from app.database import get_db
 from app.models import Transaction, User, Account, Category
 from app.schemas import TransactionGet, TransactionCreate, TransactionUpdate
 from datetime import datetime
-from typing import List, Optional
 from app.dependencies import get_current_user
 
 router = APIRouter()
@@ -33,60 +32,75 @@ def create_transaction(
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
 
-    # Создаем транзакцию
-    new_transaction = Transaction(
-        user_id=current_user.id,
-        account_id=transaction.account_id,
-        category_id=transaction.category_id,
-        transaction_type_id=transaction.transaction_type_id,
-        amount=transaction.amount,
-        description=transaction.description,
-        datetime=transaction.datetime
-    )
-    db.add(new_transaction)
+    try:
+        if transaction.transaction_type_id == 3:  # Перевод
+            if not transaction.to_account_id:
+                raise HTTPException(
+                    status_code=400, detail="to_account_id is required for transfers")
 
-    # Обновляем баланс счета
-    if transaction.transaction_type_id == 1:  # Доход
-        account.balance += transaction.amount
-    elif transaction.transaction_type_id == 2:  # Расход
-        account.balance -= transaction.amount
-    elif transaction.transaction_type_id == 3:  # Перевод
-        # Проверяем, что счет назначения принадлежит пользователю
-        if not transaction.to_account_id:
-            raise HTTPException(
-                status_code=400, detail="to_account_id is required for transfers")
+            to_account = db.query(Account).filter(
+                Account.id == transaction.to_account_id,
+                Account.user_id == current_user.id
+            ).first()
+            if not to_account:
+                raise HTTPException(
+                    status_code=404, detail="Destination account not found")
 
-        to_account = db.query(Account).filter(
-            Account.id == transaction.to_account_id,
-            Account.user_id == current_user.id
-        ).first()
-        if not to_account:
-            raise HTTPException(
-                status_code=404, detail="Destination account not found")
+            # Создаем транзакцию списания
+            withdrawal = Transaction(
+                user_id=current_user.id,
+                account_id=transaction.account_id,
+                category_id=transaction.category_id,
+                transaction_type_id=3,
+                amount=-abs(transaction.amount),
+                description=transaction.description,
+                datetime=transaction.datetime
+            )
+            db.add(withdrawal)
+            db.flush()
 
-        # Создаем парную транзакцию для счета назначения
-        to_transaction = Transaction(
-            user_id=current_user.id,
-            account_id=transaction.to_account_id,
-            category_id=transaction.category_id,
-            transaction_type_id=transaction.transaction_type_id,
-            amount=transaction.amount,
-            description=transaction.description,
-            datetime=transaction.datetime
-        )
-        db.add(to_transaction)
+            # Создаем транзакцию зачисления
+            deposit = Transaction(
+                user_id=current_user.id,
+                account_id=transaction.to_account_id,
+                category_id=transaction.category_id,
+                transaction_type_id=3,
+                amount=abs(transaction.amount),
+                description=transaction.description,
+                datetime=transaction.datetime,
+                related_transaction_id=withdrawal.id
+            )
+            db.add(deposit)
+            db.flush()
 
-        # Обновляем балансы счетов
-        account.balance -= transaction.amount
-        to_account.balance += transaction.amount
+            # Связываем транзакции
+            withdrawal.related_transaction_id = deposit.id
+            db.commit()
+            db.refresh(withdrawal)
+            return withdrawal
 
-        # Связываем транзакции
-        new_transaction.related_transaction_id = to_transaction.id
-        to_transaction.related_transaction_id = new_transaction.id
+        else:  # Доход или расход
+            amount = transaction.amount
+            if transaction.transaction_type_id == 2:  # Расход
+                amount = -amount if amount > 0 else abs(amount)
 
-    db.commit()
-    db.refresh(new_transaction)
-    return new_transaction
+            new_transaction = Transaction(
+                user_id=current_user.id,
+                account_id=transaction.account_id,
+                category_id=transaction.category_id,
+                transaction_type_id=transaction.transaction_type_id,
+                amount=amount,
+                description=transaction.description,
+                datetime=transaction.datetime
+            )
+            db.add(new_transaction)
+            db.commit()
+            db.refresh(new_transaction)
+            return new_transaction
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating transaction: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{transaction_id}", response_model=TransactionGet)
@@ -103,7 +117,6 @@ def update_transaction(
     if not db_transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
-    # Обновляем поля транзакции
     for key, value in transaction.dict(exclude_unset=True).items():
         setattr(db_transaction, key, value)
 
@@ -125,7 +138,6 @@ def delete_transaction(
     if not db_transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
-    # Если это перевод, удаляем связанную транзакцию
     if db_transaction.related_transaction_id:
         related_transaction = db.query(Transaction).filter(
             Transaction.id == db_transaction.related_transaction_id
@@ -168,7 +180,6 @@ def get_transactions(
         query = query.filter(Transaction.account_id == account_id)
 
     if year and month:
-        # Фильтрация по году и месяцу
         start_date = datetime(year, month, 1)
         if month == 12:
             end_date = datetime(year + 1, 1, 1)

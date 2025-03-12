@@ -11,30 +11,29 @@ import type { Transaction, Account } from "@/types/types"
 
 interface TransactionDrawerProps {
     accounts: Account[];
-    fetchTransactions: () => Promise<any>;
+    // Убираем fetchTransactions из пропсов, так как он больше не нужен
 }
 
 export function TransactionDrawer({
     accounts,
-    fetchTransactions
 }: TransactionDrawerProps) {
     const [isOpen, setIsOpen] = useState(false)
     const { categories, isLoading: categoriesLoading } = useCategories()
     const { addTransaction } = useTransactions() // Используем хук для добавления транзакции
 
-    const handleSubmit = async (data: Omit<Transaction, 'id' | 'user_id'>) => {
+    const handleSubmit = async (data: any) => {
         try {
+            // Добавляем недостающие поля для соответствия типу Transaction
             await addTransaction({
                 ...data,
                 id: 0,
-                user_id: 0
+                user_id: 0,
+                type: data.transaction_type_id === 1 ? 'income' :
+                    data.transaction_type_id === 2 ? 'expense' : 'transfer'
             } as Transaction);
 
             toast.success("Транзакция добавлена");
             setIsOpen(false);
-
-            // Обновляем список транзакций
-            await fetchTransactions();
         } catch (error) {
             console.error("Ошибка при сохранении транзакции:", error);
             toast.error("Ошибка при сохранении транзакции");

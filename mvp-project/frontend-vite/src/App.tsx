@@ -201,7 +201,6 @@ export default function ExpenseTracker() {
         <SignedIn>
           <TransactionDrawer
             accounts={accounts || []}
-            fetchTransactions={fetchTransactions}
           />
           <TabNavigation onTabChange={setActiveTab} />
         </SignedIn>
