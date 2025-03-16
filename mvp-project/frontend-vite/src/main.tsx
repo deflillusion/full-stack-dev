@@ -15,7 +15,7 @@ console.log("Clerk publishableKey:", clerkPubKey);
 console.log("Clerk frontendApi:", clerkFrontendApi);
 
 createRoot(document.getElementById('root')!).render(
-  <ClerkProvider publishableKey={clerkPubKey}>
+  <ClerkProvider publishableKey={clerkPubKey} >
     <StrictMode>
       <App />
     </StrictMode>

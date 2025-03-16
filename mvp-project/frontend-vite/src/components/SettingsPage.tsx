@@ -177,7 +177,7 @@ export function SettingsPage() {
               </Button>
               <ul className="space-y-2">
                 {accounts.map((account) => (
-                  <li key={account.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md">
+                  <li key={account.id} className="flex items-center justify-between p-2 hover:bg-accent rounded-md">
                     <div className="flex items-center space-x-2">
                       <span>{account.name}</span>
                     </div>
@@ -222,7 +222,7 @@ export function SettingsPage() {
               </Button>
               <ul className="space-y-2">
                 {categories.map((category) => (
-                  <li key={category.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md">
+                  <li key={category.id} className="flex items-center justify-between p-2 hover:bg-accent rounded-md">
                     <div className="flex items-center space-x-2">
                       <span>{category.name}</span>
                       <span className={`text-sm ${getTransactionTypeColor(category.transaction_type_id)}`}>

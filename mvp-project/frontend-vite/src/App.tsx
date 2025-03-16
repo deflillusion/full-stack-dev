@@ -25,6 +25,8 @@ import {
 } from "@clerk/clerk-react";
 import AuthPage from "@/pages/AuthPage";
 import { authApi } from "@/api"; // Импортируем новый API
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 
 export default function ExpenseTracker() {
@@ -137,19 +139,17 @@ export default function ExpenseTracker() {
   };
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto p-4 pb-20 md:pb-4 md:pl-20">
-          <div className="max-w-6xl mx-auto">
-
-            <SignedOut>
-              <AuthPage />
-            </SignedOut>
-
-            <SignedIn>
-              <div className="flex justify-between items-center mb-4">
-                <h1 className="text-3xl font-bold">Учет расходов и доходов</h1>
-                <UserButton />
+    <ThemeProvider defaultTheme="system" storageKey="expense-tracker-theme">
+      <ErrorBoundary>
+        <SignedIn>
+          <div className="min-h-screen bg-background">
+            <div className="container mx-auto p-4 pb-20 md:pb-4 md:pl-20">
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Учет расходов и доходов</h1>
+                <div className="flex items-center gap-4">
+                  <ThemeToggle />
+                  <UserButton afterSignOutUrl="/" />
+                </div>
               </div>
 
               <div className="mb-4 flex justify-between items-center">
@@ -201,21 +201,22 @@ export default function ExpenseTracker() {
                   </div>
                 )}
               </div>
-            </SignedIn>
-          </div>
-        </div>
+            </div>
 
-        <SignedIn>
-          <TransactionDrawer
-            accounts={accounts || []}
-            selectedAccount={selectedAccount}
-            currentMonth={currentMonth}
-            onTransactionAdded={refreshTransactions}
-          />
-          <TabNavigation onTabChange={setActiveTab} />
+            <TransactionDrawer
+              accounts={accounts || []}
+              selectedAccount={selectedAccount}
+              currentMonth={currentMonth}
+              onTransactionAdded={refreshTransactions}
+            />
+            <TabNavigation onTabChange={setActiveTab} />
+          </div>
         </SignedIn>
-      </div>
-      <Toaster richColors />
-    </ErrorBoundary>
+        <SignedOut>
+          <AuthPage />
+        </SignedOut>
+        <Toaster />
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }

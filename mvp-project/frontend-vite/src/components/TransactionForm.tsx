@@ -130,7 +130,12 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
                     <Button
                         type="button"
                         variant={transactionType === 1 ? "default" : "outline"}
-                        className={transactionType === 1 ? "bg-primary text-white hover:bg-primary/90" : ""}
+                        className={cn(
+                            "flex-1",
+                            transactionType === 1
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                : "hover:bg-accent hover:text-accent-foreground"
+                        )}
                         onClick={() => setTransactionType(1)}
                     >
                         Доход
@@ -138,7 +143,12 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
                     <Button
                         type="button"
                         variant={transactionType === 2 ? "default" : "outline"}
-                        className={transactionType === 2 ? "bg-primary text-white hover:bg-primary/90" : ""}
+                        className={cn(
+                            "flex-1",
+                            transactionType === 2
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                : "hover:bg-accent hover:text-accent-foreground"
+                        )}
                         onClick={() => setTransactionType(2)}
                     >
                         Расход
@@ -146,7 +156,12 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
                     <Button
                         type="button"
                         variant={transactionType === 3 ? "default" : "outline"}
-                        className={transactionType === 3 ? "bg-primary text-white hover:bg-primary/90" : ""}
+                        className={cn(
+                            "flex-1",
+                            transactionType === 3
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                : "hover:bg-accent hover:text-accent-foreground"
+                        )}
                         onClick={() => setTransactionType(3)}
                     >
                         Перевод
