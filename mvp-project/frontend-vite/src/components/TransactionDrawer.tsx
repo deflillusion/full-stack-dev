@@ -4,26 +4,36 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, Dr
 import { TransactionForm } from "./TransactionForm"
 import { useAccounts } from "@/hooks/useAccounts"
 import { useCategories } from "@/hooks/useCategories"
-import { useTransactions } from "@/hooks/useTransactions" // Добавлен импорт
+import { useTransactions } from "@/hooks/useTransactions"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
 import type { Transaction, Account } from "@/types/types"
+import dayjs from "dayjs"
 
 interface TransactionDrawerProps {
     accounts: Account[];
-    // Убираем fetchTransactions из пропсов, так как он больше не нужен
+    selectedAccount?: string;
+    currentMonth?: string;
+    onTransactionAdded?: () => void;
 }
 
 export function TransactionDrawer({
     accounts,
+    selectedAccount = "Все счета",
+    currentMonth = dayjs().format("YYYY-MM"),
+    onTransactionAdded
 }: TransactionDrawerProps) {
     const [isOpen, setIsOpen] = useState(false)
     const { categories, isLoading: categoriesLoading } = useCategories()
-    const { addTransaction } = useTransactions() // Используем хук для добавления транзакции
+
+    // Используем тот же подход, что и в TransactionList
+    const { addTransaction, fetchTransactions } = useTransactions(
+        selectedAccount !== "Все счета" ? parseInt(selectedAccount) : undefined,
+        currentMonth
+    )
 
     const handleSubmit = async (data: any) => {
         try {
-            // Добавляем недостающие поля для соответствия типу Transaction
             await addTransaction({
                 ...data,
                 id: 0,
@@ -31,6 +41,9 @@ export function TransactionDrawer({
                 type: data.transaction_type_id === 1 ? 'income' :
                     data.transaction_type_id === 2 ? 'expense' : 'transfer'
             } as Transaction);
+
+            // Уведомляем родительский компонент о добавлении транзакции
+            onTransactionAdded?.();
 
             toast.success("Транзакция добавлена");
             setIsOpen(false);

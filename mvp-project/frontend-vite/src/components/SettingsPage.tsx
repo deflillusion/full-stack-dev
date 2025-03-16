@@ -47,7 +47,7 @@ export function SettingsPage() {
     accounts,
     isLoading: accountsLoading,
     error: accountsError,
-    refetchAccounts,
+    fetchAccounts,
     addAccount,
     updateAccount,
     deleteAccount
@@ -61,10 +61,10 @@ export function SettingsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      await Promise.all([fetchCategories(), refetchAccounts()])
+      await Promise.all([fetchCategories(), fetchAccounts()])
     }
     loadData()
-  }, [])
+  }, [fetchCategories, fetchAccounts])
 
   const handleOpenDialog = (
     type: "account" | "category",

@@ -31,9 +31,10 @@ import {
 interface TransactionListProps {
     selectedAccount?: string
     currentMonth: string
+    refreshTrigger?: number
 }
 
-export function TransactionList({ selectedAccount, currentMonth }: TransactionListProps) {
+export function TransactionList({ selectedAccount, currentMonth, refreshTrigger }: TransactionListProps) {
     const [editingTransaction, setEditingTransaction] = useState<any>(null)
     const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction, addTransaction } = useTransactions(
         selectedAccount ? parseInt(selectedAccount) : undefined,
@@ -41,6 +42,13 @@ export function TransactionList({ selectedAccount, currentMonth }: TransactionLi
     )
     const { accounts } = useAccounts()
     const { categories } = useCategories()
+
+    // Обновляем список при изменении refreshTrigger
+    useEffect(() => {
+        if (refreshTrigger !== undefined) {
+            fetchTransactions();
+        }
+    }, [refreshTrigger, fetchTransactions]);
 
     const handleEdit = (transaction: any) => {
         setEditingTransaction(transaction)

@@ -32,9 +32,15 @@ export default function ExpenseTracker() {
   const [selectedAccount, setSelectedAccount] = useState("Все счета");
   const { accounts, isLoading, error } = useAccounts();
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
+  const [shouldRefreshTransactions, setShouldRefreshTransactions] = useState(0);
 
   // Получаем токен Clerk
   const { getToken, isSignedIn } = useAuth();
+
+  // Функция для обновления списка транзакций
+  const refreshTransactions = useCallback(() => {
+    setShouldRefreshTransactions(prev => prev + 1);
+  }, []);
 
   // Функция для обновления токена
   const updateToken = async () => {
@@ -177,6 +183,7 @@ export default function ExpenseTracker() {
                     accounts={accounts || []}
                     onEdit={() => { }}
                     onDelete={() => { }}
+                    refreshTrigger={shouldRefreshTransactions}
                   />
                 )}
 
@@ -201,6 +208,9 @@ export default function ExpenseTracker() {
         <SignedIn>
           <TransactionDrawer
             accounts={accounts || []}
+            selectedAccount={selectedAccount}
+            currentMonth={currentMonth}
+            onTransactionAdded={refreshTransactions}
           />
           <TabNavigation onTabChange={setActiveTab} />
         </SignedIn>

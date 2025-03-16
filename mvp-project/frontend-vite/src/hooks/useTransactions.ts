@@ -40,7 +40,9 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
                 params.month = month;
             }
 
+            console.log('Запрос транзакций с параметрами:', { account_id, currentMonth, params });
             const response = await transactionsApi.getAll(params);
+            console.log('Получены транзакции:', response.data);
             setTransactions(response.data);
         } catch (err) {
             console.error('Error fetching transactions:', err);
@@ -51,27 +53,29 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         }
     }, [account_id, currentMonth, isSignedIn]);
 
+    // Загружаем транзакции при монтировании компонента и при изменении параметров
     useEffect(() => {
-        // Запрашиваем данные только если пользователь авторизован
+        console.log('useEffect: Изменились параметры запроса:', { account_id, currentMonth });
         if (isSignedIn) {
             fetchTransactions();
         } else {
-            // Если пользователь не авторизован, очищаем данные
             setTransactions([]);
         }
-    }, [fetchTransactions, isSignedIn]);
+    }, [account_id, currentMonth, fetchTransactions, isSignedIn]);
 
     const addTransaction = useCallback(async (data: Transaction) => {
-        // Проверяем, авторизован ли пользователь
         if (!isSignedIn) {
             console.error('Пользователь не авторизован');
             throw new Error('Необходимо авторизоваться');
         }
 
         try {
+            console.log('Добавление новой транзакции:', data);
             const response = await transactionsApi.create(data);
-            // Добавляем новую транзакцию в локальный список без повторного запроса
-            setTransactions(prev => [...prev, response.data]);
+            console.log('Транзакция успешно добавлена:', response.data);
+
+            // Обновляем список транзакций
+            await fetchTransactions();
             return response.data;
         } catch (err) {
             console.error('Error adding transaction:', err);
@@ -80,38 +84,38 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
     }, [fetchTransactions, isSignedIn]);
 
     const deleteTransaction = useCallback(async (id: number) => {
-        // Проверяем, авторизован ли пользователь
         if (!isSignedIn) {
             console.error('Пользователь не авторизован');
             throw new Error('Необходимо авторизоваться');
         }
 
         try {
+            console.log('Удаление транзакции:', id);
             await transactionsApi.delete(id);
-            setTransactions(prev => prev.filter(t => t.id !== id));
+            console.log('Транзакция успешно удалена');
+            await fetchTransactions();
         } catch (err) {
             console.error('Error deleting transaction:', err);
             throw new Error('Ошибка при удалении транзакции');
         }
-    }, [isSignedIn]);
+    }, [fetchTransactions, isSignedIn]);
 
     const updateTransaction = useCallback(async (id: number, data: Transaction) => {
-        // Проверяем, авторизован ли пользователь
         if (!isSignedIn) {
             console.error('Пользователь не авторизован');
             throw new Error('Необходимо авторизоваться');
         }
 
         try {
-            const response = await transactionsApi.update(id, data);
-            setTransactions(prev =>
-                prev.map(t => t.id === id ? response.data : t)
-            );
+            console.log('Обновление транзакции:', { id, data });
+            await transactionsApi.update(id, data);
+            console.log('Транзакция успешно обновлена');
+            await fetchTransactions();
         } catch (err) {
             console.error('Error updating transaction:', err);
             throw new Error('Ошибка при обновлении транзакции');
         }
-    }, [isSignedIn]);
+    }, [fetchTransactions, isSignedIn]);
 
     return {
         transactions,
