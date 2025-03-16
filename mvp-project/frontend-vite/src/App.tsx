@@ -143,7 +143,7 @@ export default function ExpenseTracker() {
       <ErrorBoundary>
         <SignedIn>
           <div className="min-h-screen bg-background">
-            <div className="container mx-auto p-4 pb-20 md:pb-4 md:pl-20">
+            <div className="container max-w-[1152px] mx-auto p-4 pb-20 md:pb-4 md:pl-20">
               <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Учет расходов и доходов</h1>
                 <div className="flex items-center gap-4">

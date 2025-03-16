@@ -135,30 +135,30 @@ export function TransactionList({ selectedAccount, currentMonth, refreshTrigger 
             <div className="space-y-4">
                 {transactions.map((transaction) => (
                     <Card key={transaction.id} className="p-4">
-                        <div className="flex">
+                        <div className="flex min-h-[80px]">
                             {/* Левая часть */}
-                            <div className="flex-1 space-y-2">
-                                <div className="font-medium">
+                            <div className="flex-1 space-y-2 min-w-0">
+                                <div className="font-medium break-words">
                                     {categories?.find(c => c.id === transaction.category_id)?.name || 'Неизвестная категория'}
                                 </div>
                                 {transaction.description && (
-                                    <div className="text-gray-600">
+                                    <div className="text-muted-foreground break-words">
                                         {transaction.description}
                                     </div>
                                 )}
-                                <div className="text-gray-500">
+                                <div className="text-muted-foreground break-words">
                                     {accounts?.find(a => a.id === transaction.account_id)?.name || 'Неизвестный счет'}
                                 </div>
                             </div>
 
                             {/* Центральная часть - дата и время */}
-                            <div className="mx-4 text-right text-gray-500">
+                            <div className="mx-4 text-right text-muted-foreground shrink-0">
                                 <div>{format(new Date(transaction.datetime), "dd.MM.yyyy", { locale: ru })}</div>
                                 <div>{format(new Date(transaction.datetime), "HH:mm", { locale: ru })}</div>
                             </div>
 
                             {/* Средняя часть справа - тип и сумма */}
-                            <div className="flex flex-col items-end justify-between mr-4">
+                            <div className="flex flex-col items-end justify-between mr-4 shrink-0">
                                 <Badge variant={getTransactionTypeBadgeVariant(transaction.transaction_type_id)}>
                                     {getTransactionTypeLabel(transaction.transaction_type_id)}
                                 </Badge>
@@ -173,7 +173,7 @@ export function TransactionList({ selectedAccount, currentMonth, refreshTrigger 
                             </div>
 
                             {/* Правая часть - кнопки действий */}
-                            <div className="flex flex-col justify-center space-y-2 ml-4 border-l pl-4">
+                            <div className="flex flex-col justify-center space-y-2 ml-4 border-l border-border pl-4 h-full">
                                 <Button
                                     variant="ghost"
                                     size="icon"
