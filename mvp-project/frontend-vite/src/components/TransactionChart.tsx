@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { useTransactions } from "@/hooks/useTransactions"
+import { useAIAnalysis } from "@/hooks/useAIAnalysis"
+import { useToast } from "@/components/ui/use-toast"
 import {
     ResponsiveContainer,
     BarChart,
@@ -11,6 +14,13 @@ import {
     Tooltip,
     Legend,
 } from "recharts"
+import { Brain } from "lucide-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 interface TransactionChartProps {
     currentMonth: string
@@ -33,6 +43,8 @@ export function TransactionChart({
             expense: number
         }>
     >([])
+    const [showAnalysis, setShowAnalysis] = useState(false)
+    const { toast } = useToast()
 
     // Получаем ID выбранного счета
     const account_id = selectedAccount && selectedAccount !== "Все счета"
@@ -40,6 +52,7 @@ export function TransactionChart({
         : undefined
 
     const { transactions, isLoading, error } = useTransactions(account_id, currentMonth)
+    const { analyzeTransactions, isLoading: isAnalyzing, error: analysisError, analysis } = useAIAnalysis()
 
     const formatAmount = (amount: number): string => {
         return new Intl.NumberFormat('ru-RU', {
@@ -106,6 +119,20 @@ export function TransactionChart({
         }
     }, [transactions, currentMonth, selectedAccount])
 
+    const handleAnalyze = async () => {
+        if (!transactions?.length) {
+            toast({
+                variant: "destructive",
+                title: "Ошибка",
+                description: "Нет транзакций для анализа",
+            })
+            return
+        }
+
+        setShowAnalysis(true)
+        await analyzeTransactions()
+    }
+
     if (isLoading) {
         return (
             <Card className="h-[400px]">
@@ -138,8 +165,17 @@ export function TransactionChart({
 
     return (
         <Card className="h-[400px]">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>График доходов и расходов по дням</CardTitle>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing || !transactions?.length}
+                >
+                    <Brain className="w-4 h-4 mr-2" />
+                    {isAnalyzing ? "Анализирую..." : "Анализ с ИИ"}
+                </Button>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -147,19 +183,23 @@ export function TransactionChart({
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             dataKey="name"
-                            label={{
-                                value: "День месяца",
-                                position: "bottom",
-                                offset: -5
-                            }}
+                            axisLine={false}
+                            tickLine={false}
+                            style={{ fontSize: '0.75rem' }}
                         />
                         <YAxis
-                            label={{
-                                value: "Сумма",
-                                angle: -90,
-                                position: "insideLeft",
-                                offset: -5
+                            axisLine={false}
+                            tickLine={false}
+                            tickFormatter={(value) => {
+                                if (value >= 1000000) {
+                                    return `${(value / 1000000).toFixed(1)}M`;
+                                } else if (value >= 1000) {
+                                    return `${(value / 1000).toFixed(0)}K`;
+                                }
+                                return value.toString();
                             }}
+                            width={45}
+                            style={{ fontSize: '0.75rem' }}
                         />
                         <Tooltip
                             formatter={(value: number) => [`${formatAmount(value)}`, "Сумма"]}
@@ -167,7 +207,7 @@ export function TransactionChart({
                         />
                         <Legend
                             verticalAlign="top"
-                            height={36}
+                            height={24}
                         />
                         <Bar
                             dataKey="income"
@@ -184,6 +224,29 @@ export function TransactionChart({
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
+
+            <Dialog open={showAnalysis} onOpenChange={setShowAnalysis}>
+                <DialogContent className="w-[90vw] max-w-[500px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Анализ транзакций</DialogTitle>
+                    </DialogHeader>
+                    {isAnalyzing && (
+                        <div className="flex items-center justify-center py-8">
+                            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                        </div>
+                    )}
+                    {analysisError && (
+                        <div className="text-red-500 py-4">
+                            {analysisError}
+                        </div>
+                    )}
+                    {analysis && (
+                        <div className="mt-4 whitespace-pre-wrap text-sm">
+                            {analysis}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </Card>
     )
 }

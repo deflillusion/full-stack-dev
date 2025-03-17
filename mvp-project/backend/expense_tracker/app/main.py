@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from app.database import get_db, engine, Base
 from app.models import User
-from app.routers import accounts, transactions, categories, statistic, clerk
+from app.routers import accounts, transactions, categories, statistic, clerk, ai_analysis
 from app.init_data import init_transaction_types
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -64,3 +64,8 @@ app.include_router(transactions.router,
 app.include_router(categories.router, prefix="/categories",
                    tags=["Categories"])
 app.include_router(statistic.router, prefix="/statistic", tags=["Statistic"])
+app.include_router(ai_analysis.router)
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Finance Tracker API"}

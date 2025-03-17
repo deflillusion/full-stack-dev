@@ -12,7 +12,7 @@ import { ChartTab } from "@/components/ChartTab";
 import { useAccounts } from "@/hooks/useAccounts";
 import { transactionsApi } from "@/api"; // Импортируем напрямую API
 import dayjs from "dayjs";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toast";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import type { Transaction } from "@/types/types";
 import {
