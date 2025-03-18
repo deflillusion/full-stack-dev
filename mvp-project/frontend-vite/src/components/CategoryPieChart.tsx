@@ -52,7 +52,7 @@ export function CategoryPieChart({ currentMonth, selectedAccount, accounts }: Ca
           cx="50%"
           cy="50%"
           outerRadius={80}
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(2)}%`}
+          label={({ percent }) => `${(percent * 100).toFixed(2)}%`}
         >
           {expenses.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

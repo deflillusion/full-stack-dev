@@ -76,6 +76,13 @@ export const accountsApi = {
     delete: (id: number) => api.delete(`/accounts/${id}`)
 };
 
+// Кэш для хранения результатов запросов
+const apiCache = {
+    last12MonthsData: null as any,
+    last12MonthsParams: null as any,
+    last12MonthsTimestamp: 0
+};
+
 // API для статистики
 export const statisticsApi = {
     getMonthlySummary: (year: number, month: number, account_id?: number) =>
@@ -90,6 +97,76 @@ export const statisticsApi = {
                 account_id
             }
         }),
+    getLast12Months: (current_month: string, account_id?: number, category_id?: number, signal?: AbortSignal) => {
+        // Создаем строку с параметрами для сравнения
+        const paramsKey = JSON.stringify({ current_month, account_id, category_id });
+        const now = Date.now();
+
+        // Если в кэше есть данные и они не устарели (менее 30 секунд) и параметры совпадают
+        if (
+            apiCache.last12MonthsData &&
+            apiCache.last12MonthsParams === paramsKey &&
+            now - apiCache.last12MonthsTimestamp < 30000
+        ) {
+            console.log("Возвращаем закэшированные данные за 12 месяцев");
+            return Promise.resolve(apiCache.last12MonthsData);
+        }
+
+        // Иначе делаем новый запрос
+        console.log("Выполняем новый запрос за 12 месяцев с параметрами:",
+            { current_month, account_id, category_id, hasSignal: !!signal });
+
+        return api.get('/statistic/last-12-months/', {
+            params: {
+                current_month,
+                account_id,
+                category_id
+            },
+            signal // Передаем сигнал в запрос
+        }).then(response => {
+            // Проверяем, что запрос не был отменен
+            if (signal && signal.aborted) {
+                console.log("Запрос был отменен, не сохраняем в кэш");
+                // Выбрасываем ошибку отмены
+                const error: any = new Error('Запрос был отменен');
+                error.name = 'CanceledError';
+                error.code = 'ERR_CANCELED';
+                throw error;
+            }
+
+            // Кэшируем результат
+            console.log("Сохраняем результат запроса в кэш");
+            apiCache.last12MonthsData = response;
+            apiCache.last12MonthsParams = paramsKey;
+            apiCache.last12MonthsTimestamp = now;
+            return response;
+        }).catch(err => {
+            // Если ошибка вызвана отменой запроса, просто пробрасываем её дальше
+            if (err.name === 'CanceledError' || err.code === 'ERR_CANCELED' ||
+                (err instanceof DOMException && err.name === 'AbortError')) {
+                console.log("Запрос был отменен:", err.message || err.name);
+                throw err;
+            }
+
+            // Для других ошибок логируем и пробрасываем дальше
+            console.error("Ошибка при запросе статистики за 12 месяцев:", err);
+            throw err;
+        });
+    },
+
+    getAiAnalysis: (current_month: string, account_id?: number, category_id?: number, signal?: AbortSignal) => {
+        console.log("Запрос ИИ-анализа за 12 месяцев с параметрами:",
+            { current_month, account_id, category_id, hasSignal: !!signal });
+
+        return api.get('/statistic/ai-analysis/last-12-months/', {
+            params: {
+                current_month,
+                account_id,
+                category_id
+            },
+            signal // Передаем сигнал в запрос
+        });
+    },
 };
 
 export const categoriesApi = {
@@ -107,6 +184,7 @@ export const transactionsApi = {
         account_id?: number;
         year?: string;
         month?: string;
+        category_id?: number;
     }) => api.get('/transactions/', { params }),
 
     getById: (id: number) => api.get(`/transactions/${id}`),

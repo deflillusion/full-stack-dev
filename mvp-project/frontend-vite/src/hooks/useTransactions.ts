@@ -3,7 +3,7 @@ import { transactionsApi } from '@/api';
 import type { Transaction } from '@/types/types';
 import { useAuth, useUser } from '@clerk/clerk-react';
 
-export function useTransactions(account_id?: number, currentMonth?: string) {
+export function useTransactions(account_id?: number, currentMonth?: string, category_id?: number) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -28,10 +28,14 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
             setIsLoading(true);
             setError(null);
 
-            let params: { account_id?: number; year?: string; month?: string } = {};
+            let params: { account_id?: number; year?: string; month?: string; category_id?: number } = {};
 
             if (account_id) {
                 params.account_id = account_id;
+            }
+
+            if (category_id) {
+                params.category_id = category_id;
             }
 
             if (currentMonth) {
@@ -40,7 +44,7 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
                 params.month = month;
             }
 
-            console.log('Запрос транзакций с параметрами:', { account_id, currentMonth, params });
+            console.log('Запрос транзакций с параметрами:', { account_id, category_id, currentMonth, params });
             const response = await transactionsApi.getAll(params);
             console.log('Получены транзакции:', response.data);
             setTransactions(response.data);
@@ -51,17 +55,17 @@ export function useTransactions(account_id?: number, currentMonth?: string) {
         } finally {
             setIsLoading(false);
         }
-    }, [account_id, currentMonth, isSignedIn]);
+    }, [account_id, category_id, currentMonth, isSignedIn]);
 
     // Загружаем транзакции при монтировании компонента и при изменении параметров
     useEffect(() => {
-        console.log('useEffect: Изменились параметры запроса:', { account_id, currentMonth });
+        console.log('useEffect: Изменились параметры запроса:', { account_id, category_id, currentMonth });
         if (isSignedIn) {
             fetchTransactions();
         } else {
             setTransactions([]);
         }
-    }, [account_id, currentMonth, fetchTransactions, isSignedIn]);
+    }, [account_id, category_id, currentMonth, fetchTransactions, isSignedIn]);
 
     const addTransaction = useCallback(async (data: Transaction) => {
         if (!isSignedIn) {

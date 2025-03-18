@@ -60,6 +60,111 @@ export interface ApiExpensesByCategory {
     percentage: number;
 }
 
+export interface ApiMonthlyStatistic {
+    month: string;
+    income: number;
+    expense: number;
+    balance: number;
+}
+
+export interface ApiAiAnalysisInsight {
+    income: {
+        average: number;
+        trend: string;
+        trend_value: number;
+    };
+    expense: {
+        average: number;
+        trend: string;
+        trend_value: number;
+    };
+    balance: {
+        average: number;
+        positive_months: number;
+        negative_months: number;
+    };
+    summary: string[];
+}
+
+export interface ApiAiSeasonalInsight {
+    seasonal_data?: {
+        [season: string]: {
+            avg_income: number;
+            avg_expense: number;
+            num_months: number;
+            months: string[];
+        };
+    };
+    max_income_season?: string;
+    max_expense_season?: string;
+    summary: string[];
+    message?: string;
+}
+
+export interface ApiAiAnomaly {
+    income_anomalies: Array<{
+        month: string;
+        value: number;
+        deviation: number;
+    }>;
+    expense_anomalies: Array<{
+        month: string;
+        value: number;
+        deviation: number;
+    }>;
+    summary: string[];
+    message?: string;
+}
+
+export interface ApiAiBudgetRecommendation {
+    current_data?: {
+        latest_month: string;
+        avg_monthly_income: number;
+        avg_monthly_expense: number;
+    };
+    predictions?: {
+        next_month_income: number;
+        next_month_expense: number;
+    };
+    recommendations?: {
+        recommended_expense: number;
+        recommended_savings: number;
+    };
+    summary: string[];
+    message?: string;
+}
+
+// Старая версия интерфейса AI анализа
+export interface ApiAiAnalysisOld {
+    insights: ApiAiAnalysisInsight;
+    seasonal_insights: ApiAiSeasonalInsight;
+    anomalies: ApiAiAnomaly;
+    budget_recommendations: ApiAiBudgetRecommendation;
+}
+
+// Новая версия интерфейса AI анализа
+export interface ApiAiAnalysis {
+    trends: {
+        insights: string[];
+        recommendations: string[];
+    };
+    seasonal: {
+        insights: string[];
+        recommendations: string[];
+    };
+    anomalies: {
+        items: Array<{
+            period: string;
+            description: string;
+        }>;
+        recommendations: string[];
+    };
+    budget: {
+        recommendations: string[];
+        savings_potential?: string;
+    };
+}
+
 // Хелперы для преобразования типов
 export function apiToFrontendTransaction(
     apiTransaction: ApiTransaction,

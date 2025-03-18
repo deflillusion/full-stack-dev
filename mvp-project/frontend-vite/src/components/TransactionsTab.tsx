@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { TransactionList } from "@/components/TransactionList"
+import { CategorySelector } from "@/components/CategorySelector"
+import { useCategories } from "@/hooks/useCategories"
 import type { Account, Transaction } from "@/types/types"
 
 interface TransactionsTabProps {
@@ -18,12 +21,28 @@ export function TransactionsTab({
     onDelete,
     refreshTrigger
 }: TransactionsTabProps) {
+    const [selectedCategory, setSelectedCategory] = useState("Все категории");
+    const { categories, isLoading: isLoadingCategories, error: categoriesError } = useCategories();
+
     return (
-        <TransactionList
-            currentMonth={currentMonth}
-            selectedAccount={selectedAccount}
-            refreshTrigger={refreshTrigger}
-        />
+        <div>
+            <div className="flex justify-end mb-4">
+                <CategorySelector
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={setSelectedCategory}
+                    isLoading={isLoadingCategories}
+                    error={categoriesError}
+                    align="end"
+                />
+            </div>
+            <TransactionList
+                currentMonth={currentMonth}
+                selectedAccount={selectedAccount}
+                selectedCategory={selectedCategory}
+                refreshTrigger={refreshTrigger}
+            />
+        </div>
     );
 }
 

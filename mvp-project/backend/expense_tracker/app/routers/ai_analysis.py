@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import openai
 from datetime import datetime
 from pydantic import BaseModel
@@ -32,18 +32,61 @@ client = openai.OpenAI(api_key=settings.openai_api_key)
 
 @router.post("/analyze-transactions")
 async def analyze_transactions(
+    account_id: Optional[int] = None,
+    category_id: Optional[int] = None,
+    current_month: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     try:
-        # Получаем транзакции пользователя
-        transactions = db.query(Transaction).filter(
-            Transaction.user_id == current_user.id
-        ).all()
+        # Получаем транзакции пользователя с фильтрами
+        query = db.query(Transaction).filter(
+            Transaction.user_id == current_user.id)
+
+        # Применяем фильтры, если они есть
+        if account_id:
+            query = query.filter(Transaction.account_id == account_id)
+
+        if category_id:
+            query = query.filter(Transaction.category_id == category_id)
+
+        if current_month:
+            year, month = current_month.split('-')
+            start_date = f"{year}-{month}-01"
+            if month == '12':
+                next_year = str(int(year) + 1)
+                next_month = '01'
+            else:
+                next_year = year
+                next_month = str(int(month) + 1).zfill(2)
+            end_date = f"{next_year}-{next_month}-01"
+
+            query = query.filter(
+                Transaction.datetime >= start_date,
+                Transaction.datetime < end_date
+            )
+
+        transactions = query.all()
 
         if not transactions:
-            raise HTTPException(
-                status_code=404, detail="Транзакции не найдены")
+            return {
+                "trends": {
+                    "insights": ["Недостаточно данных для анализа."],
+                    "recommendations": []
+                },
+                "seasonal": {
+                    "insights": ["Недостаточно данных для сезонного анализа."],
+                    "recommendations": []
+                },
+                "anomalies": {
+                    "items": [],
+                    "recommendations": []
+                },
+                "budget": {
+                    "recommendations": ["Добавьте транзакции для получения бюджетных рекомендаций."],
+                    "savings_potential": None
+                }
+            }
 
         # Получаем категории пользователя
         categories = {
@@ -88,18 +131,61 @@ async def analyze_transactions(
                           100) if total_expense > 0 else 0
             transaction_text += f"{category_name}: {amount} тенге ({percentage:.1f}%)\n"
 
-        # Запрос к ChatGPT с новым API
+        # Запрос к ChatGPT с новым API для структурированного анализа
+        filter_info = []
+        if account_id:
+            filter_info.append(f"для счета с ID {account_id}")
+        if category_id:
+            category_name = categories.get(category_id, f"с ID {category_id}")
+            filter_info.append(f"для категории '{category_name}'")
+        if current_month:
+            filter_info.append(f"за месяц {current_month}")
+
+        filter_text = " ".join(filter_info) if filter_info else "за все время"
+
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Ты финансовый аналитик. Проанализируй транзакции и дай советы по улучшению финансового положения. Рассмотри структуру расходов по категориям и сделай выводы о приоритетах трат. Предложи конкретные рекомендации по оптимизации расходов и увеличению доходов. Используй дружелюбный тон и конкретные рекомендации."},
-                {"role": "user", "content": transaction_text}
-            ]
+                {"role": "system", "content": """Ты финансовый аналитик. Проанализируй транзакции и подготовь структурированный анализ в JSON формате со следующими разделами:
+                1. Тренды (trends): общие тенденции в доходах и расходах
+                2. Сезонность (seasonal): периодические изменения в финансах
+                3. Аномалии (anomalies): необычные транзакции или выбросы
+                4. Бюджетные рекомендации (budget): советы по оптимизации
+                
+                Формат ответа должен быть строго JSON:
+                {
+                  "trends": {
+                    "insights": ["список выводов о трендах", "..."],
+                    "recommendations": ["рекомендации по трендам", "..."]
+                  },
+                  "seasonal": {
+                    "insights": ["выводы о сезонности", "..."],
+                    "recommendations": ["рекомендации по сезонности", "..."]
+                  },
+                  "anomalies": {
+                    "items": [
+                      {"period": "период", "description": "описание аномалии"}
+                    ],
+                    "recommendations": ["рекомендации по аномалиям", "..."]
+                  },
+                  "budget": {
+                    "recommendations": ["бюджетные рекомендации", "..."],
+                    "savings_potential": "текст о потенциале экономии"
+                  }
+                }
+                
+                Ответь ТОЛЬКО в этом JSON формате без дополнительного текста до или после JSON."""},
+                {"role": "user", "content": f"Анализ транзакций {filter_text}:\n{transaction_text}"}
+            ],
+            response_format={"type": "json_object"}
         )
 
-        analysis = response.choices[0].message.content
+        # Извлекаем JSON из ответа
+        analysis_json = response.choices[0].message.content
 
-        return {"analysis": analysis}
+        # Возвращаем JSON напрямую
+        from json import loads
+        return loads(analysis_json)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

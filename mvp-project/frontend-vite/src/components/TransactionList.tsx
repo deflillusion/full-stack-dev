@@ -30,25 +30,32 @@ import {
 
 interface TransactionListProps {
     selectedAccount?: string
+    selectedCategory?: string
     currentMonth: string
     refreshTrigger?: number
 }
 
-export function TransactionList({ selectedAccount, currentMonth, refreshTrigger }: TransactionListProps) {
+export function TransactionList({ selectedAccount, selectedCategory, currentMonth, refreshTrigger = 0 }: TransactionListProps) {
     const [editingTransaction, setEditingTransaction] = useState<any>(null)
-    const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction, addTransaction } = useTransactions(
-        selectedAccount ? parseInt(selectedAccount) : undefined,
-        currentMonth
-    )
     const { accounts } = useAccounts()
     const { categories } = useCategories()
 
-    // Обновляем список при изменении refreshTrigger
+    // Получаем ID категории из её имени
+    const category_id = selectedCategory && selectedCategory !== "Все категории"
+        ? categories?.find(c => c.name === selectedCategory)?.id
+        : undefined;
+
+    const { transactions, isLoading, error, fetchTransactions, deleteTransaction, updateTransaction } = useTransactions(
+        selectedAccount ? parseInt(selectedAccount) : undefined,
+        currentMonth,
+        category_id
+    )
+
+    // Обновляем список при изменении refreshTrigger, выбранной категории или счета
     useEffect(() => {
-        if (refreshTrigger !== undefined) {
-            fetchTransactions();
-        }
-    }, [refreshTrigger, fetchTransactions]);
+        console.log("useEffect для fetchTransactions, изменились:", { refreshTrigger, selectedAccount, selectedCategory, category_id });
+        fetchTransactions();
+    }, [refreshTrigger, fetchTransactions, selectedCategory, selectedAccount, category_id]);
 
     const handleEdit = (transaction: any) => {
         setEditingTransaction(transaction)

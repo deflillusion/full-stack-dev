@@ -122,3 +122,13 @@ class ExpensesByCategory(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class MonthlyStatistic(BaseModel):
+    month: str
+    income: float
+    expense: float
+    balance: float
+
+    class Config:
+        from_attributes = True

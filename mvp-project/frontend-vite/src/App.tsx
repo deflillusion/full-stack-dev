@@ -32,7 +32,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 export default function ExpenseTracker() {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedAccount, setSelectedAccount] = useState("Все счета");
-  const { accounts, isLoading, error } = useAccounts();
+  const { accounts, isLoading: isLoadingAccounts, error: accountsError } = useAccounts();
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
   const [shouldRefreshTransactions, setShouldRefreshTransactions] = useState(0);
 
@@ -152,13 +152,13 @@ export default function ExpenseTracker() {
                 </div>
               </div>
 
-              <div className="mb-4 flex justify-between items-center">
+              <div className="mb-6 flex flex-row justify-between items-center">
                 <AccountSelector
                   accounts={accounts || []}
                   selectedAccount={selectedAccount}
                   onSelectAccount={setSelectedAccount}
-                  isLoading={isLoading}
-                  error={error}
+                  isLoading={isLoadingAccounts}
+                  error={accountsError}
                 />
                 <MonthSelector
                   currentMonth={currentMonth}

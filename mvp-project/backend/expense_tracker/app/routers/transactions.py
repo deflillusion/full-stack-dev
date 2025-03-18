@@ -170,6 +170,7 @@ def get_transactions(
     year: Optional[int] = None,
     month: Optional[int] = None,
     account_id: Optional[int] = None,
+    category_id: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -178,6 +179,9 @@ def get_transactions(
 
     if account_id:
         query = query.filter(Transaction.account_id == account_id)
+
+    if category_id:
+        query = query.filter(Transaction.category_id == category_id)
 
     if year and month:
         start_date = datetime(year, month, 1)

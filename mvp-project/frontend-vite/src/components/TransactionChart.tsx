@@ -21,10 +21,15 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import { useCategories } from "@/hooks/useCategories"
+import { Card as UICard, CardContent as UICardContent, CardHeader as UICardHeader, CardTitle as UICardTitle, CardDescription } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface TransactionChartProps {
     currentMonth: string
     selectedAccount: string
+    selectedCategory: string
+    categoryId?: number
     accounts: Array<{
         id: number
         name: string
@@ -34,6 +39,8 @@ interface TransactionChartProps {
 export function TransactionChart({
     currentMonth,
     selectedAccount,
+    selectedCategory,
+    categoryId,
     accounts,
 }: TransactionChartProps) {
     const [chartData, setChartData] = useState<
@@ -51,7 +58,15 @@ export function TransactionChart({
         ? parseInt(selectedAccount)
         : undefined
 
-    const { transactions, isLoading, error } = useTransactions(account_id, currentMonth)
+    // Получаем ID выбранной категории
+    const { categories } = useCategories()
+    const category_id = categoryId !== undefined ? categoryId : (
+        selectedCategory && selectedCategory !== "Все категории" && categories
+            ? categories.find(c => c.name === selectedCategory)?.id
+            : undefined
+    )
+
+    const { transactions, isLoading, error } = useTransactions(account_id, currentMonth, category_id)
     const { analyzeTransactions, isLoading: isAnalyzing, error: analysisError, analysis } = useAIAnalysis()
 
     const formatAmount = (amount: number): string => {
@@ -66,6 +81,9 @@ export function TransactionChart({
             setChartData([]) // Очищаем данные графика, если транзакции отсутствуют
             return
         }
+
+        console.log("TransactionChart: обновление данных графика при изменении:",
+            { currentMonth, selectedAccount, selectedCategory, transactionsCount: transactions.length });
 
         try {
             // Группируем транзакции по дням
@@ -117,7 +135,7 @@ export function TransactionChart({
         } catch (err) {
             console.error("Ошибка при обработке данных для графика:", err)
         }
-    }, [transactions, currentMonth, selectedAccount])
+    }, [transactions, currentMonth, selectedAccount, selectedCategory])
 
     const handleAnalyze = async () => {
         if (!transactions?.length) {
@@ -130,14 +148,18 @@ export function TransactionChart({
         }
 
         setShowAnalysis(true)
-        await analyzeTransactions()
+        // Передаем параметры для более точного анализа
+        await analyzeTransactions(account_id, category_id, currentMonth)
     }
 
     if (isLoading) {
         return (
             <Card className="h-[400px]">
                 <CardContent className="flex items-center justify-center h-full">
-                    Загрузка данных...
+                    <div className="flex flex-col items-center">
+                        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+                        <p>Загрузка данных...</p>
+                    </div>
                 </CardContent>
             </Card>
         )
@@ -146,8 +168,24 @@ export function TransactionChart({
     if (error) {
         return (
             <Card className="h-[400px]">
-                <CardContent className="flex items-center justify-center h-full text-red-500">
-                    {error}
+                <CardHeader>
+                    <CardTitle>График доходов и расходов по дням</CardTitle>
+                </CardHeader>
+                <CardContent className="flex items-center justify-center h-full">
+                    <div className="flex flex-col items-center text-center">
+                        <p className="text-red-500 mb-2">{error}</p>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                                console.log("TransactionChart: повторный запрос данных");
+                                // Перезагрузка данных при ошибке
+                                window.location.reload();
+                            }}
+                        >
+                            Попробовать снова
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
         )
@@ -157,7 +195,10 @@ export function TransactionChart({
         return (
             <Card className="h-[400px]">
                 <CardContent className="flex items-center justify-center h-full text-gray-500">
-                    Нет данных для отображения
+                    <div className="flex flex-col items-center text-center">
+                        <p className="mb-2">Нет данных для отображения</p>
+                        <p className="text-sm">Добавьте транзакции за этот месяц, чтобы увидеть график</p>
+                    </div>
                 </CardContent>
             </Card>
         )
@@ -166,7 +207,10 @@ export function TransactionChart({
     return (
         <Card className="h-[400px]">
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>График доходов и расходов по дням</CardTitle>
+                <div>
+                    <CardTitle>График доходов и расходов по дням</CardTitle>
+                    <p className="text-muted-foreground text-sm">Данные за текущий месяц</p>
+                </div>
                 <Button
                     variant="outline"
                     size="sm"
@@ -174,7 +218,7 @@ export function TransactionChart({
                     disabled={isAnalyzing || !transactions?.length}
                 >
                     <Brain className="w-4 h-4 mr-2" />
-                    {isAnalyzing ? "Анализирую..." : "Анализ с ИИ"}
+                    {isAnalyzing ? "Анализ..." : "ИИ-анализ"}
                 </Button>
             </CardHeader>
             <CardContent>
@@ -226,25 +270,138 @@ export function TransactionChart({
             </CardContent>
 
             <Dialog open={showAnalysis} onOpenChange={setShowAnalysis}>
-                <DialogContent className="w-[90vw] max-w-[500px] max-h-[80vh] overflow-y-auto">
+                <DialogContent className="w-[90vw] max-w-[600px] max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>Анализ транзакций</DialogTitle>
+                        <DialogTitle>ИИ-анализ транзакций</DialogTitle>
                     </DialogHeader>
-                    {isAnalyzing && (
-                        <div className="flex items-center justify-center py-8">
-                            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-                        </div>
-                    )}
-                    {analysisError && (
-                        <div className="text-red-500 py-4">
-                            {analysisError}
-                        </div>
-                    )}
-                    {analysis && (
-                        <div className="mt-4 whitespace-pre-wrap text-sm">
-                            {analysis}
-                        </div>
-                    )}
+                    <div className="space-y-4">
+                        {isAnalyzing && (
+                            <div className="flex flex-col items-center justify-center py-8">
+                                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+                                <p>Анализируем ваши данные...</p>
+                            </div>
+                        )}
+
+                        {analysisError && !isAnalyzing && (
+                            <div className="p-4 border border-red-300 bg-red-50 rounded-md">
+                                <p className="text-red-600">{analysisError}</p>
+                            </div>
+                        )}
+
+                        {analysis && !isAnalyzing && !analysisError && (
+                            <div className="mt-2">
+                                <Tabs defaultValue="trends">
+                                    <TabsList className="grid w-full grid-cols-4 mb-4">
+                                        <TabsTrigger value="trends">Тренды</TabsTrigger>
+                                        <TabsTrigger value="seasonal">Сезонность</TabsTrigger>
+                                        <TabsTrigger value="anomalies">Аномалии</TabsTrigger>
+                                        <TabsTrigger value="budget">Бюджет</TabsTrigger>
+                                    </TabsList>
+                                    <div className="overflow-y-auto pr-1 max-h-[50vh]">
+                                        <TabsContent value="trends" className="space-y-4">
+                                            <UICard>
+                                                <UICardHeader>
+                                                    <UICardTitle>Основные тренды</UICardTitle>
+                                                    <CardDescription>Анализ динамики доходов и расходов</CardDescription>
+                                                </UICardHeader>
+                                                <UICardContent className="space-y-4">
+                                                    <div>
+                                                        <h4 className="font-medium mb-2">Выводы</h4>
+                                                        <ul className="list-disc pl-5 space-y-2">
+                                                            {analysis.trends?.insights?.map((insight, idx) => (
+                                                                <li key={idx}>{insight}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                    {analysis.trends?.recommendations?.length > 0 && (
+                                                        <div>
+                                                            <h4 className="font-medium mb-2">Рекомендации</h4>
+                                                            <ul className="list-disc pl-5 space-y-2">
+                                                                {analysis.trends.recommendations.map((recommendation, idx) => (
+                                                                    <li key={idx}>{recommendation}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </UICardContent>
+                                            </UICard>
+                                        </TabsContent>
+
+                                        <TabsContent value="seasonal" className="space-y-4">
+                                            <UICard>
+                                                <UICardHeader>
+                                                    <UICardTitle>Сезонный анализ</UICardTitle>
+                                                    <CardDescription>Периодические изменения в финансах</CardDescription>
+                                                </UICardHeader>
+                                                <UICardContent>
+                                                    <div>
+                                                        <h4 className="font-medium mb-2">Выводы</h4>
+                                                        <ul className="list-disc pl-5 space-y-2">
+                                                            {analysis.seasonal?.insights?.map((insight, idx) => (
+                                                                <li key={idx}>{insight}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </UICardContent>
+                                            </UICard>
+                                        </TabsContent>
+
+                                        <TabsContent value="anomalies" className="space-y-4">
+                                            <UICard>
+                                                <UICardHeader>
+                                                    <UICardTitle>Аномалии в транзакциях</UICardTitle>
+                                                    <CardDescription>Необычные паттерны в расходах и доходах</CardDescription>
+                                                </UICardHeader>
+                                                <UICardContent>
+                                                    {analysis.anomalies?.items?.length > 0 ? (
+                                                        <>
+                                                            <h4 className="font-medium mb-2">Найденные аномалии</h4>
+                                                            <ul className="list-disc pl-5 space-y-2">
+                                                                {analysis.anomalies.items.map((item, idx) => (
+                                                                    <li key={idx}>
+                                                                        <span className="font-medium">{item.period}:</span> {item.description}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </>
+                                                    ) : (
+                                                        <p>Аномалий не обнаружено</p>
+                                                    )}
+                                                </UICardContent>
+                                            </UICard>
+                                        </TabsContent>
+
+                                        <TabsContent value="budget" className="space-y-4">
+                                            <UICard>
+                                                <UICardHeader>
+                                                    <UICardTitle>Бюджетные рекомендации</UICardTitle>
+                                                    <CardDescription>Советы по улучшению финансов</CardDescription>
+                                                </UICardHeader>
+                                                <UICardContent>
+                                                    {analysis.budget?.recommendations?.length > 0 && (
+                                                        <div>
+                                                            <h4 className="font-medium mb-2">Рекомендации</h4>
+                                                            <ul className="list-disc pl-5 space-y-2">
+                                                                {analysis.budget.recommendations.map((recommendation, idx) => (
+                                                                    <li key={idx}>{recommendation}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                    {analysis.budget?.savings_potential && (
+                                                        <div className="mt-4 p-3 bg-muted rounded-md">
+                                                            <p className="font-medium">Потенциал экономии:</p>
+                                                            <p>{analysis.budget.savings_potential}</p>
+                                                        </div>
+                                                    )}
+                                                </UICardContent>
+                                            </UICard>
+                                        </TabsContent>
+                                    </div>
+                                </Tabs>
+                            </div>
+                        )}
+                    </div>
                 </DialogContent>
             </Dialog>
         </Card>
