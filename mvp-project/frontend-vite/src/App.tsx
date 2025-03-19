@@ -27,6 +27,13 @@ import AuthPage from "@/pages/AuthPage";
 import { authApi } from "@/api"; // Импортируем новый API
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Outlet, Route, Routes } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+import {
+  Authenticated,
+  ClerkProvider,
+  RedirectToSignIn,
+} from "@clerk/clerk-react";
 
 
 export default function ExpenseTracker() {
@@ -35,6 +42,9 @@ export default function ExpenseTracker() {
   const { accounts, isLoading: isLoadingAccounts, error: accountsError } = useAccounts();
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
   const [shouldRefreshTransactions, setShouldRefreshTransactions] = useState(0);
+  const [selectedAccountId, setSelectedAccountId] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [refreshDate, setRefreshDate] = useState(new Date());
 
   // Получаем токен Clerk
   const { getToken, isSignedIn } = useAuth();
@@ -101,34 +111,6 @@ export default function ExpenseTracker() {
     return () => clearInterval(tokenRefreshInterval);
   }, [getToken, isSignedIn]);
 
-  // Оптимизированный fetchTransactions с использованием useCallback
-  const fetchTransactions = useCallback(async () => {
-    try {
-      const params: {
-        account_id?: number;
-        year?: string;
-        month?: string;
-      } = {};
-
-      if (selectedAccount !== "Все счета") {
-        const accountId = accounts?.find((a) => a.name === selectedAccount)?.id;
-        if (accountId) {
-          params.account_id = accountId;
-        }
-      }
-
-      const [year, month] = currentMonth.split("-").map(String);
-      params.year = year;
-      params.month = month;
-
-      // Токен теперь добавляется автоматически в перехватчике запросов
-      return await transactionsApi.getAll(params);
-    } catch (error) {
-      console.error("Ошибка при загрузке транзакций:", error);
-      throw error;
-    }
-  }, [selectedAccount, currentMonth, accounts]);
-
   // Обработчики для переключения месяцев
   const handlePreviousMonth = () => {
     setCurrentMonth(dayjs(currentMonth).subtract(1, "month").format("YYYY-MM"));
@@ -137,6 +119,11 @@ export default function ExpenseTracker() {
   const handleNextMonth = () => {
     setCurrentMonth(dayjs(currentMonth).add(1, "month").format("YYYY-MM"));
   };
+
+  // Обновление всех данных при изменении месяца
+  useEffect(() => {
+    setRefreshDate(new Date());
+  }, [selectedMonth]);
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="expense-tracker-theme">

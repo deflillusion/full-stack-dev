@@ -12,7 +12,7 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import dayjs from "dayjs"
 import { TimePicker } from "./TimePicker"
-import type { Account, Category, Transaction } from "@/types/types"
+import type { Account, Category } from "@/types/types"
 
 interface TransactionFormProps {
     onSubmit: (data: {
@@ -118,8 +118,8 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
         setIsTimeOpen(false);
     };
 
-    const filteredCategories = categories.filter(category =>
-        accountId && accounts.find(a => a.id.toString() === accountId)
+    const categoriesForType = categories.filter(category =>
+        category.transaction_type_id === Number(transactionType)
     );
 
     return (
@@ -222,13 +222,11 @@ export function TransactionForm({ onSubmit, accounts, categories, initialData }:
                         <SelectValue placeholder="Выберите категорию" />
                     </SelectTrigger>
                     <SelectContent>
-                        {categories
-                            .filter(category => category.transaction_type_id === transactionType)
-                            .map((category) => (
-                                <SelectItem key={category.id} value={category.id.toString()}>
-                                    {category.name}
-                                </SelectItem>
-                            ))}
+                        {categoriesForType.map((category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                                {category.name}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>

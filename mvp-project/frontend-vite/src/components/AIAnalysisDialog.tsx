@@ -10,8 +10,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Loader2, LineChart, Calendar, AlertTriangle, PiggyBank } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { ApiAiAnalysis, ApiAiAnalysisOld } from "@/types/types"
+import { cn } from "@/lib/utils"
+import dayjs from "dayjs"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
 interface AIAnalysisDialogProps {
     open: boolean;

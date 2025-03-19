@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { TransactionForm } from "./TransactionForm"
 import type { Account, Category, Transaction } from "@/types/types"
+import { toast } from "sonner"
 
 interface EditTransactionDialogProps {
     isOpen: boolean;
@@ -19,10 +20,24 @@ export function EditTransactionDialog({
     accounts,
     categories
 }: EditTransactionDialogProps) {
-    const handleSubmit = async (data: Transaction) => {
-        if (transaction) {
-            await onSubmit({ ...data, id: transaction.id });
-            onClose();
+    const handleSubmit = async (data: {
+        account_id: number;
+        category_id: number;
+        transaction_type_id: number;
+        amount: number;
+        description: string;
+        datetime: string;
+        to_account_id?: number;
+    }) => {
+        try {
+            if (transaction) {
+                await onSubmit({ ...data, id: transaction.id });
+                onClose();
+                toast.success("Транзакция успешно обновлена");
+            }
+        } catch (error) {
+            console.error("Ошибка при обновлении транзакции:", error);
+            toast.error("Не удалось обновить транзакцию");
         }
     };
 
