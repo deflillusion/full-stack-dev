@@ -24,10 +24,12 @@ CLERK_SECRET_KEY = settings.CLERK_SECRET_KEY
 DEFAULT_CATEGORIES = [
     {"name": "Продукты", "transaction_type_id": 2},
     {"name": "Зарплата", "transaction_type_id": 1},
+    {"name": "Прочие доходы", "transaction_type_id": 1},
     {"name": "Развлечения", "transaction_type_id": 2},
     {"name": "Транспорт", "transaction_type_id": 2},
     {"name": "Здоровье", "transaction_type_id": 2},
     {"name": "Квартира", "transaction_type_id": 2},
+    {"name": "Прочие расходы", "transaction_type_id": 2},
     {"name": "Перевод", "transaction_type_id": 3},
 ]
 

@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException, status, Header
+from fastapi import Depends, HTTPException, status, Header, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
@@ -8,6 +9,8 @@ from urllib.request import urlopen
 import logging
 import requests
 from app.config import settings
+from jose import JWTError
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +32,121 @@ def get_clerk_public_keys():
         )
 
 
-async def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)):
+security = HTTPBearer(auto_error=False)
+
+
+async def get_token_from_request(
+    request: Request,
+    authorization: Optional[str] = Header(None)
+) -> str:
+    """
+    Получает токен из заголовка Authorization или из параметра запроса token.
+    Это позволяет авторизоваться при скачивании файлов и в API-запросах.
+    """
+    # Проверяем обычный заголовок Authorization
+    if authorization and authorization.startswith("Bearer "):
+        return authorization.replace("Bearer ", "")
+
+    # Затем проверяем параметр token в запросе (для скачивания файлов)
+    token = request.query_params.get("token")
+    if token:
+        return token
+
+    # Если токен не найден, выбрасываем исключение
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
+async def get_current_user(
+    token: str = Depends(get_token_from_request),
+    db: Session = Depends(get_db)
+):
+    """Проверяет Clerk-токен и возвращает текущего пользователя"""
+    logger.info("Начинаем верификацию токена Clerk")
+
+    if not token:
+        logger.error("Токен не предоставлен")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token not provided",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    logger.info(f"Получен токен: {token[:10]}...")
+
+    try:
+        # Получаем данные из JWT
+        logger.info("Декодируем JWT токен")
+        decoded_jwt = jwt.decode(token, options={"verify_signature": False})
+        user_id = decoded_jwt.get("sub")
+
+        if not user_id:
+            logger.error("В JWT отсутствует sub (user_id)")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User ID not found in token",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        logger.info(f"ID пользователя из JWT: {user_id}")
+
+        # Ищем пользователя в базе данных
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            logger.info(
+                f"Пользователь с id={user_id} не найден, создаем нового пользователя")
+
+            # Получаем информацию о пользователе из Clerk
+            user_url = f"https://api.clerk.com/v1/users/{user_id}"
+            user_response = requests.get(
+                user_url,
+                headers={"Authorization": f"Bearer {settings.CLERK_SECRET_KEY}"}
+            )
+
+            if user_response.status_code != 200:
+                logger.error(
+                    f"Ошибка получения информации о пользователе из Clerk: {user_response.status_code}, {user_response.text}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Failed to get user info",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+            user_data = user_response.json()
+
+            # Создаем нового пользователя
+            email = user_data.get("email_addresses", [{}])[
+                0].get("email_address", "")
+            username = email.split("@")[0] if email else f"user_{user_id[:6]}"
+
+            new_user = User(
+                id=user_id,
+                email=email,
+                username=username
+            )
+
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            user = new_user
+
+        logger.info(
+            f"Пользователь найден: id={user.id}")
+        return user
+
+    except Exception as e:
+        logger.exception(f"Ошибка при проверке токена: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Failed to authenticate",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+async def get_current_user_clerk(authorization: str = Header(None), db: Session = Depends(get_db)):
     """Проверяет Clerk-токен и возвращает текущего пользователя"""
     logger.info("Начинаем верификацию токена Clerk")
 

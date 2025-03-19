@@ -203,6 +203,48 @@ export const transactionsApi = {
         api.put(`/transactions/${id}`, data),
 
     delete: (id: number) => api.delete(`/transactions/${id}`),
+
+    exportToExcel: (params?: {
+        account_id?: number;
+        year?: string;
+        month?: string;
+        category_id?: number;
+    }) => {
+        // Создаем URL с параметрами запроса
+        const url = new URL(`${API_URL}/transactions/export/excel`);
+
+        // Добавляем токен авторизации
+        const token = localStorage.getItem("clerk_token");
+
+        // Добавляем параметры, если они есть
+        if (params) {
+            if (params.account_id) url.searchParams.append('account_id', params.account_id.toString());
+            if (params.year) url.searchParams.append('year', params.year);
+            if (params.month) url.searchParams.append('month', params.month);
+            if (params.category_id) url.searchParams.append('category_id', params.category_id.toString());
+        }
+
+        // Открываем URL в новом окне для скачивания
+        // Добавляем Authorization заголовок через POST, так как GET запрос не может включать заголовки
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = url.toString();
+
+        // Добавляем заголовок авторизации через скрытое поле
+        // (на сервере нужно обрабатывать этот параметр)
+        if (token) {
+            const tokenField = document.createElement('input');
+            tokenField.type = 'hidden';
+            tokenField.name = 'token';
+            tokenField.value = token;
+            form.appendChild(tokenField);
+        }
+
+        // Добавляем форму в DOM, отправляем и удаляем
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
 };
 
 

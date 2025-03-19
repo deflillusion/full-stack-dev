@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useCategories } from "@/hooks/useCategories"
 import { useAccounts } from "@/hooks/useAccounts"
 import { useTransactionTypes } from "@/hooks/useTransactionTypes"
-import { Pencil, Trash2, Plus } from "lucide-react"
+import { Pencil, Trash2, Plus, FileDown, Download } from "lucide-react"
 import { toast } from "sonner"
+import { transactionsApi } from "@/api"
 
 type DialogState = {
   isOpen: boolean
@@ -158,9 +159,39 @@ export function SettingsPage() {
     }
   }
 
+  const handleExportToExcel = () => {
+    try {
+      transactionsApi.exportToExcel();
+      toast.success("Файл начал скачиваться");
+    } catch (error) {
+      toast.error("Ошибка при экспорте транзакций");
+      console.error("Excel export error:", error);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="grid md:grid-cols-2 gap-6">
+        {/* Экспорт данных */}
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Экспорт данных</CardTitle>
+            <CardDescription>Выгрузите данные для использования в других программах</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Button
+                onClick={handleExportToExcel}
+                className="w-full"
+                variant="outline"
+              >
+                <FileDown className="mr-2 h-4 w-4" />
+                Экспорт всех транзакций в Excel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Счета */}
         <Card className="w-full">
           <CardHeader>
