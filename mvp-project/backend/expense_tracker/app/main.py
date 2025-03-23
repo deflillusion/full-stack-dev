@@ -43,6 +43,8 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "http://167.172.250.82",
+    "https://app.defl-illusion.com",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -65,6 +67,7 @@ app.include_router(categories.router, prefix="/categories",
                    tags=["Categories"])
 app.include_router(statistic.router, prefix="/statistic", tags=["Statistic"])
 app.include_router(ai_analysis.router)
+
 
 @app.get("/")
 async def root():
