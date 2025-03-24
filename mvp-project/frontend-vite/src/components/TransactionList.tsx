@@ -152,10 +152,14 @@ export function TransactionList({ selectedAccount, selectedCategory, currentMont
                                 <div className="text-muted-foreground break-words">
                                     {accounts?.find(a => a.id === transaction.account_id)?.name || 'Неизвестный счет'}
                                 </div>
+                                {/* Дата и время для мобильной версии */}
+                                <div className="text-muted-foreground break-words md:hidden">
+                                    {format(new Date(transaction.datetime), "dd.MM.yyyy HH:mm", { locale: ru })}
+                                </div>
                             </div>
 
-                            {/* Центральная часть - дата и время */}
-                            <div className="mx-4 text-right text-muted-foreground shrink-0">
+                            {/* Центральная часть - дата и время (только для десктопа) */}
+                            <div className="mx-4 text-right text-muted-foreground shrink-0 hidden md:block">
                                 <div>{format(new Date(transaction.datetime), "dd.MM.yyyy", { locale: ru })}</div>
                                 <div>{format(new Date(transaction.datetime), "HH:mm", { locale: ru })}</div>
                             </div>

@@ -205,31 +205,44 @@ export function TransactionChart({
     }
 
     return (
-        <Card className="h-[400px]">
-            <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                    <CardTitle>График доходов и расходов по дням</CardTitle>
-                    <p className="text-muted-foreground text-sm">Данные за текущий месяц</p>
+        <Card className="h-[450px]">
+            <CardHeader className="space-y-2 pb-0">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <CardTitle>График доходов и расходов по дням</CardTitle>
+                        <p className="text-muted-foreground text-sm">Данные за текущий месяц</p>
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing || !transactions?.length}
+                        className="mt-2 md:mt-0"
+                    >
+                        <Brain className="w-4 h-4 mr-2" />
+                        {isAnalyzing ? "Анализ..." : "ИИ-анализ"}
+                    </Button>
                 </div>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAnalyze}
-                    disabled={isAnalyzing || !transactions?.length}
-                >
-                    <Brain className="w-4 h-4 mr-2" />
-                    {isAnalyzing ? "Анализ..." : "ИИ-анализ"}
-                </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
                 <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData}>
+                    <BarChart
+                        data={chartData}
+                        margin={{
+                            top: 5,
+                            right: 5,
+                            left: 0,
+                            bottom: 5,
+                        }}
+                    >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             dataKey="name"
                             axisLine={false}
                             tickLine={false}
                             style={{ fontSize: '0.75rem' }}
+                            interval="preserveStartEnd"
+                            minTickGap={10}
                         />
                         <YAxis
                             axisLine={false}
@@ -242,12 +255,21 @@ export function TransactionChart({
                                 }
                                 return value.toString();
                             }}
-                            width={45}
+                            width={35}
                             style={{ fontSize: '0.75rem' }}
                         />
                         <Tooltip
                             formatter={(value: number) => [`${formatAmount(value)}`, "Сумма"]}
                             labelFormatter={(label) => `День ${label}`}
+                            contentStyle={{
+                                backgroundColor: 'var(--tooltip-bg)',
+                                border: '1px solid var(--tooltip-border)',
+                                borderRadius: '6px',
+                                padding: '8px'
+                            }}
+                            labelStyle={{
+                                color: 'var(--foreground)'
+                            }}
                         />
                         <Legend
                             verticalAlign="top"

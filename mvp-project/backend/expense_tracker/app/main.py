@@ -33,7 +33,10 @@ if not CLERK_SECRET_KEY:
     raise ValueError("CLERK_SECRET_KEY не найден в .env")
 
 # Создаем приложение
-app = FastAPI()
+app = FastAPI(title="My API",
+              docs_url=None if os.getenv("ENV") == "production" else "/docs",
+              redoc_url=None if os.getenv("ENV") == "production" else "/redoc",
+              )
 
 # Настройка CORS
 origins = [
@@ -43,8 +46,8 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
-    "http://167.172.250.82",
     "https://app.defl-illusion.com",
+    "https://api.defl-illusion.com"
 ]
 app.add_middleware(
     CORSMiddleware,

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useLast12MonthsStatistics } from "@/hooks/useStatistics"
 import { useCategories } from "@/hooks/useCategories"
 import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Loader2, Brain } from "lucide-react"
 import {
     ResponsiveContainer,
     BarChart,
@@ -175,30 +175,41 @@ export function YearlyChart({
 
     return (
         <Card className="h-[450px]">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div>
-                    <CardTitle>Статистика за последние 12 месяцев</CardTitle>
-                    <p className="text-muted-foreground text-sm">Сравнение доходов и расходов за год</p>
+            <CardHeader className="space-y-2">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <CardTitle>График доходов и расходов по месяцам</CardTitle>
+                        <CardDescription>Данные за последние 12 месяцев</CardDescription>
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 md:mt-0"
+                        onClick={handleAIAnalysisClick}
+                        disabled={analysisLoading}
+                    >
+                        {analysisLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Анализируем...
+                            </>
+                        ) : (
+                            <>
+                                <Brain className="mr-2 h-4 w-4" />
+                                ИИ-анализ
+                            </>
+                        )}
+                    </Button>
                 </div>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center"
-                    onClick={handleAIAnalysisClick}
-                    disabled={analysisLoading}
-                >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    {analysisLoading ? "Анализ..." : "ИИ-анализ"}
-                </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart
                         data={formattedData}
                         margin={{
                             top: 5,
-                            right: 10,
-                            left: 10,
+                            right: 5,
+                            left: 0,
                             bottom: 5,
                         }}
                     >
@@ -208,15 +219,26 @@ export function YearlyChart({
                             axisLine={false}
                             tickLine={false}
                             style={{ fontSize: '0.75rem' }}
+                            interval="preserveStartEnd"
+                            minTickGap={10}
                         />
                         <YAxis
                             axisLine={false}
                             tickLine={false}
                             tickFormatter={formatAmount}
-                            width={45}
+                            width={35}
                             style={{ fontSize: '0.75rem' }}
                         />
                         <Tooltip
+                            contentStyle={{
+                                backgroundColor: 'var(--tooltip-bg)',
+                                border: '1px solid var(--tooltip-border)',
+                                borderRadius: '6px',
+                                padding: '8px'
+                            }}
+                            labelStyle={{
+                                color: 'var(--foreground)'
+                            }}
                             formatter={(value: number) => [
                                 new Intl.NumberFormat('ru-RU', {
                                     minimumFractionDigits: 2,
