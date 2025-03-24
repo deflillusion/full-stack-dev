@@ -14,6 +14,7 @@ const isActive = (path: string) => {
 const menuItems = [
     { path: "/", label: "Главная" },
     { path: "/projects", label: "Проекты" },
+    { path: "https://app.defl-illusion.com", label: "MVP" },
     { path: "/contact", label: "Контакты" },
     { path: "/entertainment", label: "Развлечения" },
     { path: "/wishlist", label: "Доска желаний" },
@@ -43,12 +44,12 @@ const menuItems = [
                 <ul class="flex flex-row space-x-8">
                     {
                         menuItems.map(({ path, label }) => (
-                            <li>
+                            <li class="flex-1 text-center whitespace-nowrap">
                                 <a
                                     class={`relative inline-block ${
                                         isActive(path)
                                             ? "text-white font-bold"
-                                            : "text-gray-400 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white"
+                                            : "text-gray-400 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white "
                                     }`}
                                     aria-current={
                                         isActive(path) ? "page" : undefined
