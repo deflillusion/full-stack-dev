@@ -1,0 +1,225 @@
+html {
+
+    background-image: url(images/background.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+
+    position: relative;
+    /* Определяет позиционирование элементов внутри */
+    padding: 50px;
+    height: 100%;
+    /*min-height: 100vh;
+    /* Страница всегда имеет необходимый размер */
+    display: flex;
+    flex-direction: column;
+
+}
+
+nav {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    border: 2px solid #485fd2;
+    border-radius: 30px;
+    animation: slide-in 1s ease-out;
+    white-space: nowrap;
+}
+
+nav ul {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0 30px;
+    list-style-type: none;
+}
+
+nav ul li:not(:last-child) {
+    margin-right: 40px;
+}
+
+nav ul li {
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding: 10px;
+    transition: background 0.2s;
+}
+
+nav ul li a {
+    color: #84bbff;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+
+
+
+nav ul li:hover {
+    background: #70c6ff;
+    border: 2px solid 70c6ff;
+    border-right: 2px solid 70c6ff;
+    border-bottom: 2px solid 70c6ff;
+}
+
+nav ul li:hover a {
+    color: #F9F8FD;
+}
+
+nav ul li:hover ul {
+    visibility: visible;
+    opacity: 0;
+
+}
+
+nav ul li:hover ul li a {
+    color: #F9F8FD;
+}
+
+@keyframes slide-in {
+    0% {
+        top: -50px;
+    }
+
+    40% {
+        top: 20px;
+    }
+
+    70% {
+        top: 10px;
+    }
+
+    100% {
+        top: 15px;
+    }
+}
+
+main {
+    text-align: center;
+    flex: 1;
+    border-radius: 30px;
+
+}
+
+
+.contacts {
+    display: block;
+    text-align: left;
+
+}
+
+
+ul .contacts {
+    color: white;
+
+}
+
+a .contacts {
+    color: white;
+    /* Цвет ссылок */
+}
+
+a .projects {
+    color: white;
+    /* Цвет ссылок */
+}
+
+.contacts:visited {
+    color: #fca1ff;
+    /* Цвет посещенных ссылок */
+}
+
+
+
+form {
+    margin-right: 40px;
+}
+
+.about {
+    display: flex;
+}
+
+.entertainment {
+    display: flex;
+    color: white;
+
+    justify-content: space-between;
+}
+
+
+#block1,
+#block2,
+#block3 {
+    flex: 1;
+    margin: 2px;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    /*background: lightgray;*/
+}
+
+
+
+.entertainment:visited {
+    color: #fca1ff;
+    /* Цвет посещенных ссылок */
+}
+
+
+
+#ent_block1,
+#ent_block2,
+#ent_block3,
+#ent_block4 {
+    flex: 1;
+    margin: 2px;
+    padding: 10px;
+}
+
+
+
+#wb_block1,
+#wb_block2,
+#wb_block3 {
+
+    flex: 1;
+    text-align: center;
+    /*margin: 2px;
+    /*border: 1px solid #ffffff;
+    padding: 10px;
+    /*background: lightgray;*/
+}
+
+.footer {
+    /*position: absolute;
+    /* Фиксируем подвал */
+    /*bottom: 0;
+    /* Всегда внизу, на виду */
+    /*width: 100%;
+    /* Занимает всю ширину экрана */
+    text-align: center;
+    padding: 10px;
+}
+
+a .projects {
+    color: white;
+    /* Цвет ссылок */
+}
+
+.projects:visited {
+    color: #fca1ff;
+    /* Цвет посещенных ссылок */
+}

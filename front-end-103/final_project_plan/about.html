@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Главная Финальный проект</title>
+</head>
+
+<body>
+    <header><!-- Шапка-меню -->
+        <nav>
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <label for="menu-toggle" class="menu-icon">☰ Меню</label>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="projects.html">Проекты</a></li>
+                <li><a href="contacts.html">Контакты</a></li>
+                <li><a href="about.html">О нас</a></li>
+                <li><a href="wishboard.html">Доска желаний</a></li>
+                <li><a href="entertainment.html">Развлечения</a></li>
+            </ul>
+        </nav>
+        <main>
+            <div>
+                <h1></h1>
+            </div>
+            <section id="aboutMe">
+                <h2 id="aboutHeading">Обо мне</h2>
+                <p id="aboutText">Меня зовут Ерик. 32 года. На эти 6 месяцев обучения у меня есть несколько целей.</p>
+                <button id="updateAbout">Обновить описание</button>
+            </section>
+
+        </main>
+        <footer class="footer"><!--Нижнаяя часть сайта-->
+
+            by Defl illusion 2024
+
+        </footer>
+    </header>
+    <script>
+        const aboutText = document.getElementById("aboutText");
+        const updateButton = document.getElementById("updateAbout");
+        const texts = [
+            "Научиться программировать и создать приложение для учета расходов",
+            "Найти работу по новой профессии",
+            "Стать хорошим программистом"
+        ];
+        let currentIndex = 0;
+
+        updateButton.addEventListener("click", () => {
+            aboutText.innerText = texts[currentIndex];
+            currentIndex = (currentIndex + 1) % texts.length;
+        });
+    </script>
+</body>
+
+</html>

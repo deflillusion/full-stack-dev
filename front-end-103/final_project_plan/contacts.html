@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Главная Финальный проект</title>
+</head>
+
+<body>
+    <header><!-- Шапка-меню -->
+
+        <nav>
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <label for="menu-toggle" class="menu-icon">☰ Меню</label>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="projects.html">Проекты</a></li>
+                <li><a href="contacts.html">Контакты</a></li>
+                <li><a href="about.html">О нас</a></li>
+                <li><a href="wishboard.html">Доска желаний</a></li>
+                <li><a href="entertainment.html">Развлечения</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="contacts" style="height: 10vh; display: grid; place-items: center;">
+            <h1>Контактная информация</h1>
+            <ul class="contacts">
+                <li><a class="contacts" href="tel:+77777777777">Телефон: +77777777777</a></li>
+                <li><a class="contacts" href="mailto:defl_illusion@mail.ru">Электронная почта: defl_illusion@mail.ru</a>
+                </li>
+                <li><a class="contacts" href="https://t.me/defl_illusion">Telegram: @defl_illusion</a></li>
+                <li>Я интроверт, поэтому пишите. Не звоните пожалуйста</li>
+            </ul>
+            <div class="contacts">
+                <h2>Контактная форма</h2>
+                <form action="/submit" method="POST">
+                    <label for="name">Имя:</label><br>
+                    <input type="text" id="name" name="name"><br><br>
+                    <label for="email">Электронная почта:</label><br>
+                    <input type="email" id="email" name="email"><br><br>
+                    <label for="message">Сообщение:</label><br>
+                    <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><!--Нижнаяя часть сайта-->
+
+        by Defl illusion 2024
+
+    </footer>
+</body>
