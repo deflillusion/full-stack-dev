@@ -12,6 +12,17 @@ body {
   background-color: #0f172a;
   color: #f3f4f6;
   font-family: "Inter", sans-serif;
+  cursor: none; /* Hide default cursor */
+}
+
+/* Make sure links and buttons don't show the default cursor */
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  cursor: none;
 }
 
 /* Custom scrollbar */

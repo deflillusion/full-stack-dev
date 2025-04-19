@@ -1,7 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
-const emoticons = ["^_^", "*_*", "-_-", "o_o", ">_<", "._.", "^_-", "T_T", "=_=", "O_O", "u_u", ">_>", "~_~", "x_x"]
+const emoticons = ["^_^", "*_*", "-_-", "o_o", ">_<", "._.", "^_-", "T_T", "=_=", "O_O", "u_u"]
 
 // Add some dialogue lines that Mother might say
 const dialogues = [

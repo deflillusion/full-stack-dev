@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useRef, useState } from "react"
@@ -9,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
+import VirusAnimation from "./VirusAnimation"
 
 const Contact = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -25,10 +24,10 @@ const Contact = () => {
       setIsSubmitting(false)
       setIsSubmitted(true)
 
-      // Reset form after 3 seconds
+      // Reset form after 5 seconds
       setTimeout(() => {
         setIsSubmitted(false)
-      }, 3000)
+      }, 5000)
     }, 1500)
   }
 
@@ -139,15 +138,18 @@ const Contact = () => {
                 </h3>
 
                 {isSubmitted ? (
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-6 text-center">
-                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                  <motion.div
+                    className="bg-pink-500/10 border border-pink-500/30 rounded-lg p-8 text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="mb-6">
+                      <VirusAnimation className="text-4xl" />
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-2">Message Sent!</h4>
-                    <p className="text-gray-400">Thank you for reaching out. I'll get back to you shortly.</p>
-                  </div>
+                    <h4 className="text-xl font-bold text-pink-500 mb-2">Message Sent!</h4>
+                    <p className="text-gray-300">Thank you for reaching out. I'll get back to you shortly.</p>
+                  </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
