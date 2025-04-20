@@ -33,8 +33,11 @@ const GeometricBackground = () => {
       rotationSpeed: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        const width = canvas?.width || window.innerWidth
+        const height = canvas?.height || window.innerHeight
+
+        this.x = Math.random() * width
+        this.y = Math.random() * height
         this.size = Math.random() * 15 + 5
         this.speed = Math.random() * 0.2 + 0.1
         this.color = Math.random() > 0.5 ? "#ec4899" : "#3b82f6"
@@ -46,9 +49,12 @@ const GeometricBackground = () => {
         this.y += this.speed
         this.rotation += this.rotationSpeed
 
-        if (this.y > canvas.height + this.size) {
+        const height = canvas?.height || window.innerHeight
+        const width = canvas?.width || window.innerWidth
+
+        if (this.y > height + this.size) {
           this.y = -this.size
-          this.x = Math.random() * canvas.width
+          this.x = Math.random() * width
         }
       }
 
