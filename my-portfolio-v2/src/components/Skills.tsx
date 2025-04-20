@@ -9,12 +9,11 @@ const skills = [
   {
     category: "Frontend",
     items: [
-      { name: "React", level: 95 },
-      { name: "TypeScript", level: 90 },
-      { name: "Next.js", level: 85 },
-      { name: "Vue.js", level: 80 },
-      { name: "Tailwind CSS", level: 95 },
-      { name: "Framer Motion", level: 85 },
+      { name: "React", level: 70 },
+      { name: "TypeScript", level: 70 },
+      { name: "Astro", level: 80 },
+      { name: "Tailwind CSS", level: 80 },
+      { name: "Framer Motion", level: 50 },
     ],
     color: "from-pink-500 to-purple-500",
     icon: "💻",
@@ -22,12 +21,11 @@ const skills = [
   {
     category: "Backend",
     items: [
-      { name: "Node.js", level: 85 },
-      { name: "Express", level: 80 },
-      { name: "Firebase", level: 90 },
-      { name: "MongoDB", level: 75 },
-      { name: "GraphQL", level: 70 },
-      { name: "REST APIs", level: 90 },
+      { name: "Python", level: 70 },
+      { name: "SQLite", level: 80 },
+      { name: "PostgreSQL", level: 70 },
+      { name: "Drizzle", level: 50 },
+      { name: "FastAPI", level: 90 },
     ],
     color: "from-blue-500 to-cyan-500",
     icon: "🔧",
@@ -39,7 +37,7 @@ const skills = [
       { name: "Webpack", level: 75 },
       { name: "Vite", level: 85 },
       { name: "Docker", level: 65 },
-      { name: "Figma", level: 80 },
+      { name: "Cursor", level: 80 },
       { name: "VS Code", level: 95 },
     ],
     color: "from-purple-500 to-blue-500",
@@ -48,12 +46,9 @@ const skills = [
   {
     category: "Other",
     items: [
-      { name: "UI/UX Design", level: 85 },
+      { name: "UI/UX Design", level: 50 },
       { name: "Responsive Design", level: 95 },
-      { name: "Performance Optimization", level: 80 },
-      { name: "SEO", level: 75 },
-      { name: "Accessibility", level: 85 },
-      { name: "Testing", level: 70 },
+      { name: "Testing", level: 80 },
     ],
     color: "from-green-500 to-blue-500",
     icon: "🎨",
@@ -163,7 +158,7 @@ const Skills = () => {
                     <div className="relative bg-gray-900 p-1 rounded-full">
                       <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700">
                         <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                          5+
+                          0.5+
                         </span>
                       </div>
                     </div>
@@ -171,12 +166,10 @@ const Skills = () => {
                 </div>
                 <div className="w-full md:w-2/3 text-center md:text-left">
                   <h3 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                    Years of Experience
+                    Лет опыта
                   </h3>
                   <p className="text-gray-300">
-                    With over 5 years of experience in web development, I've worked on a diverse range of projects from
-                    small business websites to complex enterprise applications. My focus is on creating clean,
-                    efficient, and maintainable code that delivers exceptional user experiences.
+                    Погружаюсь в программирование каждый день: изучаю технологии, пробую идеи и превращаю их в код.
                   </p>
                 </div>
               </div>

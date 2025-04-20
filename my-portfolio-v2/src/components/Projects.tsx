@@ -33,7 +33,7 @@ const projects = [
     tags: ["Python", "TypeScript", "SQLite"],
     image: "../images/MVP.jpg?height=600&width=800",
     color: "",
-    url: "https://github.com/deflillusion/full-stack-dev/tree/f53cf8ba3390963b266ca1d8c93a7ea4eaa5c6e1/mvp-project"
+    url: "https://app.defl-illusion.com"
   },
   {
     id: 4,
