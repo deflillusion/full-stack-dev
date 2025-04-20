@@ -1,5 +1,5 @@
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useRef, useEffect } from "react"
+import { motion } from "framer-motion"
 import Triangle from "./Triangle"
 import GlitchText from "./GlitchText"
 import MotherEmoticon from "./MotherEmoticon"
@@ -7,14 +7,20 @@ import { Button } from "@/components/ui/button"
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100])
+  // Принудительная прокрутка наверх при монтировании компонента
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    // Дополнительная проверка для гарантированного отображения
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.style.opacity = "1"
+      }
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <motion.section
@@ -23,7 +29,6 @@ const Hero = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      style={{ opacity, scale, y }}
       className="min-h-screen flex flex-col justify-center items-center relative py-20"
     >
       <div className="absolute inset-0 flex items-center justify-center">
@@ -47,7 +52,7 @@ const Hero = () => {
           className="mb-6"
         >
           <GlitchText
-            text="DEVELOPER_NAME"
+            text="DEFL ILLUSION"
             className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500"
           />
           <div className="flex justify-center mt-2">
@@ -61,8 +66,8 @@ const Hero = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="text-xl text-gray-300 mb-10 font-light tracking-wider"
         >
-          <span className="text-pink-500">FRONTEND</span> DEVELOPER // <span className="text-blue-500">UI</span>{" "}
-          DESIGNER // <span className="text-purple-500">CREATIVE</span> CODER
+          <span className="text-pink-500">FRONTEND&BACKEND</span> DEVELOPER // <span className="text-blue-500">UI</span>{" "}
+          DESIGNER // <span className="text-purple-500">VIBE</span> CODER
         </motion.p>
 
         <motion.div

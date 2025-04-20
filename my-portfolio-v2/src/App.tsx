@@ -16,6 +16,7 @@ import "./App.css"
 function App() {
   const [activeSection, setActiveSection] = useState("hero")
   const [isLoading, setIsLoading] = useState(true)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
     // Simulate loading time
@@ -28,7 +29,20 @@ function App() {
 
   // Handle section change with scroll
   const handleSectionChange = (section: string) => {
-    setActiveSection(section)
+    // Если переключаемся на Hero, сначала показываем переходное состояние
+    if (section === "hero") {
+      setIsTransitioning(true)
+      window.scrollTo(0, 0)
+
+      // Небольшая задержка перед показом Hero, чтобы гарантировать скролл наверх
+      setTimeout(() => {
+        setActiveSection(section)
+        setIsTransitioning(false)
+      }, 50)
+    } else {
+      setActiveSection(section)
+      window.scrollTo(0, 0)
+    }
   }
 
   if (isLoading) {
@@ -45,11 +59,25 @@ function App() {
 
         <main className="container mx-auto px-4">
           <AnimatePresence mode="wait">
-            {activeSection === "hero" && <Hero key="hero" />}
-            {activeSection === "projects" && <Projects key="projects" />}
-            {activeSection === "about" && <About key="about" />}
-            {activeSection === "skills" && <Skills key="skills" />}
-            {activeSection === "contact" && <Contact key="contact" />}
+            {isTransitioning ? (
+              <motion.div
+                key="transition"
+                className="min-h-screen flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div className="w-8 h-8 border-4 border-t-transparent border-pink-500 rounded-full animate-spin"></div>
+              </motion.div>
+            ) : (
+              <>
+                {activeSection === "hero" && <Hero key="hero" />}
+                {activeSection === "projects" && <Projects key="projects" />}
+                {activeSection === "about" && <About key="about" />}
+                {activeSection === "skills" && <Skills key="skills" />}
+                {activeSection === "contact" && <Contact key="contact" />}
+              </>
+            )}
           </AnimatePresence>
         </main>
 
@@ -101,7 +129,7 @@ function App() {
               </div>
 
               <div className="mt-4 md:mt-0 text-sm text-gray-500">
-                © {new Date().getFullYear()} DATA_DEV. All rights reserved.
+                © {new Date().getFullYear()} defl_illusion
               </div>
             </div>
           </div>

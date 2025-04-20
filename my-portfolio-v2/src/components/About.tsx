@@ -47,38 +47,36 @@ const About = () => {
             </div>
 
             <div className="mt-8 flex flex-wrap gap-4 justify-center">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-gray-700 hover:border-pink-500 hover:text-pink-500"
-              >
-                <Github className="h-4 w-4" />
-                <span>GitHub</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-gray-700 hover:border-blue-500 hover:text-blue-500"
-              >
-                <Linkedin className="h-4 w-4" />
-                <span>LinkedIn</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-gray-700 hover:border-cyan-500 hover:text-cyan-500"
-              >
-                <Twitter className="h-4 w-4" />
-                <span>Twitter</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-gray-700 hover:border-purple-500 hover:text-purple-500"
-              >
-                <FileText className="h-4 w-4" />
-                <span>Resume</span>
-              </Button>
+              <a href="https://github.com/deflillusion" target="_blank">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-gray-700 hover:border-pink-500 hover:text-pink-500"
+                >
+                  <Github className="h-4 w-4" />
+                  <span>GitHub</span>
+                </Button>
+              </a>
+              <a href="https://www.linkedin.com/in/erick-ospanov-0aa649342" target="_blank">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-gray-700 hover:border-blue-500 hover:text-blue-500"
+                >
+                  <Linkedin className="h-4 w-4" />
+                  <span>LinkedIn</span>
+                </Button>
+              </a >
+              <a href="https://astana.hh.kz/resume/8e731e0fff0322b9560039ed1f6c6f3748635a" target="_blank">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-gray-700 hover:border-purple-500 hover:text-purple-500"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Resume</span>
+                </Button>
+              </a>
             </div>
           </motion.div>
 
@@ -91,34 +89,32 @@ const About = () => {
             <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 h-full">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                  Hello, I'm [Your Name]
+                  Привет, меня зовут Ерик!
                 </h3>
 
                 <div className="space-y-6 text-gray-300">
                   <p>
-                    I'm a passionate frontend developer with a love for creating immersive digital experiences. My
-                    journey in web development began 5 years ago, and I've been crafting beautiful, functional
-                    interfaces ever since.
+                    Я только делаю первые шаги в программировании и прохожу обучение по программе TechOrda в школе
+                    Owl Masters на курсе Full Stack Development.
                   </p>
 
                   <p>
-                    With expertise in React, TypeScript, and modern CSS frameworks, I build applications that are not
-                    only visually stunning but also performant and accessible. I believe that great design should be
-                    both beautiful and functional, creating memorable experiences for users.
+                    Сейчас изучаю JavaScript, React, Python, веб-разработку и базы данных.
+                    Строю свои первые проекты и шаг за шагом двигаюсь к тому, чтобы стать уверенным разработчиком.
                   </p>
 
                   <p>
-                    My approach combines technical expertise with creative problem-solving. I'm constantly exploring new
-                    technologies and design trends to push the boundaries of what's possible on the web.
+                    Мне интересно создавать приложения, которые решают реальные задачи. Я люблю учиться через практику,
+                    поэтому на этой странице делюсь своими проектами, заметками и всем, что помогает мне расти.
                   </p>
 
                   <p>
-                    When I'm not coding, you can find me exploring new technologies, contributing to open-source
-                    projects, or playing indie games like DATA WING that inspire my design aesthetic.
+                    Стилистика этого сайта вдохновлена игрой DATA WING — её минимализм,
+                    неон и динамика отлично передают моё настроение и подход к обучению.
                   </p>
                 </div>
 
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
                     <h4 className="text-lg font-semibold mb-2 text-pink-500">Education</h4>
                     <p className="text-gray-300 text-sm">B.S. Computer Science</p>
@@ -130,13 +126,13 @@ const About = () => {
                     <p className="text-gray-300 text-sm">Senior Frontend Developer</p>
                     <p className="text-gray-400 text-xs">Tech Innovations Inc., 2020-Present</p>
                   </div>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
           </motion.div>
         </div>
-      </div>
-    </motion.section>
+      </div >
+    </motion.section >
   )
 }
 
