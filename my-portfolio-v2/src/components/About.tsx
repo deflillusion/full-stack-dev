@@ -2,7 +2,7 @@ import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, Github, Linkedin, Twitter } from "lucide-react"
+import { FileText, Github, Linkedin } from "lucide-react"
 
 const About = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -41,7 +41,7 @@ const About = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-pink-500 to-blue-500 rounded-lg blur opacity-20 animate-pulse-slow"></div>
               <Card className="relative bg-gray-900/70 backdrop-blur-md border-gray-800 overflow-hidden h-full">
                 <CardContent className="p-1">
-                  <img src="/placeholder.svg?height=600&width=600" alt="Developer" className="w-full h-auto rounded" />
+                  <img src="../../my_photo.jpg" alt="Developer" className="w-full h-auto rounded" />
                 </CardContent>
               </Card>
             </div>

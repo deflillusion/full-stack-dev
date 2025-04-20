@@ -5,7 +5,12 @@ import GlitchText from "./GlitchText"
 import MotherEmoticon from "./MotherEmoticon"
 import { Button } from "@/components/ui/button"
 
-const Hero = () => {
+// Функция для получения setActiveSection из пропсов
+interface HeroProps {
+  onNavigate?: (section: string) => void
+}
+
+const Hero = ({ onNavigate }: HeroProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Принудительная прокрутка наверх при монтировании компонента
@@ -21,6 +26,19 @@ const Hero = () => {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Обработчики для кнопок
+  const handleProjectsClick = () => {
+    if (onNavigate) {
+      onNavigate("projects")
+    }
+  }
+
+  const handleContactClick = () => {
+    if (onNavigate) {
+      onNavigate("contact")
+    }
+  }
 
   return (
     <motion.section
@@ -80,10 +98,16 @@ const Hero = () => {
             variant="default"
             size="lg"
             className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 border-none"
+            onClick={handleProjectsClick}
           >
             VIEW PROJECTS
           </Button>
-          <Button variant="outline" size="lg" className="border-blue-500 text-blue-500 hover:bg-blue-500/10">
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+            onClick={handleContactClick}
+          >
             CONTACT ME
           </Button>
         </motion.div>

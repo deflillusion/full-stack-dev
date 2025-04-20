@@ -52,7 +52,6 @@ const Contact = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full" />
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            Let's discuss your project and bring your ideas to life
           </p>
         </motion.div>
 
@@ -65,7 +64,7 @@ const Contact = () => {
             <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 h-full">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                  Get In Touch
+                  Контактная информация
                 </h3>
 
                 <div className="space-y-8">
@@ -75,8 +74,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-gray-400 mb-1">Email</h4>
-                      <p className="text-white font-medium">contact@example.com</p>
-                      <p className="text-gray-500 text-sm mt-1">Feel free to email me anytime</p>
+                      <p className="text-white font-medium">defl.illusion@gmail.com</p>
+                      <p className="text-gray-500 text-sm mt-1">Можно писать в любое время</p>
                     </div>
                   </div>
 
@@ -86,8 +85,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-gray-400 mb-1">Phone</h4>
-                      <p className="text-white font-medium">+1 (555) 123-4567</p>
-                      <p className="text-gray-500 text-sm mt-1">Available Mon-Fri, 9AM-5PM</p>
+                      <p className="text-white font-medium">+* (***) ***-****</p>
+                      <p className="text-gray-500 text-sm mt-1">Доступно только Пн-Пт, 09-18</p>
                     </div>
                   </div>
 
@@ -96,29 +95,29 @@ const Contact = () => {
                       <MapPin className="h-5 w-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-gray-400 mb-1">Location</h4>
-                      <p className="text-white font-medium">San Francisco, CA</p>
-                      <p className="text-gray-500 text-sm mt-1">Available for remote work worldwide</p>
+                      <h4 className="text-sm font-medium text-gray-400 mb-1">Локация</h4>
+                      <p className="text-white font-medium">Астана, Казахстан</p>
+                      <p className="text-gray-500 text-sm mt-1">Можно удалённо</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-12 p-6 bg-gray-800/50 rounded-lg border border-gray-700">
                   <h4 className="text-lg font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                    Working Hours
+                    Рабочее время
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Monday - Friday:</span>
-                      <span className="text-white">9:00 AM - 5:00 PM</span>
+                      <span className="text-gray-400">Понедельник - Пятница:</span>
+                      <span className="text-white">9:00  - 18:00 </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Saturday:</span>
-                      <span className="text-white">10:00 AM - 2:00 PM</span>
+                      <span className="text-gray-400">Суббота:</span>
+                      <span className="text-white">Выходной</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Sunday:</span>
-                      <span className="text-white">Closed</span>
+                      <span className="text-gray-400">Воскресенье:</span>
+                      <span className="text-white">Выходной</span>
                     </div>
                   </div>
                 </div>
@@ -134,7 +133,7 @@ const Contact = () => {
             <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 overflow-hidden">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                  Send Message
+                  Отправить сообщение
                 </h3>
 
                 {isSubmitted ? (
@@ -147,19 +146,19 @@ const Contact = () => {
                     <div className="mb-6">
                       <VirusAnimation className="text-4xl" />
                     </div>
-                    <h4 className="text-xl font-bold text-pink-500 mb-2">Message Sent!</h4>
-                    <p className="text-gray-300">Thank you for reaching out. I'll get back to you shortly.</p>
+                    <h4 className="text-xl font-bold text-pink-500 mb-2">Сообщение отправлено!</h4>
+                    <p className="text-gray-300">Спасибо за обращение. Я скоро свяжусь с вами.</p>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label htmlFor="name" className="text-sm font-medium text-gray-400">
-                          Name
+                          Имя
                         </label>
                         <Input
                           id="name"
-                          placeholder="Your name"
+                          placeholder="Ваше имя"
                           required
                           className="bg-gray-800/50 border-gray-700 focus:border-pink-500 text-white"
                         />
@@ -181,11 +180,11 @@ const Contact = () => {
 
                     <div className="space-y-2">
                       <label htmlFor="subject" className="text-sm font-medium text-gray-400">
-                        Subject
+                        Тема обращения
                       </label>
                       <Input
                         id="subject"
-                        placeholder="Project inquiry"
+                        placeholder="Связаться по проекту"
                         required
                         className="bg-gray-800/50 border-gray-700 focus:border-pink-500 text-white"
                       />
@@ -193,12 +192,12 @@ const Contact = () => {
 
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm font-medium text-gray-400">
-                        Message
+                        Сообщение
                       </label>
                       <Textarea
                         id="message"
                         rows={5}
-                        placeholder="Your message..."
+                        placeholder="Ваше сообщение..."
                         required
                         className="bg-gray-800/50 border-gray-700 focus:border-pink-500 text-white resize-none"
                       />
@@ -212,12 +211,12 @@ const Contact = () => {
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
+                          В процессе...
                         </>
                       ) : (
                         <>
                           <Send className="mr-2 h-4 w-4" />
-                          SEND MESSAGE
+                          ОТПРАВИТЬ
                         </>
                       )}
                     </Button>

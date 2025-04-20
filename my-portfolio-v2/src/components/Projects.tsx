@@ -10,51 +10,39 @@ import { ArrowUpRight } from "lucide-react"
 const projects = [
   {
     id: 1,
-    title: "PROJECT_ALPHA",
-    description: "A sleek web application with real-time data visualization and interactive dashboards",
-    tags: ["React", "TypeScript", "Three.js", "D3.js"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-pink-500 to-purple-500",
+    title: "Калькулятор на Python (dev-core-101)",
+    description: "Простой калькулятор на Python",
+    tags: ["Python"],
+    image: "../images/calc_py.jpg?height=600&width=800",
+    color: "",
+    url: "https://github.com/deflillusion/full-stack-dev/blob/main/dev-core-101/dev-core-101-finalproject.py"
   },
   {
     id: 2,
-    title: "PROJECT_BETA",
-    description: "Mobile-first e-commerce platform with AR product previews and personalized recommendations",
-    tags: ["Next.js", "Tailwind CSS", "Framer Motion", "Stripe"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-blue-500 to-cyan-500",
+    title: "Сайт-портфолио (Astro) ver.1",
+    description: "Первая версия сайта-портфолио",
+    tags: ["Astro", "Tailwind CSS", "JavaScript"],
+    image: "../images/my-website.jpg?height=600&width=800",
+    color: "",
+    url: "https://github.com/deflillusion/full-stack-dev/tree/f53cf8ba3390963b266ca1d8c93a7ea4eaa5c6e1/my-portfolio"
   },
   {
     id: 3,
-    title: "PROJECT_GAMMA",
-    description: "Interactive dashboard for cryptocurrency analytics with predictive modeling",
-    tags: ["Vue.js", "D3.js", "Firebase", "Machine Learning"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-purple-500 to-blue-500",
+    title: "MVP приложение для учета расходов и доходов",
+    description: "Первое MVP приложение",
+    tags: ["Python", "TypeScript", "SQLite"],
+    image: "../images/MVP.jpg?height=600&width=800",
+    color: "",
+    url: "https://github.com/deflillusion/full-stack-dev/tree/f53cf8ba3390963b266ca1d8c93a7ea4eaa5c6e1/mvp-project"
   },
   {
     id: 4,
-    title: "PROJECT_DELTA",
-    description: "Social media platform for creative professionals with portfolio showcasing",
-    tags: ["React Native", "GraphQL", "AWS", "Redux"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-pink-500 to-red-500",
-  },
-  {
-    id: 5,
-    title: "PROJECT_EPSILON",
-    description: "AI-powered content creation tool with natural language processing",
-    tags: ["Python", "TensorFlow", "React", "FastAPI"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-green-500 to-blue-500",
-  },
-  {
-    id: 6,
-    title: "PROJECT_ZETA",
-    description: "Augmented reality navigation app for urban exploration",
-    tags: ["Unity", "ARKit", "C#", "Mapbox"],
-    image: "/placeholder.svg?height=600&width=800",
-    color: "from-yellow-500 to-orange-500",
+    title: "Сайт-портфолио (React) ver.2",
+    description: "Вторая версия сайта-портфолио",
+    tags: ["React", "TypeScript", "Tailwind CSS"],
+    image: "../images/Site-v2.jpg?height=600&width=800",
+    color: "",
+    url: ""
   },
 ]
 
@@ -102,7 +90,9 @@ const Projects = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full" />
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            Explore my latest work showcasing creative solutions and technical expertise
+            Мои первые шаги в разработке — от идеи до работающего кода. Портфолио растёт вместе со мной.
+
+
           </p>
         </motion.div>
 
@@ -140,10 +130,26 @@ const Projects = () => {
                 </CardContent>
 
                 <CardFooter className="p-6 pt-0">
-                  <Button variant="ghost" className="text-pink-500 hover:text-pink-400 hover:bg-pink-500/10 p-0 h-auto">
-                    <span className="mr-2">VIEW PROJECT</span>
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  </Button>
+                  {project.url ? (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-pink-500 hover:text-pink-400 hover:bg-pink-500/10 p-0 h-auto font-medium"
+                    >
+                      <span className="mr-2">VIEW PROJECT</span>
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </a>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className="text-pink-500 hover:text-pink-400 hover:bg-pink-500/10 p-0 h-auto"
+                      disabled
+                    >
+                      <span className="mr-2">COMING SOON</span>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </Button>
+                  )}
                 </CardFooter>
               </Card>
             </motion.div>
