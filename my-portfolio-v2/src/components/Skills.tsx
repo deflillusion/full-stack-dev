@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useMemo } from "react"
 import { motion, useInView } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -58,6 +58,38 @@ const skills = [
 const Skills = () => {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: false, amount: 0.1 })
+
+  // Расчет опыта работы в годах и месяцах
+  const experience = useMemo(() => {
+    const startDate = new Date(2024, 9, 1); // Месяцы начинаются с 0, поэтому 9 = октябрь
+    const currentDate = new Date();
+
+    // Расчет разницы в годах
+    let years = currentDate.getFullYear() - startDate.getFullYear();
+
+    // Корректировка лет, если текущий месяц раньше месяца начала работы
+    if (
+      currentDate.getMonth() < startDate.getMonth() ||
+      (currentDate.getMonth() === startDate.getMonth() && currentDate.getDate() < startDate.getDate())
+    ) {
+      years--;
+    }
+
+    // Расчет разницы в месяцах
+    let months = currentDate.getMonth() - startDate.getMonth();
+    if (months < 0) months += 12;
+    if (currentDate.getDate() < startDate.getDate()) {
+      months--;
+      if (months < 0) months += 12;
+    }
+
+    // Форматирование результата
+    if (years > 0) {
+      return `${years}${months > 0 ? `.${months}` : ''}+`;
+    } else {
+      return `0.${months}+`;
+    }
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -158,7 +190,7 @@ const Skills = () => {
                     <div className="relative bg-gray-900 p-1 rounded-full">
                       <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700">
                         <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500">
-                          0.5+
+                          {experience}
                         </span>
                       </div>
                     </div>

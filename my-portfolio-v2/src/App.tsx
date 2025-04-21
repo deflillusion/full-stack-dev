@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import { Toaster } from "sonner"
 import Header from "./components/Header"
 import Hero from "./components/Hero"
 import Projects from "./components/Projects"
@@ -53,6 +54,7 @@ function App() {
     <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden">
       <Cursor />
       <GeometricBackground />
+      <Toaster position="top-right" theme="dark" richColors />
 
       <div className="relative z-10">
         <Header activeSection={activeSection} setActiveSection={handleSectionChange} />

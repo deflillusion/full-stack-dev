@@ -120,7 +120,6 @@ const Hero = ({ onNavigate }: HeroProps) => {
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
       >
         <div className="flex flex-col items-center">
-          <p className="text-gray-400 text-sm mb-2 font-mono">SCROLL DOWN</p>
           <motion.div
             className="w-0.5 h-8 bg-gradient-to-b from-pink-500 to-transparent"
             animate={{

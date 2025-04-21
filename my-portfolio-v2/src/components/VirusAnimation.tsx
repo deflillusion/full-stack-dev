@@ -12,10 +12,10 @@ const VirusAnimation = ({ className = "" }: VirusAnimationProps) => {
 
   // The different frames of the Virus animation from the game
   const frames = [
-    "r(^ω^✿)r", // Both hands up as 'r'
-    "L(^ω^✿)r", // Left hand as 'L', right hand as 'r'
-    "r(^ω^✿)L", // Left hand as 'r', right hand as 'L'
-    "L(^ω^✿)L", // Both hands as 'L'
+    "┏(^ω^✿)┛",
+    "┗(^ω^✿)┓",
+    "┏(^ω^✿)┛",
+    "┗(^ω^✿)┓",
   ]
 
   // Cycle through frames

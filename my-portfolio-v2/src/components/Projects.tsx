@@ -42,7 +42,7 @@ const projects = [
     tags: ["React", "TypeScript", "Tailwind CSS"],
     image: "../images/Site-v2.jpg?height=600&width=800",
     color: "",
-    url: ""
+    url: "https://github.com/deflillusion/full-stack-dev/tree/main/my-portfolio-v2"
   },
 ]
 

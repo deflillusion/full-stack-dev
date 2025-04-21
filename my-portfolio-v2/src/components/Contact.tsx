@@ -8,9 +8,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
 import VirusAnimation from "./VirusAnimation"
+// @ts-ignore
+import { sendEmail } from "@/utils/email.js"
+import { toast } from "sonner"
 
 const Contact = () => {
   const ref = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
   const isInView = useInView(ref, { once: false, amount: 0.1 })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -19,16 +23,31 @@ const Contact = () => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSubmitted(true)
+    if (formRef.current) {
+      const formData = {
+        name: (formRef.current.elements.namedItem('name') as HTMLInputElement).value,
+        email: (formRef.current.elements.namedItem('email') as HTMLInputElement).value,
+        // subject: (formRef.current.elements.namedItem('subject') as HTMLInputElement).value,
+        message: (formRef.current.elements.namedItem('message') as HTMLTextAreaElement).value,
+      };
 
-      // Reset form after 5 seconds
-      setTimeout(() => {
-        setIsSubmitted(false)
-      }, 5000)
-    }, 1500)
+      sendEmail(formData)
+        .then(() => {
+          setIsSubmitting(false);
+          setIsSubmitted(true);
+          formRef.current?.reset();
+
+          // Reset form after 5 seconds
+          setTimeout(() => {
+            setIsSubmitted(false);
+          }, 5000);
+        })
+        .catch((error: unknown) => {
+          console.error('Error sending email:', error);
+          setIsSubmitting(false);
+          toast.error("Ошибка при отправке сообщения. Пожалуйста, попробуйте позже.");
+        });
+    }
   }
 
   return (
@@ -150,7 +169,7 @@ const Contact = () => {
                     <p className="text-gray-300">Спасибо за обращение. Я скоро свяжусь с вами.</p>
                   </motion.div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label htmlFor="name" className="text-sm font-medium text-gray-400">
@@ -158,6 +177,7 @@ const Contact = () => {
                         </label>
                         <Input
                           id="name"
+                          name="name"
                           placeholder="Ваше имя"
                           required
                           className="bg-gray-800/50 border-gray-700 focus:border-pink-500 text-white"
@@ -170,6 +190,7 @@ const Contact = () => {
                         </label>
                         <Input
                           id="email"
+                          name="email"
                           type="email"
                           placeholder="your.email@example.com"
                           required
@@ -178,17 +199,18 @@ const Contact = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                       <label htmlFor="subject" className="text-sm font-medium text-gray-400">
                         Тема обращения
                       </label>
                       <Input
                         id="subject"
+                        name="subject"
                         placeholder="Связаться по проекту"
                         required
                         className="bg-gray-800/50 border-gray-700 focus:border-pink-500 text-white"
                       />
-                    </div>
+                    </div> */}
 
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm font-medium text-gray-400">
@@ -196,6 +218,7 @@ const Contact = () => {
                       </label>
                       <Textarea
                         id="message"
+                        name="message"
                         rows={5}
                         placeholder="Ваше сообщение..."
                         required
