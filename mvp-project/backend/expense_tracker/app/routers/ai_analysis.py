@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import openai
-from datetime import datetime
+from datetime import datetime, timedelta
 from pydantic import BaseModel
 
 from ..database import get_db
-from ..models import Transaction, User, Category
+from ..models import Transaction, User, Category, Account
 from ..config import Settings
 from ..dependencies import get_current_user
 
@@ -35,35 +35,66 @@ async def analyze_transactions(
     account_id: Optional[int] = None,
     category_id: Optional[int] = None,
     current_month: Optional[str] = None,
+    monthly_only: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Analyze user transactions and return insights based on the provided filters.
+    If monthly_only is set to "true", analyze only the current month's data.
+    Otherwise, analyze the last 12 months of data.
+    """
     try:
-        # Получаем транзакции пользователя с фильтрами
+        # Fetch user transactions
         query = db.query(Transaction).filter(
             Transaction.user_id == current_user.id)
 
-        # Применяем фильтры, если они есть
+        # Apply filters if provided
         if account_id:
+            # Verify account belongs to user
+            account = db.query(Account).filter(
+                Account.id == account_id,
+                Account.user_id == current_user.id
+            ).first()
+            if not account:
+                raise HTTPException(
+                    status_code=404, detail="Account not found or doesn't belong to user")
             query = query.filter(Transaction.account_id == account_id)
 
         if category_id:
+            # Verify category belongs to user
+            category = db.query(Category).filter(
+                Category.id == category_id,
+                Category.user_id == current_user.id
+            ).first()
+            if not category:
+                raise HTTPException(
+                    status_code=404, detail="Category not found or doesn't belong to user")
             query = query.filter(Transaction.category_id == category_id)
 
-        if current_month:
-            year, month = current_month.split('-')
-            start_date = f"{year}-{month}-01"
-            if month == '12':
-                next_year = str(int(year) + 1)
-                next_month = '01'
+        # Filter by current month if provided
+        if current_month and monthly_only == "true":
+            year, month = current_month.split("-")
+            start_date = datetime(int(year), int(month), 1)
+            # Get last day of month
+            if int(month) == 12:
+                end_date = datetime(int(year) + 1, 1, 1) - timedelta(days=1)
             else:
-                next_year = year
-                next_month = str(int(month) + 1).zfill(2)
-            end_date = f"{next_year}-{next_month}-01"
+                end_date = datetime(int(year), int(
+                    month) + 1, 1) - timedelta(days=1)
 
             query = query.filter(
-                Transaction.datetime >= start_date,
-                Transaction.datetime < end_date
+                Transaction.date >= start_date,
+                Transaction.date <= end_date
+            )
+        else:
+            # Get transactions from the last 12 months
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=365)  # Last 12 months
+
+            query = query.filter(
+                Transaction.date >= start_date,
+                Transaction.date <= end_date
             )
 
         transactions = query.all()

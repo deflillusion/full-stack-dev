@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,12 +11,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useCategories } from "@/hooks/useCategories"
 import { useAccounts } from "@/hooks/useAccounts"
+import { useCategories } from "@/hooks/useCategories"
 import { useTransactionTypes } from "@/hooks/useTransactionTypes"
 import { Pencil, Trash2, Plus, FileDown } from "lucide-react"
 import { toast } from "sonner"
-import { transactionsApi } from "@/api"
+import { transactionsApi, accountsApi, categoriesApi } from "@/api"
+import { AccountSelector } from "@/components/AccountSelector"
+import { CategorySelector } from "@/components/CategorySelector"
 
 type DialogState = {
   isOpen: boolean
@@ -29,31 +31,26 @@ export function SettingsPage() {
   const [dialog, setDialog] = useState<DialogState>({
     isOpen: false,
     type: "account",
-    mode: "create"
+    mode: "create",
+    data: undefined,
   })
   const [inputValue, setInputValue] = useState("")
-  const [initialBalance, setInitialBalance] = useState("0")
-  const [transactionType, setTransactionType] = useState("1")
-
-  const {
-    categories,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-    fetchCategories,
-    addCategory,
-    updateCategory,
-    deleteCategory
-  } = useCategories()
+  const [initialBalance, setInitialBalance] = useState("")
+  const [transactionType, setTransactionType] = useState("")
 
   const {
     accounts,
     isLoading: accountsLoading,
     error: accountsError,
-    fetchAccounts,
-    addAccount,
-    updateAccount,
-    deleteAccount
+    fetchAccounts
   } = useAccounts()
+
+  const {
+    categories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+    fetchCategories
+  } = useCategories()
 
   const {
     types: transactionTypes,
@@ -62,11 +59,18 @@ export function SettingsPage() {
   } = useTransactionTypes()
 
   useEffect(() => {
-    const loadData = async () => {
-      await Promise.all([fetchCategories(), fetchAccounts()])
-    }
     loadData()
-  }, [fetchCategories, fetchAccounts])
+  }, [])
+
+  const loadData = async () => {
+    try {
+      await fetchAccounts()
+      await fetchCategories()
+    } catch (error) {
+      console.error("Ошибка при загрузке данных", error)
+      toast.error("Ошибка при загрузке данных")
+    }
+  }
 
   const handleOpenDialog = (
     type: "account" | "category",
@@ -74,93 +78,99 @@ export function SettingsPage() {
     data?: DialogState["data"]
   ) => {
     setDialog({ isOpen: true, type, mode, data })
-    setInputValue(data?.name || "")
-    setTransactionType(data?.transaction_type_id?.toString() || "1")
-    if (type === "account") {
-      setInitialBalance(data?.balance?.toString() || "0")
+    if (mode === "edit" && data) {
+      setInputValue(data.name)
+      setTransactionType(data.transaction_type_id?.toString() || "")
+      setInitialBalance(data.balance?.toString() || "")
+    } else {
+      setInputValue("")
+      setTransactionType("1") // По умолчанию "Доход"
+      setInitialBalance("")
     }
   }
 
   const handleCloseDialog = () => {
     setDialog({ ...dialog, isOpen: false })
-    setInputValue("")
-    setInitialBalance("0")
-    setTransactionType("1")
+    setTimeout(() => {
+      setInputValue("")
+      setInitialBalance("")
+      setTransactionType("")
+    }, 200)
   }
 
   const handleSave = async () => {
-    if (!inputValue.trim()) {
-      toast.error("Введите название")
-      return
-    }
-
     try {
       if (dialog.type === "account") {
-        const balance = parseFloat(initialBalance)
-        if (isNaN(balance)) {
-          toast.error("Введите корректный баланс")
-          return
-        }
-
         if (dialog.mode === "create") {
-          await addAccount({ name: inputValue, balance })
-          toast.success("Счет успешно добавлен")
-        } else if (dialog.data?.id) {
-          await updateAccount(dialog.data.id, { name: inputValue, balance })
-          toast.success("Счет успешно обновлен")
+          await accountsApi.create({
+            name: inputValue,
+            balance: parseFloat(initialBalance || "0"),
+          })
+          toast.success(`Счет ${inputValue} создан`)
+        } else if (dialog.mode === "edit" && dialog.data) {
+          await accountsApi.update(dialog.data.id, {
+            name: inputValue,
+            balance: parseFloat(initialBalance || "0"),
+          })
+          toast.success(`Счет обновлен`)
         }
       } else {
-        const transaction_type_id = parseInt(transactionType)
+        // Категория
         if (dialog.mode === "create") {
-          await addCategory({ name: inputValue, transaction_type_id })
-          toast.success("Категория успешно добавлена")
-        } else if (dialog.data?.id) {
-          await updateCategory(dialog.data.id, { name: inputValue, transaction_type_id })
-          toast.success("Категория успешно обновлена")
+          await categoriesApi.create({
+            name: inputValue,
+            transaction_type_id: parseInt(transactionType),
+          })
+          toast.success(`Категория ${inputValue} создана`)
+        } else if (dialog.mode === "edit" && dialog.data) {
+          await categoriesApi.update(dialog.data.id, {
+            name: inputValue,
+            transaction_type_id: parseInt(transactionType),
+          })
+          toast.success(`Категория обновлена`)
         }
       }
+
       handleCloseDialog()
-    } catch (err) {
-      toast.error(`Ошибка при ${dialog.mode === "create" ? "создании" : "обновлении"}`)
+      loadData()
+    } catch (error) {
+      const errorMsg = `Ошибка при ${dialog.mode === "create" ? "создании" : "обновлении"} ${dialog.type === "account" ? "счета" : "категории"}`
+      toast.error(errorMsg)
+      console.error(errorMsg, error)
     }
   }
 
   const handleDelete = async (type: "account" | "category", id: number) => {
     try {
       if (type === "account") {
-        try {
-          await deleteAccount(id)
-          toast.success("Счет успешно удален")
-        } catch (err) {
-          if (err instanceof Error && err.message.includes("transactions found")) {
-            toast.error("Невозможно удалить счет, содержащий транзакции. Сначала удалите все транзакции, связанные с этим счетом.")
-          } else {
-            toast.error(`Ошибка при удалении счета`)
-          }
+        await accountsApi.delete(id)
+        toast.success("Счет удален")
+      } else {
+        await categoriesApi.delete(id)
+        toast.success("Категория удалена")
+      }
+      loadData()
+    } catch (err: any) {
+      if (err.response) {
+        const status = err.response.status
+        if (status === 400 || status === 409) {
+          const message = err.response.data?.detail || `Невозможно удалить ${type === "account" ? "счет" : "категорию"}: объект используется`
+          toast.error(message)
+        } else {
+          toast.error(`Ошибка при удалении: ${err.response.data?.detail || err.message}`)
         }
       } else {
-        try {
-          await deleteCategory(id)
-          toast.success("Категория успешно удалена")
-        } catch (err) {
-          if (err instanceof Error && err.message.includes("transactions found")) {
-            toast.error("Невозможно удалить категорию, содержащую транзакции. Сначала удалите все транзакции, связанные с этой категорией.")
-          } else {
-            toast.error(`Ошибка при удалении категории`)
-          }
-        }
+        console.error("Unexpected error during deletion:", err)
+        toast.error(`Произошла непредвиденная ошибка`)
       }
-    } catch (err) {
-      console.error("Unexpected error during deletion:", err);
-      toast.error(`Произошла непредвиденная ошибка`)
     }
   }
 
-  if (categoriesLoading || accountsLoading || typesLoading) {
+  if (accountsLoading || categoriesLoading || typesLoading) {
     return <div className="flex justify-center p-4">Загрузка...</div>
   }
 
-  if (categoriesError || accountsError || typesError) {
+  if (accountsError || categoriesError || typesError) {
     return <div className="text-red-500 p-4">Ошибка загрузки данных</div>
   }
 
@@ -179,13 +189,13 @@ export function SettingsPage() {
 
   const handleExportToExcel = () => {
     try {
-      transactionsApi.exportToExcel();
-      toast.success("Файл начал скачиваться");
+      transactionsApi.exportToExcel()
+      toast.success("Файл начал скачиваться")
     } catch (error) {
-      toast.error("Ошибка при экспорте транзакций");
-      console.error("Excel export error:", error);
+      toast.error("Ошибка при экспорте транзакций")
+      console.error("Excel export error:", error)
     }
-  };
+  }
 
   return (
     <div className="w-full">
@@ -353,7 +363,7 @@ export function SettingsPage() {
               Отмена
             </Button>
             <Button onClick={handleSave}>
-              {dialog.mode === "create" ? "Создать" : "Сохранить"}
+              Сохранить
             </Button>
           </DialogFooter>
         </DialogContent>

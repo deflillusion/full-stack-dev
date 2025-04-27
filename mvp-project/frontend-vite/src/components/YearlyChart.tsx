@@ -232,7 +232,7 @@ export function YearlyChart({
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: 'var(--tooltip-bg)',
-                                border: '1px solid var(--tooltip-border)',
+                                border: '1px solid var(--border)',
                                 borderRadius: '6px',
                                 padding: '8px'
                             }}
@@ -244,7 +244,7 @@ export function YearlyChart({
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
                                 }).format(value),
-                                "Сумма"
+                                ""
                             ]}
                         />
                         <Legend
@@ -254,13 +254,13 @@ export function YearlyChart({
                         <Bar
                             dataKey="income"
                             name="Доходы"
-                            fill="#4ade80"
+                            fill="#66bb6a"
                             radius={[4, 4, 0, 0]}
                         />
                         <Bar
                             dataKey="expense"
                             name="Расходы"
-                            fill="#f87171"
+                            fill="#ef5350"
                             radius={[4, 4, 0, 0]}
                         />
                     </BarChart>

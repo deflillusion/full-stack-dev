@@ -67,7 +67,7 @@ export function TransactionChart({
     )
 
     const { transactions, isLoading, error } = useTransactions(account_id, currentMonth, category_id)
-    const { analyzeTransactions, isLoading: isAnalyzing, error: analysisError, analysis } = useAIAnalysis()
+    const { analyzeTransactions, analyzeMonthlyTransactions, isLoading: isAnalyzing, error: analysisError, analysis } = useAIAnalysis()
 
     const formatAmount = (amount: number): string => {
         return new Intl.NumberFormat('ru-RU', {
@@ -137,19 +137,18 @@ export function TransactionChart({
         }
     }, [transactions, currentMonth, selectedAccount, selectedCategory])
 
-    const handleAnalyze = async () => {
+    const handleAnalyze = () => {
         if (!transactions?.length) {
             toast({
+                title: "Нет данных для анализа",
+                description: "Нет транзакций для выбранного периода.",
                 variant: "destructive",
-                title: "Ошибка",
-                description: "Нет транзакций для анализа",
             })
             return
         }
 
         setShowAnalysis(true)
-        // Передаем параметры для более точного анализа
-        await analyzeTransactions(account_id, category_id, currentMonth)
+        analyzeMonthlyTransactions(account_id, category_id, currentMonth)
     }
 
     if (isLoading) {
@@ -209,19 +208,19 @@ export function TransactionChart({
             <CardHeader className="space-y-2 pb-0">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div>
-                <CardTitle>График доходов и расходов по дням</CardTitle>
+                        <CardTitle>График доходов и расходов по дням</CardTitle>
                         <p className="text-muted-foreground text-sm">Данные за текущий месяц</p>
                     </div>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAnalyze}
-                    disabled={isAnalyzing || !transactions?.length}
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing || !transactions?.length}
                         className="mt-2 md:mt-0"
-                >
-                    <Brain className="w-4 h-4 mr-2" />
+                    >
+                        <Brain className="w-4 h-4 mr-2" />
                         {isAnalyzing ? "Анализ..." : "ИИ-анализ"}
-                </Button>
+                    </Button>
                 </div>
             </CardHeader>
             <CardContent className="pt-0">
@@ -263,7 +262,7 @@ export function TransactionChart({
                             labelFormatter={(label) => `День ${label}`}
                             contentStyle={{
                                 backgroundColor: 'var(--tooltip-bg)',
-                                border: '1px solid var(--tooltip-border)',
+                                border: '1px solid var(--border)',
                                 borderRadius: '6px',
                                 padding: '8px'
                             }}
@@ -295,6 +294,9 @@ export function TransactionChart({
                 <DialogContent className="w-[90vw] max-w-[600px] max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>ИИ-анализ транзакций</DialogTitle>
+                        <p className="text-muted-foreground text-sm mt-1">
+                            Анализ ваших финансовых данных за текущий месяц с помощью искусственного интеллекта.
+                        </p>
                     </DialogHeader>
                     <div className="space-y-4">
                         {isAnalyzing && (
