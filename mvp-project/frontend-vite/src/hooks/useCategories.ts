@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { categoriesApi } from '@/api';
+import { categoriesApi, DeleteResponse } from '@/api';
 import type { Category } from '@/types/types';
 import { useAuth, useUser } from '@clerk/clerk-react';
 
@@ -106,11 +106,20 @@ export function useCategories() {
         }
 
         try {
-            await categoriesApi.delete(id);
+            const result: DeleteResponse = await categoriesApi.delete(id);
+
+            // Проверяем результат операции
+            if (!result.success) {
+                console.error('Ошибка при удалении категории:', result.error);
+                throw new Error(result.error || 'Не удалось удалить категорию с существующими транзакциями');
+            }
+
+            // Если успешно, обновляем состояние
             setCategories(prev => prev.filter(cat => cat.id !== id));
+            return true;
         } catch (err) {
             console.error('Ошибка при удалении категории:', err);
-            throw new Error('Не удалось удалить категорию');
+            throw err instanceof Error ? err : new Error('Не удалось удалить категорию');
         }
     }, [isSignedIn]);
 

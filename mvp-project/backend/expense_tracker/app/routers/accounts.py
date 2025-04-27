@@ -4,7 +4,7 @@ from app import models, schemas, database
 from datetime import datetime
 from typing import List
 from app.schemas import AccountCreate, AccountResponse
-from app.models import Account, User
+from app.models import Account, User, Transaction
 from app.dependencies import get_current_user
 from app.database import get_db
 
@@ -92,6 +92,17 @@ def delete_account(
         Account.id == account_id, Account.user_id == current_user.id).first()
     if db_account is None:
         raise HTTPException(status_code=404, detail="Account not found")
+
+    # Проверяем наличие транзакций, связанных с этим счетом
+    transactions_count = db.query(Transaction).filter(
+        Transaction.account_id == account_id
+    ).count()
+
+    if transactions_count > 0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot delete account: {transactions_count} transactions found. Delete transactions first."
+        )
 
     db.delete(db_account)
     db.commit()

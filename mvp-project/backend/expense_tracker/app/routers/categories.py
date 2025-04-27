@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.models import Category, User, TransactionType
+from app.models import Category, User, TransactionType, Transaction
 from app.schemas import CategoryCreate, CategoryGet, TransactionTypeGet
 from app.dependencies import get_current_user
 
@@ -107,6 +107,17 @@ def delete_category(
     ).first()
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found")
+
+    # Проверяем наличие транзакций, связанных с этой категорией
+    transactions_count = db.query(Transaction).filter(
+        Transaction.category_id == category_id
+    ).count()
+
+    if transactions_count > 0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot delete category: {transactions_count} transactions found. Delete transactions first."
+        )
 
     db.delete(db_category)
     db.commit()

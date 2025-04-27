@@ -128,14 +128,31 @@ export function SettingsPage() {
   const handleDelete = async (type: "account" | "category", id: number) => {
     try {
       if (type === "account") {
-        await deleteAccount(id)
-        toast.success("Счет успешно удален")
+        try {
+          await deleteAccount(id)
+          toast.success("Счет успешно удален")
+        } catch (err) {
+          if (err instanceof Error && err.message.includes("transactions found")) {
+            toast.error("Невозможно удалить счет, содержащий транзакции. Сначала удалите все транзакции, связанные с этим счетом.")
+          } else {
+            toast.error(`Ошибка при удалении счета`)
+          }
+        }
       } else {
-        await deleteCategory(id)
-        toast.success("Категория успешно удалена")
+        try {
+          await deleteCategory(id)
+          toast.success("Категория успешно удалена")
+        } catch (err) {
+          if (err instanceof Error && err.message.includes("transactions found")) {
+            toast.error("Невозможно удалить категорию, содержащую транзакции. Сначала удалите все транзакции, связанные с этой категорией.")
+          } else {
+            toast.error(`Ошибка при удалении категории`)
+          }
+        }
       }
     } catch (err) {
-      toast.error(`Ошибка при удалении`)
+      console.error("Unexpected error during deletion:", err);
+      toast.error(`Произошла непредвиденная ошибка`)
     }
   }
 

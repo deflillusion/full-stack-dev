@@ -65,6 +65,19 @@ export const authApi = {
     verifyToken: () => api.post('/auth/verify-token')
 };
 
+// Определения типов для ответов при удалении
+export type DeleteSuccessResponse = {
+    success: true;
+    data: { message: string };
+};
+
+export type DeleteErrorResponse = {
+    success: false;
+    error: string;
+};
+
+export type DeleteResponse = DeleteSuccessResponse | DeleteErrorResponse;
+
 // API для счетов
 export const accountsApi = {
     getAll: () => api.get<Account[]>('/accounts/'),
@@ -73,7 +86,23 @@ export const accountsApi = {
         api.post<Account>('/accounts/', data),
     update: (id: number, data: Partial<Account>) =>
         api.put<Account>(`/accounts/${id}`, data),
-    delete: (id: number) => api.delete(`/accounts/${id}`)
+    delete: (id: number): Promise<DeleteResponse> =>
+        api.delete(`/accounts/${id}`)
+            .then(response => ({
+                success: true as const,
+                data: response.data
+            }))
+            .catch(error => {
+                // Если ошибка из-за существующих транзакций
+                if (error.response && error.response.status === 400) {
+                    return {
+                        success: false as const,
+                        error: error.response.data.detail || 'Cannot delete account with existing transactions'
+                    };
+                }
+                // Пробрасываем другие ошибки дальше
+                throw error;
+            })
 };
 
 // Кэш для хранения результатов запросов
@@ -175,7 +204,23 @@ export const categoriesApi = {
         api.post<Category>('/categories', data),
     update: (id: number, data: { name: string; transaction_type_id: number }) =>
         api.put<Category>(`/categories/${id}`, data),
-    delete: (id: number) => api.delete(`/categories/${id}`)
+    delete: (id: number): Promise<DeleteResponse> =>
+        api.delete(`/categories/${id}`)
+            .then(response => ({
+                success: true as const,
+                data: response.data
+            }))
+            .catch(error => {
+                // Если ошибка из-за существующих транзакций
+                if (error.response && error.response.status === 400) {
+                    return {
+                        success: false as const,
+                        error: error.response.data.detail || 'Cannot delete category with existing transactions'
+                    };
+                }
+                // Пробрасываем другие ошибки дальше
+                throw error;
+            })
 };
 
 

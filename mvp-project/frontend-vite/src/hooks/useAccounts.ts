@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { accountsApi } from '@/api';
+import { accountsApi, DeleteResponse } from '@/api';
 import type { Account } from '@/types/types';
 import { useAuth, useUser } from '@clerk/clerk-react';
 
@@ -94,11 +94,20 @@ export function useAccounts() {
         }
 
         try {
-            await accountsApi.delete(id);
+            const result: DeleteResponse = await accountsApi.delete(id);
+
+            // Проверяем результат операции
+            if (!result.success) {
+                console.error('Ошибка при удалении счета:', result.error);
+                throw new Error(result.error || 'Не удалось удалить счет с существующими транзакциями');
+            }
+
+            // Если успешно, обновляем состояние
             setAccounts(prev => prev.filter(account => account.id !== id));
+            return true;
         } catch (err) {
             console.error('Ошибка при удалении счета:', err);
-            throw new Error('Не удалось удалить счет');
+            throw err instanceof Error ? err : new Error('Не удалось удалить счет');
         }
     }, [isSignedIn]);
 
