@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "defl_illusion_bot"
+version = "0.1.0"
+description = "defl_illusion_bot"
+authors = ["deflillusion <defl.illusion@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^3.20.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
