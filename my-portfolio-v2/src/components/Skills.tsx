@@ -131,7 +131,7 @@ const Skills = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full" />
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            Technical expertise and proficiencies developed over years of professional experience
+          То, что я уже умею — и каждый день учусь делать ещё круче.
           </p>
         </motion.div>
 
