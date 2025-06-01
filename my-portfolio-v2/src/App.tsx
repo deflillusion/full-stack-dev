@@ -12,6 +12,7 @@ import Contact from "./components/Contact"
 import GeometricBackground from "./components/GeometricBackground"
 import Cursor from "./components/Cursor"
 import LoadingScreen from "./components/LoadingScreen"
+import FaviconController from "./components/FaviconController"
 import "./App.css"
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden">
+      <FaviconController />
       <Cursor />
       <GeometricBackground />
       <Toaster position="top-right" theme="dark" richColors />
