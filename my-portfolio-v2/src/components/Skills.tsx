@@ -83,12 +83,9 @@ const Skills = () => {
       if (months < 0) months += 12;
     }
 
-    // Форматирование результата
-    if (years > 0) {
-      return `${years}${months > 0 ? `.${months}` : ''}+`;
-    } else {
-      return `0.${months}+`;
-    }
+    // Форматирование результата (в годах с десятичной частью)
+    const decimalYears = years + months / 12
+    return `${decimalYears.toFixed(1)}+`
   }, []);
 
   const containerVariants = {
@@ -131,7 +128,7 @@ const Skills = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full" />
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-          То, что я уже умею — и каждый день учусь делать ещё круче.
+            То, что я уже умею — и каждый день учусь делать ещё круче.
           </p>
         </motion.div>
 
